@@ -326,7 +326,7 @@ body.dark-theme .comparison-table tr:hover {
 }
 
 .navbar-light .navbar-nav .nav-link {
-    position: relative;
+    /* position: relative; */
     padding-bottom: 5px;
     margin-right: 5px;
     margin-left: 5px;
