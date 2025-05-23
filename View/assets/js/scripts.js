@@ -970,24 +970,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                         
-                        // Cập nhật các nút trong modal
-                        if (addToCartBtn) addToCartBtn.setAttribute('data-product', product.id);
-                        if (wishlistBtn) {
-                            wishlistBtn.setAttribute('data-product', product.id);
-                            // Kiểm tra sản phẩm có trong wishlist không
-                            if (product.in_wishlist) {
-                                wishlistBtn.classList.add('active');
-                                wishlistBtn.innerHTML = '<i class="bi bi-heart-fill me-1"></i>Đã thêm vào yêu thích';
-                            } else {
-                                wishlistBtn.classList.remove('active');
-                                wishlistBtn.innerHTML = '<i class="bi bi-heart me-1"></i>Thêm vào yêu thích';
-                            }
-                        }
                         // Xử lý quantity trong quick view
                         const decreaseQuantityBtn = document.getElementById('decreaseQuantity');
                         const increaseQuantityBtn = document.getElementById('increaseQuantity');
                         const quantityInput = document.getElementById('quantityInput');
-                        
+                        quantityInput.value = 1;
                         if (decreaseQuantityBtn && quantityInput) {
                             decreaseQuantityBtn.addEventListener('click', function() {
                                 let value = parseInt(quantityInput.value);
@@ -1002,6 +989,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                 let value = parseInt(quantityInput.value);
                                 quantityInput.value = value + 1;
                             });
+                        }
+
+                        // Cập nhật các nút trong modal
+                        if (addToCartBtn) addToCartBtn.setAttribute('data-product', product.id);
+                        if (wishlistBtn) {
+                            wishlistBtn.setAttribute('data-product', product.id);
+                            // Kiểm tra sản phẩm có trong wishlist không
+                            if (product.in_wishlist) {
+                                wishlistBtn.classList.add('active');
+                                wishlistBtn.innerHTML = '<i class="bi bi-heart-fill me-1"></i>Đã thêm vào yêu thích';
+                            } else {
+                                wishlistBtn.classList.remove('active');
+                                wishlistBtn.innerHTML = '<i class="bi bi-heart me-1"></i>Thêm vào yêu thích';
+                            }
                         }
                         
                         // Hiển thị modal
