@@ -16,7 +16,7 @@
             <div class="row">
                 <!-- Sidebar Filters -->
                 <div class="col-lg-3 mb-4 mb-lg-0">
-                    <div class="product-filter-advanced sticky-lg-top" style="top: 20px;" data-aos="fade-right">
+                    <div class="product-filter-advanced sticky-lg" style="top: 20px;" data-aos="fade-right">
                         <div class="filter-section mb-4">
                             <h5 class="filter-title d-flex justify-content-between align-items-center">
                                 Danh mục sản phẩm
