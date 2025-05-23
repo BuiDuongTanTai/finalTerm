@@ -1614,6 +1614,39 @@ document.querySelectorAll('form[action="index.php?page=add_to_cart"]').forEach(f
         });
     });
 
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý nút "Xem nhanh"
+        const quickViewButtons = document.querySelectorAll('.product-quick-view-btn');
+        quickViewButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                
+                // Lưu sản phẩm vào danh sách đã xem gần đây qua AJAX
+                fetch('index.php?page=ajax_save_recently_viewed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `product_id=${productId}`
+                })
+                .then(response => response.json())
+                .catch(error => console.error('Error saving recently viewed product:', error));
+            });
+        });
+        
+        // Xử lý nút "Đã xem gần đây" trong quickactions
+        const recentlyViewedBtn = document.getElementById('recentlyViewedBtn');
+        if (recentlyViewedBtn) {
+            recentlyViewedBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'index.php?page=recently_viewed';
+            });
+        }
+    });
+
+    
 });
 
 // // Xử lý Quick View
