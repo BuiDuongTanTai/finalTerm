@@ -8,7 +8,7 @@ define('DB_PASS', '');
 define('DB_NAME', 'cameravn');
 
 // Base URL of the website
-define('BASE_URL', 'http://localhost/DuAn');
+define('BASE_URL', 'http://localhost/midTerm/');
 
 // Default controller and method
 define('DEFAULT_CONTROLLER', 'Home');
