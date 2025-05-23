@@ -539,10 +539,10 @@ body.dark-theme .comparison-table tr:hover {
 /* ======= HERO & SLIDESHOW SECTION ======= */
 /* Hero Section */
 .hero-section {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('View/assets/images/hero.jpg');;
+    background-image: url('../images/hero.jpg');
     background-size: cover;
     background-position: center;
-    color: white;
+    color: rgb(255, 255, 255);
     height: 100vh;
     padding: 100px 0;
     margin-bottom: 50px;

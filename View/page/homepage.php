@@ -1,21 +1,21 @@
 
 <main>
     <!-- Hero Section -->
-<section class="hero-section" id="home">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6" data-aos="fade-right">
-                <h1 class="display-4 hero-title">Chụp lại khoảnh khắc</h1>
-                <h2 class="display-5">với công nghệ hàng đầu</h2>
-                <p class="lead mb-4">Khám phá các dòng máy ảnh chuyên nghiệp từ những thương hiệu uy tín nhất thế giới.</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                    <a href="index.php?page=all_products" class="btn btn-primary btn-lg px-4 shadow-sm">Mua ngay</a>
-                    <a href="#services" class="btn btn-outline-light btn-lg px-4">Dịch vụ</a>
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h1 class="display-4 hero-title">Chụp lại khoảnh khắc</h1>
+                    <h2 class="display-5">với công nghệ hàng đầu</h2>
+                    <p class="lead mb-4">Khám phá các dòng máy ảnh chuyên nghiệp từ những thương hiệu uy tín nhất thế giới.</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a href="index.php?page=all_products" class="btn btn-primary btn-lg px-4 shadow-sm">Mua ngay</a>
+                        <a href="#services" class="btn btn-outline-light btn-lg px-4">Dịch vụ</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Categories Section -->
     <section class="py-5">
