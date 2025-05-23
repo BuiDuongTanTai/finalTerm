@@ -898,16 +898,28 @@ document.addEventListener('DOMContentLoaded', function() {
                         const modalTitle = document.getElementById('quickViewModalLabel');
                         const productTitle = document.getElementById('quickViewTitle');
                         const productPrice = document.getElementById('quickViewPrice');
+                        const productPriceOld = document.getElementById('quickViewOldPrice');
                         const productDescription = document.getElementById('quickViewDescription');
                         const productImage = document.getElementById('quickViewImage');
                         const addToCartBtn = document.getElementById('quickViewAddToCart');
                         const wishlistBtn = document.getElementById('quickViewWishlist');
+                        const productSKU = document.getElementById('quickViewSku');
+                        const productBrand = document.getElementById('quickViewBrand');
                         
                         if (modalTitle) modalTitle.textContent = 'Xem nhanh: ' + product.name;
                         if (productTitle) productTitle.textContent = product.name;
                         if (productPrice) productPrice.textContent = formatPrice(product.price) + 'đ';
                         if (productDescription) productDescription.textContent = product.short_description;
                         if (productImage) productImage.style.backgroundImage = `url('${product.image_url}')`;
+                        if (productSKU) productSKU.textContent = product.sku;
+                        if (productBrand) productBrand.textContent = product.brand_name;
+                        if (productPriceOld) {
+                            if (product.old_price) {
+                                productPriceOld.textContent = formatPrice(product.old_price) + 'đ';
+                            } else {
+                                productPriceOld.style.display = 'none';
+                            }
+                        }
                         
                         // Cập nhật các nút trong modal
                         if (addToCartBtn) addToCartBtn.setAttribute('data-product', product.id);
