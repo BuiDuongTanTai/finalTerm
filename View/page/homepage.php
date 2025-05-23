@@ -647,7 +647,7 @@
                                 </button>
                             </div>
                             
-                            <a href="index.php?page=product_detail&id=<?php echo $product->id; ?>" id="quickViewDetailLink" class="btn btn-link text-decoration-none">
+                            <a href="#" id="quickViewDetailLink" class="btn btn-link text-decoration-none">
                                 <i class="bi bi-info-circle me-1"></i>Xem chi tiết sản phẩm
                             </a>
                         </div>

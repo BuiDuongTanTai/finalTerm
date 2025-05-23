@@ -954,7 +954,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         const wishlistBtn = document.getElementById('quickViewWishlist');
                         const productSKU = document.getElementById('quickViewSku');
                         const productBrand = document.getElementById('quickViewBrand');
+                        const productLink = document.getElementById('quickViewDetailLink');
                         
+                        if (productLink) {
+                            productLink.setAttribute('href', `index.php?page=product_detail&id=${product.id}`);
+                        }
                         if (modalTitle) modalTitle.textContent = 'Xem nhanh: ' + product.name;
                         if (productTitle) productTitle.textContent = product.name;
                         if (productPrice) productPrice.textContent = formatPrice(product.price) + 'đ';
