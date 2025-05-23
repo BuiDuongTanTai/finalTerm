@@ -276,67 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
             form.submit();
         });
     }
-    
-    // Kiểm tra đăng nhập và xử lý form add to cart
-    const addToCartForm = document.querySelector('.add-to-cart-form');
-    if (addToCartForm) {
-        addToCartForm.addEventListener('submit', function(e) {
-            // Kiểm tra đăng nhập
-            if (!document.body.classList.contains('logged-in')) {
-                e.preventDefault();
-                // Hiển thị modal đăng nhập
-                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                loginModal.show();
-                return;
-            }
-            
-            // Nếu đã đăng nhập, xử lý AJAX
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            fetch('index.php?page=add_to_cart', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Hiển thị thông báo thành công
-                    const button = this.querySelector('button[type="submit"]');
-                    const originalText = button.innerHTML;
-                    
-                    button.innerHTML = '<i class="bi bi-check-circle me-2"></i> Đã thêm vào giỏ';
-                    button.classList.add('btn-success');
-                    
-                    // Cập nhật số lượng giỏ hàng
-                    document.querySelectorAll('.cart-count').forEach(el => {
-                        el.textContent = data.cart_count || '0';
-                    });
-                    
-                    // Sau 2 giây, khôi phục nút ban đầu
-                    setTimeout(() => {
-                        button.innerHTML = originalText;
-                        button.classList.remove('btn-success');
-                    }, 2000);
-                } else {
-                    if (data.message.includes('đăng nhập')) {
-                        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                        loginModal.show();
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-            });
-        });
-    }
 });
 
 // Hàm thay đổi ảnh chính

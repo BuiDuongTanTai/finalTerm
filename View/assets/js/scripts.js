@@ -910,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.success) {
                         // Thành công
-                        alert(data.message || 'Đã thêm sản phẩm vào giỏ hàng.');
+                        // alert(data.message || 'Đã thêm sản phẩm vào giỏ hàng.');
                         
                         // Cập nhật số lượng giỏ hàng
                         cartCountElements.forEach(element => {
@@ -1482,146 +1482,146 @@ function updateUserInfo(userName) {
             }
         });
     });
-});
-
-// Xử lý "Mua ngay"
-document.querySelectorAll('.buy-now-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Kiểm tra đăng nhập
-        if (!isLoggedIn) {
-            showLoginModal();
-            return;
-        }
-        
-        const productId = this.getAttribute('data-product-id');
-        const quantity = document.querySelector('#quantity') ? parseInt(document.querySelector('#quantity').value) : 1;
-        
-        // Thêm vào giỏ hàng và chuyển hướng đến trang checkout
-        fetch('index.php?page=add_to_cart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: `product_id=${productId}&quantity=${quantity}&buy_now=1`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Chuyển hướng đến trang checkout
-                window.location.href = 'index.php?page=checkout';
-            } else {
-                if (data.message.includes('đăng nhập')) {
-                    showLoginModal();
+    // Xử lý "Mua ngay"
+    document.querySelectorAll('.buy-now-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Kiểm tra đăng nhập
+            if (!isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            const productId = this.getAttribute('data-product-id');
+            const quantity = document.querySelector('#quantity') ? parseInt(document.querySelector('#quantity').value) : 1;
+            
+            // Thêm vào giỏ hàng và chuyển hướng đến trang checkout
+            fetch('index.php?page=add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `product_id=${productId}&quantity=${quantity}&buy_now=1`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Chuyển hướng đến trang checkout
+                    window.location.href = 'index.php?page=checkout';
                 } else {
-                    alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+                    if (data.message.includes('đăng nhập')) {
+                        showLoginModal();
+                    } else {
+                        alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+                    }
                 }
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-        });
-    });
-});
-
-// Xử lý "Thêm vào giỏ hàng"
-document.querySelectorAll('form[action="index.php?page=add_to_cart"]').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Kiểm tra đăng nhập
-        if (!isLoggedIn) {
-            showLoginModal();
-            return;
-        }
-        
-        const formData = new FormData(this);
-        
-        fetch('index.php?page=add_to_cart', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Hiển thị thông báo thành công
-                const button = this.querySelector('button[type="submit"]');
-                const originalText = button.innerHTML;
-                
-                button.innerHTML = '<i class="bi bi-check-circle"></i> Đã thêm';
-                button.classList.add('btn-success');
-                
-                // Cập nhật số lượng giỏ hàng
-                document.querySelectorAll('.cart-count').forEach(el => {
-                    el.textContent = data.cart_count || '0';
-                });
-                
-                // Sau 2 giây, khôi phục nút ban đầu
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.classList.remove('btn-success');
-                }, 2000);
-            } else {
-                if (data.message.includes('đăng nhập')) {
-                    showLoginModal();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-        });
-    });
-
-    //Fix backgr đen modals
-    function cleanupModals() {
-        // Xóa bất kỳ lớp nền modal nào còn sót lại
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-        
-        // Đặt lại các lớp và kiểu dáng cho thẻ body
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-        
-        // Đảm bảo tất cả các modal được ẩn đúng cách
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.classList.remove('show');
-            modal.style.display = 'none';
-            modal.setAttribute('aria-hidden', 'true');
-        });
-    }
-
-    // Thêm trình nghe sự kiện cho tất cả các nút đóng modal
-    document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
-        button.addEventListener('click', function() {
-            setTimeout(cleanupModals, 300); // Đợi cho hoạt ảnh modal hoàn tất
-        });
-    });
-
-    // Cũng xử lý phím ESC để đảm bảo dọn dẹp đúng cách
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            setTimeout(cleanupModals, 300);
-        }
-    });
-    // gọi hàm để chọn dọn dẹp đúng
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.modal').forEach(modalElement => {
-            modalElement.addEventListener('hidden.bs.modal', function() {
-                cleanupModals();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
             });
         });
     });
-
+    
 });
+
+// // Xử lý "Thêm vào giỏ hàng"
+// document.querySelectorAll('form[action="index.php?page=add_to_cart"]').forEach(form => {
+//     form.addEventListener('submit', function(e) {
+//         e.preventDefault();
+        
+//         // Kiểm tra đăng nhập
+//         if (!isLoggedIn) {
+//             showLoginModal();
+//             return;
+//         }
+        
+//         const formData = new FormData(this);
+        
+//         fetch('index.php?page=add_to_cart', {
+//             method: 'POST',
+//             body: formData,
+//             headers: {
+//                 'X-Requested-With': 'XMLHttpRequest'
+//             }
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             if (data.success) {
+//                 // Hiển thị thông báo thành công
+//                 const button = this.querySelector('button[type="submit"]');
+//                 const originalText = button.innerHTML;
+                
+//                 button.innerHTML = '<i class="bi bi-check-circle"></i> Đã thêm';
+//                 button.classList.add('btn-success');
+                
+//                 // Cập nhật số lượng giỏ hàng
+//                 document.querySelectorAll('.cart-count').forEach(el => {
+//                     el.textContent = data.cart_count || '0';
+//                 });
+                
+//                 // Sau 2 giây, khôi phục nút ban đầu
+//                 setTimeout(() => {
+//                     button.innerHTML = originalText;
+//                     button.classList.remove('btn-success');
+//                 }, 2000);
+//             } else {
+//                 if (data.message.includes('đăng nhập')) {
+//                     showLoginModal();
+//                 } else {
+//                     alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+//                 }
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+//         });
+//     });
+
+//     //Fix backgr đen modals
+//     function cleanupModals() {
+//         // Xóa bất kỳ lớp nền modal nào còn sót lại
+//         document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        
+//         // Đặt lại các lớp và kiểu dáng cho thẻ body
+//         document.body.classList.remove('modal-open');
+//         document.body.style.overflow = '';
+//         document.body.style.paddingRight = '';
+        
+//         // Đảm bảo tất cả các modal được ẩn đúng cách
+//         document.querySelectorAll('.modal').forEach(modal => {
+//             modal.classList.remove('show');
+//             modal.style.display = 'none';
+//             modal.setAttribute('aria-hidden', 'true');
+//         });
+//     }
+
+//     // Thêm trình nghe sự kiện cho tất cả các nút đóng modal
+//     document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+//         button.addEventListener('click', function() {
+//             setTimeout(cleanupModals, 300); // Đợi cho hoạt ảnh modal hoàn tất
+//         });
+//     });
+
+//     // Cũng xử lý phím ESC để đảm bảo dọn dẹp đúng cách
+//     document.addEventListener('keydown', function(event) {
+//         if (event.key === 'Escape') {
+//             setTimeout(cleanupModals, 300);
+//         }
+//     });
+//     // gọi hàm để chọn dọn dẹp đúng
+//     document.addEventListener('DOMContentLoaded', function() {
+//         document.querySelectorAll('.modal').forEach(modalElement => {
+//             modalElement.addEventListener('hidden.bs.modal', function() {
+//                 cleanupModals();
+//             });
+//         });
+//     });
+
+// });
 
 // // Xử lý Quick View
 // function setupQuickView() {
