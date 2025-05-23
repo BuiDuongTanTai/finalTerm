@@ -52,7 +52,7 @@
                     <a href="index.php?page=all_products&category=lens" class="text-decoration-none">
                         <div class="category-card text-center p-4">
                             <div class="category-icon">
-                                <i class="bi bi-circles-extend"></i>
+                                <i class="bi bi-record-circle-fill"></i>
                             </div>
                             <h4>Ống kính (Lens)</h4>
                             <p class="text-muted mb-0">Ống kính chất lượng cao cho mọi nhu cầu nhiếp ảnh</p>
