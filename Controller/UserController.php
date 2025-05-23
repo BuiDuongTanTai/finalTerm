@@ -246,7 +246,7 @@ class UserController {
         $title = "Tài khoản của tôi";
         include VIEW_PATH . '/includes/header.php';
         include VIEW_PATH . '/includes/navbar.php';
-        include VIEW_PATH . '/page/profile.php';
+        include VIEW_PATH . '/user/profile.php';
         include VIEW_PATH . '/includes/footer.php';
     }
     
