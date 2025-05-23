@@ -6,7 +6,7 @@
         <i class="bi bi-heart"></i>
         <span class="tooltip">Danh sách yêu thích</span>
         <span class="wishlist-count badge bg-danger position-absolute top-0 end-0">
-            <?php 
+            <?php
                 if (isset($_SESSION['user_id'])) {
                     require_once 'Model/ProductModel.php';
                     $productModel = new ProductModel();
