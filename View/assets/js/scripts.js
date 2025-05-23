@@ -983,6 +983,26 @@ document.addEventListener('DOMContentLoaded', function() {
                                 wishlistBtn.innerHTML = '<i class="bi bi-heart me-1"></i>Thêm vào yêu thích';
                             }
                         }
+                        // Xử lý quantity trong quick view
+                        const decreaseQuantityBtn = document.getElementById('decreaseQuantity');
+                        const increaseQuantityBtn = document.getElementById('increaseQuantity');
+                        const quantityInput = document.getElementById('quantityInput');
+                        
+                        if (decreaseQuantityBtn && quantityInput) {
+                            decreaseQuantityBtn.addEventListener('click', function() {
+                                let value = parseInt(quantityInput.value);
+                                if (value > 1) {
+                                    quantityInput.value = value - 1;
+                                }
+                            });
+                        }
+                        
+                        if (increaseQuantityBtn && quantityInput) {
+                            increaseQuantityBtn.addEventListener('click', function() {
+                                let value = parseInt(quantityInput.value);
+                                quantityInput.value = value + 1;
+                            });
+                        }
                         
                         // Hiển thị modal
                         const quickViewModal = new bootstrap.Modal(document.getElementById('quickViewModal'));
@@ -997,26 +1017,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Xử lý quantity trong quick view
-    const decreaseQuantityBtn = document.getElementById('decreaseQuantity');
-    const increaseQuantityBtn = document.getElementById('increaseQuantity');
-    const quantityInput = document.getElementById('quantityInput');
-    
-    if (decreaseQuantityBtn && quantityInput) {
-        decreaseQuantityBtn.addEventListener('click', function() {
-            let value = parseInt(quantityInput.value);
-            if (value > 1) {
-                quantityInput.value = value - 1;
-            }
-        });
-    }
-    
-    if (increaseQuantityBtn && quantityInput) {
-        increaseQuantityBtn.addEventListener('click', function() {
-            let value = parseInt(quantityInput.value);
-            quantityInput.value = value + 1;
-        });
-    }
     
     // Thêm vào giỏ hàng từ Quick View
     const quickViewAddToCartBtn = document.getElementById('quickViewAddToCart');
