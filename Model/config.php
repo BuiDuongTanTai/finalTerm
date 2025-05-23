@@ -30,7 +30,7 @@ define('SMTP_FROM', 'no-reply@cameravn.com');
 define('SMTP_FROM_NAME', 'CameraVN');
 
 // File upload paths
-define('UPLOAD_PATH', 'View/assets/uploads/');
+define('UPLOAD_PATH', 'View/assets/images/uploads/');
 define('PRODUCT_IMG_PATH', UPLOAD_PATH . 'products/');
 define('USER_IMG_PATH', UPLOAD_PATH . 'users/');
 define('REVIEW_IMG_PATH', UPLOAD_PATH . 'reviews/');
