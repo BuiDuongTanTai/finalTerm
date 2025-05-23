@@ -1512,6 +1512,47 @@ document.querySelectorAll('form[action="index.php?page=add_to_cart"]').forEach(f
             alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
         });
     });
+
+    //Fix backgr đen modals
+    function cleanupModals() {
+        // Xóa bất kỳ lớp nền modal nào còn sót lại
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        
+        // Đặt lại các lớp và kiểu dáng cho thẻ body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Đảm bảo tất cả các modal được ẩn đúng cách
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    // Thêm trình nghe sự kiện cho tất cả các nút đóng modal
+    document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            setTimeout(cleanupModals, 300); // Đợi cho hoạt ảnh modal hoàn tất
+        });
+    });
+
+    // Cũng xử lý phím ESC để đảm bảo dọn dẹp đúng cách
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            setTimeout(cleanupModals, 300);
+        }
+    });
+    // gọi hàm để chọn dọn dẹp đúng
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.modal').forEach(modalElement => {
+            modalElement.addEventListener('hidden.bs.modal', function() {
+                cleanupModals();
+            });
+        });
+    });
+
 });
 
 // // Xử lý Quick View
