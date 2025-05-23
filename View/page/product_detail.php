@@ -32,7 +32,7 @@
         </button>
     <?php endif; ?>
 </div>
- 
+
 <script>
 // Cập nhật số lượng trong form khi thay đổi input
 document.addEventListener('DOMContentLoaded', function() {

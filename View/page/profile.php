@@ -30,7 +30,7 @@
             <div class="row">
                 <!-- Sidebar -->
                 <div class="col-lg-3 mb-4 mb-lg-0">
-                    <div class="profile-sidebar sticky-lg-top" style="top: 20px;">
+                    <div class="profile-sidebar" style="top: 20px;">
                         <div class="profile-info text-center mb-4">
                             <?php if(!empty($user->avatar)): ?>
                                 <img src="<?php echo $user->avatar; ?>" alt="<?php echo $user->name; ?>" class="rounded-circle mb-3" width="100" height="100">
@@ -55,6 +55,9 @@
                             </a>
                             <a href="index.php?page=wishlist" class="list-group-item list-group-item-action">
                                 <i class="bi bi-heart me-2"></i>Sản phẩm yêu thích
+                            </a>
+                            <a href="index.php?page=recently_viewed" class="list-group-item list-group-item-action">
+                                <i class="bi bi-clock-history"></i>Sản phẩm đã xem gần đây
                             </a>
                             <a href="index.php?page=logout" class="list-group-item list-group-item-action text-danger">
                                 <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
