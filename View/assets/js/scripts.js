@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                const productId = this.getAttribute('data-product');
+                const productId = this.getAttribute('data-product-id');
                 
                 fetch(`index.php?page=ajax_product&id=${productId}`)
                 .then(response => response.json())
