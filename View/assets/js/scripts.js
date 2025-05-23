@@ -795,6 +795,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const productId = this.getAttribute('data-product-id');
                 const isActive = this.classList.contains('active');
+                const isWishlistPage = window.location.href.includes('page=wishlist');
                 
                 fetch(isActive ? 'index.php?page=remove_from_wishlist' : 'index.php?page=add_to_wishlist', {
                     method: 'POST',
@@ -821,6 +822,54 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             element.textContent = count;
                         });
+                        
+                        // Nếu đang ở trang wishlist và xóa sản phẩm khỏi wishlist
+                        if (isWishlistPage && isActive) {
+                            // Tìm phần tử cha cần xóa (thẻ col chứa sản phẩm)
+                            const productCard = this.closest('.col-md-6, .col-lg-4, .col-xl-3');
+                            
+                            if (productCard) {
+                                // Thêm class fade-out để tạo hiệu ứng
+                                productCard.style.opacity = '0';
+                                productCard.style.transform = 'scale(0.8)';
+                                productCard.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                                
+                                // Sau khi animation hoàn thành, xóa phần tử
+                                setTimeout(() => {
+                                    productCard.remove();
+                                    
+                                    // Kiểm tra nếu không còn sản phẩm nào trong wishlist
+                                    const remainingProducts = document.querySelectorAll('.product-card');
+                                    if (remainingProducts.length === 0) {
+                                        // Hiển thị thông báo danh sách trống
+                                        const container = document.querySelector('.container');
+                                        if (container) {
+                                            const rowElement = container.querySelector('.row');
+                                            if (rowElement) {
+                                                rowElement.innerHTML = '';
+                                            }
+                                            
+                                            const emptyWishlist = document.createElement('div');
+                                            emptyWishlist.className = 'text-center py-5';
+                                            emptyWishlist.innerHTML = `
+                                                <div class="mb-4">
+                                                    <i class="bi bi-heart" style="font-size: 5rem; color: #e0e0e0;"></i>
+                                                </div>
+                                                <h3>Danh sách yêu thích trống</h3>
+                                                <p class="text-muted mb-4">Bạn chưa thêm sản phẩm nào vào danh sách yêu thích</p>
+                                                <a href="index.php?page=all_products" class="btn btn-primary">
+                                                    <i class="bi bi-shop me-2"></i>Khám phá sản phẩm
+                                                </a>
+                                            `;
+                                            
+                                            // Thêm vào container
+                                            const contentContainer = container.querySelector('.row').parentNode;
+                                            contentContainer.appendChild(emptyWishlist);
+                                        }
+                                    }
+                                }, 500);
+                            }
+                        }
                     } else {
                         if (data.message && data.message.includes('đăng nhập')) {
                             showLoginModal();
