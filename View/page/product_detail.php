@@ -34,9 +34,9 @@ if (!isset($product) || empty($product)) {
             
             <!-- Price -->
             <div class="product-price mb-3">
-                <?php if ($product->discount_price): ?>
-                <span class="text-decoration-line-through text-muted me-2"><?php echo number_format($product->price); ?>đ</span>
-                <span class="text-danger fw-bold fs-4"><?php echo number_format($product->discount_price); ?>đ</span>
+                <?php if ($product->price): ?>
+                <span class="text-decoration-line-through text-muted me-2"><?php echo number_format($product->old_price); ?>đ</span>
+                <span class="text-danger fw-bold fs-4"><?php echo number_format($product->price); ?>đ</span>
                 <?php else: ?>
                 <span class="fw-bold fs-4"><?php echo number_format($product->price); ?>đ</span>
                 <?php endif; ?>
@@ -48,13 +48,13 @@ if (!isset($product) || empty($product)) {
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                     <i class="bi bi-star<?php echo $i <= $product->rating ? '-fill' : ''; ?> text-warning"></i>
                     <?php endfor; ?>
-                    <span class="ms-2">(<?php echo $product->review_count; ?> đánh giá)</span>
+                    <span class="ms-2">(<?php echo $product->reviews_count; ?> đánh giá)</span>
                 </div>
             </div>
 
             <!-- Description -->
-            <div class="product-description mb-4">
-                <p><?php echo $product->description; ?></p>
+            <div class="product-description-detail mb-4">
+                <p><?php echo $product->short_description; ?></p>
             </div>
 
             <!-- Color Selection -->
@@ -163,19 +163,10 @@ if (!isset($product) || empty($product)) {
             </ul>
             <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabsContent">
                 <div class="tab-pane fade show active" id="description" role="tabpanel">
-                    <?php echo $product->full_description; ?>
+                    <?php echo $product->description; ?>
                 </div>
                 <div class="tab-pane fade" id="specifications" role="tabpanel">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($product->specifications as $spec): ?>
-                            <tr>
-                                <th style="width: 200px;"><?php echo $spec->name; ?></th>
-                                <td><?php echo $spec->value; ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <?php echo $product->specifications; ?>
                 </div>
                 <div class="tab-pane fade" id="reviews" role="tabpanel">
                     <!-- Reviews Section -->

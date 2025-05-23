@@ -3311,6 +3311,16 @@ body.dark-theme .comparison-table tr:hover {
     margin: 0;
 }
 
+#quantity {
+    -moz-appearance: textfield;
+}
+
+#quantity::-webkit-outer-spin-button,
+#quantity::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 /* Product Overlay Animation */
 .product-image-container:hover .product-overlay {
     bottom: 0;
