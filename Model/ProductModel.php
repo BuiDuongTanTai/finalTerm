@@ -287,4 +287,88 @@ class ProductModel {
                     ORDER BY w.created_at DESC";
         return $this->db->fetchAll($query, [$user_id]);
     }
+
+
+    // Lưu sản phẩm vào danh sách đã xem gần đây
+    public function saveRecentlyViewed($product_id) {
+        // Bắt đầu session nếu chưa bắt đầu
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Khởi tạo mảng lưu sản phẩm đã xem gần đây nếu chưa có
+        if (!isset($_SESSION['recently_viewed'])) {
+            $_SESSION['recently_viewed'] = [];
+        }
+        
+        // Kiểm tra xem sản phẩm đã có trong danh sách chưa
+        if (in_array($product_id, $_SESSION['recently_viewed'])) {
+            // Nếu đã có, xóa khỏi vị trí cũ
+            $key = array_search($product_id, $_SESSION['recently_viewed']);
+            unset($_SESSION['recently_viewed'][$key]);
+        }
+        
+        // Thêm sản phẩm vào đầu danh sách
+        array_unshift($_SESSION['recently_viewed'], $product_id);
+        
+        // Giới hạn số lượng sản phẩm lưu trữ (ví dụ: 10 sản phẩm)
+        if (count($_SESSION['recently_viewed']) > 10) {
+            $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 10);
+        }
+    }
+
+    // Lấy danh sách sản phẩm đã xem gần đây
+    public function getRecentlyViewedProducts() {
+        // Bắt đầu session nếu chưa bắt đầu
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Nếu không có danh sách sản phẩm đã xem, trả về mảng rỗng
+        if (!isset($_SESSION['recently_viewed']) || empty($_SESSION['recently_viewed'])) {
+            return [];
+        }
+        
+        // Lấy danh sách ID sản phẩm
+        $product_ids = $_SESSION['recently_viewed'];
+        
+        // Khởi tạo mảng kết quả
+        $products = [];
+        
+        // Lấy thông tin từng sản phẩm
+        foreach ($product_ids as $id) {
+            $product = $this->getProductById($id);
+            if ($product) {
+                $products[] = $product;
+            }
+        }
+        
+        return $products;
+    }
+
+    // Xóa danh sách sản phẩm đã xem gần đây
+    public function clearRecentlyViewedProducts() {
+        // Bắt đầu session nếu chưa bắt đầu
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Xóa danh sách sản phẩm đã xem
+        unset($_SESSION['recently_viewed']);
+    }
+
+    // Đếm số lượng sản phẩm đã xem gần đây
+    public function countRecentlyViewedProducts() {
+        // Bắt đầu session nếu chưa bắt đầu
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Nếu không có danh sách sản phẩm đã xem, trả về 0
+        if (!isset($_SESSION['recently_viewed']) || empty($_SESSION['recently_viewed'])) {
+            return 0;
+        }
+        
+        return count($_SESSION['recently_viewed']);
+    }
 }

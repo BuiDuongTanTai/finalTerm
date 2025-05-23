@@ -99,6 +99,9 @@ class ProductController {
             exit;
         }
         
+        // Lưu sản phẩm vào danh sách đã xem gần đây
+        $this->productModel->saveRecentlyViewed($id);
+        
         // Lấy sản phẩm liên quan
         $related_products = $this->productModel->getRelatedProducts($id, $product->category_id);
         
@@ -320,6 +323,58 @@ class ProductController {
         }
         
         echo json_encode($product);
+        exit;
+    }
+    
+// Xử lý trang sản phẩm đã xem gần đây
+    public function recentlyViewed() {
+        // Lấy danh sách sản phẩm đã xem gần đây
+        $recently_viewed_products = $this->productModel->getRecentlyViewedProducts();
+        
+        // Nếu người dùng đã đăng nhập, lấy danh sách yêu thích
+        $wishlist = [];
+        if (isset($_SESSION['user_id'])) {
+            $wishlist_products = $this->productModel->getUserWishlist($_SESSION['user_id']);
+            foreach ($wishlist_products as $product) {
+                $wishlist[] = $product->id;
+            }
+        }
+        
+        // Truyền dữ liệu sang view
+        $title = "Sản phẩm đã xem gần đây";
+        include VIEW_PATH . '/includes/header.php';
+        include VIEW_PATH . '/includes/navbar.php';
+        include VIEW_PATH . '/page/recently_viewed.php';
+        include VIEW_PATH . '/includes/footer.php';
+    }
+
+    // Xử lý xóa danh sách sản phẩm đã xem gần đây
+    public function clearRecentlyViewed() {
+        $this->productModel->clearRecentlyViewedProducts();
+        
+        // Chuyển hướng về trang sản phẩm đã xem gần đây
+        header('Location: index.php?page=recently_viewed');
+        exit;
+    }
+
+    // Xử lý lưu sản phẩm vào danh sách đã xem gần đây qua AJAX
+    public function ajaxSaveRecentlyViewed() {
+        // Kiểm tra Ajax request
+        if (!(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')) {
+            header('Location: index.php');
+            exit;
+        }
+        
+        $product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
+        
+        if ($product_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'ID sản phẩm không hợp lệ.']);
+            exit;
+        }
+        
+        $this->productModel->saveRecentlyViewed($product_id);
+        
+        echo json_encode(['success' => true, 'message' => 'Đã lưu sản phẩm vào danh sách đã xem gần đây.']);
         exit;
     }
 }
