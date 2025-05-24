@@ -213,8 +213,7 @@ switch ($page) {
         $productController = new ProductController();
         $productController->ajaxSaveRecentlyViewed();
         break;
-    // ========== KẾT THÚC ROUTES SẢN PHẨM ĐÃ XEM GẦN ĐÂY ==========
-        
+
     case 'error404':
     default:
         require_once CONTROLLER_PATH . '/PageController.php';

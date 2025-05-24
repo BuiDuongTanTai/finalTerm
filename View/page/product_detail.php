@@ -161,6 +161,7 @@ if (!isset($product) || empty($product)) {
                     <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Đánh giá</button>
                 </li>
             </ul>
+            
             <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabsContent">
                 <div class="tab-pane fade show active" id="description" role="tabpanel">
                     <?php echo $product->description; ?>
@@ -168,6 +169,7 @@ if (!isset($product) || empty($product)) {
                 <div class="tab-pane fade" id="specifications" role="tabpanel">
                     <?php echo $product->specifications; ?>
                 </div>
+                
                 <div class="tab-pane fade" id="reviews" role="tabpanel">
                     <!-- Reviews Section -->
                     <div class="reviews-section">
@@ -196,6 +198,12 @@ if (!isset($product) || empty($product)) {
                 </div>
             </div>
         </div>
+
+        <div class="text-center mt-5 aos-init aos-animate" data-aos="fade-up">
+                <a href="index.php?page=all_products" class="btn btn-outline-primary view-all-products-btn">
+                    Xem tất cả sản phẩm <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
     </div>
 </div>
 

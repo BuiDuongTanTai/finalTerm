@@ -248,7 +248,6 @@
                         </div>
                     </div>
                     <!-- <div class="col-lg-4 position-relative promo-image-container"> -->
-                        <img src="View/assets/images/hero - Copy.jpg" alt="Camera Promo" class="promo-image">
                         <div class="floating-discount-badge">-30%</div>
                         <div class="pulse-circle"></div>
                         <div class="pulse-circle delay-1"></div>
