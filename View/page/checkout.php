@@ -39,11 +39,26 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="first_name" class="form-label">Họ <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo !empty($user) ? array_shift(explode(' ', $user->name, 2)) : ''; ?>" required>
+                                        <?php
+                                        $firstName = '';
+                                        if (!empty($user) && !empty($user->name)) {
+                                            $nameParts = explode(' ', $user->name);
+                                            array_pop($nameParts); // Remove last part (assumed last name)
+                                            $firstName = implode(' ', $nameParts);
+                                        }
+                                        ?>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="last_name" class="form-label">Tên <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo !empty($user) ? end(explode(' ', $user->name, 2)) : ''; ?>" required>
+                                        <?php
+                                        $lastName = '';
+                                        if (!empty($user) && !empty($user->name)) {
+                                            $nameParts = explode(' ', $user->name);
+                                            $lastName = array_pop($nameParts);
+                                        }
+                                        ?>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
@@ -264,7 +279,7 @@
                     
                     <div class="col-lg-5">
                         <!-- Order Summary -->
-                        <div class="card border-0 shadow-sm mb-4 sticky-lg-top" style="top: 20px;">
+                        <div class="card border-0 shadow-sm mb-4 sticky-lg" style="top: 20px;">
                             <div class="card-header bg-white py-3">
                                 <h5 class="card-title mb-0">Thông tin đơn hàng</h5>
                             </div>
