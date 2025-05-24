@@ -3,8 +3,8 @@ function CheckLogin($email, $pass)
 {
     $DBH = connect();
     $query = "
-    SELECT * FROM admin
-    WHERE email = :email
+    SELECT * FROM users
+    WHERE email = :email AND role = 'admin' AND status = 1
     ";
 
     $STH = $DBH->prepare($query);

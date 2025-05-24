@@ -161,6 +161,80 @@ switch ($action) {
         include 'view/profile.php';
         break;
 
+    case "add_user":
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+            $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
+            $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+            
+            $DBH = connect();
+            
+            // Kiểm tra email đã tồn tại
+            $check = $DBH->prepare("SELECT id FROM users WHERE email = :email");
+            $check->bindParam(':email', $email);
+            $check->execute();
+            
+            if ($check->rowCount() > 0) {
+                header("Location: index.php?act=user&error=Email đã tồn tại");
+                exit;
+            }
+            
+            $stmt = $DBH->prepare("INSERT INTO users (name, email, password, phone, role, status) 
+                                VALUES (:name, :email, :password, :phone, :role, :status)");
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':role', $role);
+            $stmt->bindParam(':status', $status);
+            
+            if ($stmt->execute()) {
+                header("Location: index.php?act=user&success=Thêm người dùng thành công");
+            } else {
+                header("Location: index.php?act=user&error=Lỗi khi thêm người dùng");
+            }
+            exit;
+        }
+        break;
+
+    case "delete_user":
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if ($id) {
+            $DBH = connect();
+            $stmt = $DBH->prepare("DELETE FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            
+            if ($stmt->execute()) {
+                header("Location: index.php?act=user&success=Xóa người dùng thành công");
+            } else {
+                header("Location: index.php?act=user&error=Lỗi khi xóa người dùng");
+            }
+            exit;
+        }
+        break;
+
+    case "update_review_status":
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        $status = filter_input(INPUT_GET, 'status', FILTER_SANITIZE_STRING);
+
+        if ($id && in_array($status, ['approved', 'rejected'])) {
+            $DBH = connect();
+            $stmt = $DBH->prepare("UPDATE reviews SET status = :status WHERE id = :id");
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':id', $id);
+            
+            if ($stmt->execute()) {
+                header("Location: index.php?act=comment&success=Cập nhật trạng thái thành công");
+            } else {
+                header("Location: index.php?act=comment&error=Lỗi khi cập nhật trạng thái");
+            }
+            exit;
+        }
+        break;
+
     default:
         include 'view/home.php';
         break;

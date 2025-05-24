@@ -241,9 +241,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `city`, `district`, `ward`, `avatar`, `role`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'Admin', 'admin@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0123456789', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'admin', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'staff', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(3, 'Khách hàng', 'customer@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0909123456', '123 Nguyễn Trãi', 'TP.HCM', 'Quận 1', 'Phường Bến Thành', NULL, 'customer', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-23 16:42:12', '2025-05-23 16:42:12');
+(2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'admin', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
+(3, 'Khách hàng', 'customer@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0909123456', '123 Nguyễn Trãi', 'TP.HCM', 'Quận 1', 'Phường Bến Thành', NULL, 'admin', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
+(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-23 16:42:12', '2025-05-23 16:42:12');
 
 -- --------------------------------------------------------
 
