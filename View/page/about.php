@@ -175,7 +175,7 @@
                             <h5>Phạm Hoài Thương</h5>
                             <p class="text-muted mb-3">Trưởng bộ phận kỹ thuật</p>
                             <div class="team-social">
-                                <a href="#"><i class="bi bi-facebook"></i></a>
+                                <a href="https://www.facebook.com/1408.TT/"><i class="bi bi-facebook"></i></a>
                                 <a href="#"><i class="bi bi-twitter"></i></a>
                                 <a href="#"><i class="bi bi-linkedin"></i></a>
                             </div>
