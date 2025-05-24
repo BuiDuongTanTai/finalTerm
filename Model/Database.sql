@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 25, 2025 lúc 12:20 AM
+-- Thời gian đã tạo: Th5 25, 2025 lúc 12:49 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -175,6 +175,78 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `image`, `parent_
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `districts`
+--
+
+CREATE TABLE `districts` (
+  `id` int(11) NOT NULL,
+  `province_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `districts`
+--
+
+INSERT INTO `districts` (`id`, `province_id`, `name`, `code`, `created_at`) VALUES
+(1, 2, 'Quận 1', 'Q1', '2025-05-24 22:26:36'),
+(2, 2, 'Quận 2', 'Q2', '2025-05-24 22:26:36'),
+(3, 2, 'Quận 3', 'Q3', '2025-05-24 22:26:36'),
+(4, 2, 'Quận 4', 'Q4', '2025-05-24 22:26:36'),
+(5, 2, 'Quận 5', 'Q5', '2025-05-24 22:26:36'),
+(6, 2, 'Quận 6', 'Q6', '2025-05-24 22:26:36'),
+(7, 2, 'Quận 7', 'Q7', '2025-05-24 22:26:36'),
+(8, 2, 'Quận 8', 'Q8', '2025-05-24 22:26:36'),
+(9, 2, 'Quận 9', 'Q9', '2025-05-24 22:26:36'),
+(10, 2, 'Quận 10', 'Q10', '2025-05-24 22:26:36'),
+(11, 2, 'Quận 11', 'Q11', '2025-05-24 22:26:36'),
+(12, 2, 'Quận 12', 'Q12', '2025-05-24 22:26:36'),
+(13, 2, 'Quận Bình Thạnh', 'QBT', '2025-05-24 22:26:36'),
+(14, 2, 'Quận Gò Vấp', 'QGV', '2025-05-24 22:26:36'),
+(15, 2, 'Quận Phú Nhuận', 'QPN', '2025-05-24 22:26:36'),
+(16, 2, 'Quận Tân Bình', 'QTB', '2025-05-24 22:26:36'),
+(17, 2, 'Quận Tân Phú', 'QTP', '2025-05-24 22:26:36'),
+(18, 2, 'Quận Thủ Đức', 'QTD', '2025-05-24 22:26:36'),
+(19, 2, 'Huyện Bình Chánh', 'HBC', '2025-05-24 22:26:36'),
+(20, 2, 'Huyện Cần Giờ', 'HCG', '2025-05-24 22:26:36'),
+(21, 2, 'Huyện Củ Chi', 'HCC', '2025-05-24 22:26:36'),
+(22, 2, 'Huyện Hóc Môn', 'HHM', '2025-05-24 22:26:36'),
+(23, 2, 'Huyện Nhà Bè', 'HNB', '2025-05-24 22:26:36'),
+(24, 1, 'Quận Ba Đình', 'QBD', '2025-05-24 22:26:36'),
+(25, 1, 'Quận Hoàn Kiếm', 'QHK', '2025-05-24 22:26:36'),
+(26, 1, 'Quận Tây Hồ', 'QTH', '2025-05-24 22:26:36'),
+(27, 1, 'Quận Long Biên', 'QLB', '2025-05-24 22:26:36'),
+(28, 1, 'Quận Cầu Giấy', 'QCG', '2025-05-24 22:26:36'),
+(29, 1, 'Quận Đống Đa', 'QDD', '2025-05-24 22:26:36'),
+(30, 1, 'Quận Hai Bà Trưng', 'QHBT', '2025-05-24 22:26:36'),
+(31, 1, 'Quận Hoàng Mai', 'QHM', '2025-05-24 22:26:36'),
+(32, 1, 'Quận Thanh Xuân', 'QTX', '2025-05-24 22:26:36'),
+(33, 1, 'Huyện Sóc Sơn', 'HSS', '2025-05-24 22:26:36'),
+(34, 1, 'Huyện Đông Anh', 'HDA', '2025-05-24 22:26:36'),
+(35, 1, 'Huyện Gia Lâm', 'HGL', '2025-05-24 22:26:36'),
+(36, 1, 'Huyện Nam Từ Liêm', 'HNTL', '2025-05-24 22:26:36'),
+(37, 1, 'Huyện Bắc Từ Liêm', 'HBTL', '2025-05-24 22:26:36'),
+(38, 1, 'Huyện Me Linh', 'HML', '2025-05-24 22:26:36'),
+(39, 1, 'Huyện Hà Đông', 'HHD', '2025-05-24 22:26:36'),
+(40, 1, 'Huyện Sơn Tây', 'HST', '2025-05-24 22:26:36'),
+(41, 1, 'Huyện Ba Vì', 'HBV', '2025-05-24 22:26:36'),
+(42, 1, 'Huyện Phúc Thọ', 'HPT', '2025-05-24 22:26:36'),
+(43, 1, 'Huyện Đan Phượng', 'HDP', '2025-05-24 22:26:36'),
+(44, 1, 'Huyện Hoài Đức', 'HHD2', '2025-05-24 22:26:36'),
+(45, 1, 'Huyện Quốc Oai', 'HQO', '2025-05-24 22:26:36'),
+(46, 1, 'Huyện Thạch Thất', 'HTT', '2025-05-24 22:26:36'),
+(47, 1, 'Huyện Chương Mỹ', 'HCM', '2025-05-24 22:26:36'),
+(48, 1, 'Huyện Thanh Oai', 'HTO', '2025-05-24 22:26:36'),
+(49, 1, 'Huyện Thường Tín', 'HTT2', '2025-05-24 22:26:36'),
+(50, 1, 'Huyện Phú Xuyên', 'HPX', '2025-05-24 22:26:36'),
+(51, 1, 'Huyện Ứng Hòa', 'HUH', '2025-05-24 22:26:36'),
+(52, 1, 'Huyện Mỹ Đức', 'HMD', '2025-05-24 22:26:36');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `orders`
 --
 
@@ -272,6 +344,88 @@ INSERT INTO `products` (`id`, `name`, `slug`, `sku`, `short_description`, `descr
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `provinces`
+--
+
+CREATE TABLE `provinces` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `provinces`
+--
+
+INSERT INTO `provinces` (`id`, `name`, `code`, `created_at`) VALUES
+(1, 'Hà Nội', 'HN', '2025-05-24 22:26:36'),
+(2, 'TP. Hồ Chí Minh', 'HCM', '2025-05-24 22:26:36'),
+(3, 'Đà Nẵng', 'DN', '2025-05-24 22:26:36'),
+(4, 'Cần Thơ', 'CT', '2025-05-24 22:26:36'),
+(5, 'Hải Phòng', 'HP', '2025-05-24 22:26:36'),
+(6, 'An Giang', 'AG', '2025-05-24 22:26:36'),
+(7, 'Bà Rịa - Vũng Tàu', 'BRVT', '2025-05-24 22:26:36'),
+(8, 'Bắc Giang', 'BG', '2025-05-24 22:26:36'),
+(9, 'Bắc Kạn', 'BK', '2025-05-24 22:26:36'),
+(10, 'Bạc Liêu', 'BL', '2025-05-24 22:26:36'),
+(11, 'Bắc Ninh', 'BN', '2025-05-24 22:26:36'),
+(12, 'Bến Tre', 'BT', '2025-05-24 22:26:36'),
+(13, 'Bình Định', 'BD', '2025-05-24 22:26:36'),
+(14, 'Bình Dương', 'BDUONG', '2025-05-24 22:26:36'),
+(15, 'Bình Phước', 'BP', '2025-05-24 22:26:36'),
+(16, 'Bình Thuận', 'BTH', '2025-05-24 22:26:36'),
+(17, 'Cà Mau', 'CM', '2025-05-24 22:26:36'),
+(18, 'Cao Bằng', 'CB', '2025-05-24 22:26:36'),
+(19, 'Đắk Lắk', 'DL', '2025-05-24 22:26:36'),
+(20, 'Đắk Nông', 'DNONG', '2025-05-24 22:26:36'),
+(21, 'Điện Biên', 'DB', '2025-05-24 22:26:36'),
+(22, 'Đồng Nai', 'DNAI', '2025-05-24 22:26:36'),
+(23, 'Đồng Tháp', 'DT', '2025-05-24 22:26:36'),
+(24, 'Gia Lai', 'GL', '2025-05-24 22:26:36'),
+(25, 'Hà Giang', 'HG', '2025-05-24 22:26:36'),
+(26, 'Hà Nam', 'HNAM', '2025-05-24 22:26:36'),
+(27, 'Hà Tĩnh', 'HT', '2025-05-24 22:26:36'),
+(28, 'Hải Dương', 'HD', '2025-05-24 22:26:36'),
+(29, 'Hậu Giang', 'HGG', '2025-05-24 22:26:36'),
+(30, 'Hòa Bình', 'HB', '2025-05-24 22:26:36'),
+(31, 'Hưng Yên', 'HY', '2025-05-24 22:26:36'),
+(32, 'Khánh Hòa', 'KH', '2025-05-24 22:26:36'),
+(33, 'Kiên Giang', 'KG', '2025-05-24 22:26:36'),
+(34, 'Kon Tum', 'KT', '2025-05-24 22:26:36'),
+(35, 'Lai Châu', 'LC', '2025-05-24 22:26:36'),
+(36, 'Lâm Đồng', 'LD', '2025-05-24 22:26:36'),
+(37, 'Lạng Sơn', 'LS', '2025-05-24 22:26:36'),
+(38, 'Lào Cai', 'LCA', '2025-05-24 22:26:36'),
+(39, 'Long An', 'LA', '2025-05-24 22:26:36'),
+(40, 'Nam Định', 'ND', '2025-05-24 22:26:36'),
+(41, 'Nghệ An', 'NA', '2025-05-24 22:26:36'),
+(42, 'Ninh Bình', 'NB', '2025-05-24 22:26:36'),
+(43, 'Ninh Thuận', 'NT', '2025-05-24 22:26:36'),
+(44, 'Phú Thọ', 'PT', '2025-05-24 22:26:36'),
+(45, 'Phú Yên', 'PY', '2025-05-24 22:26:36'),
+(46, 'Quảng Bình', 'QB', '2025-05-24 22:26:36'),
+(47, 'Quảng Nam', 'QN', '2025-05-24 22:26:36'),
+(48, 'Quảng Ngãi', 'QNG', '2025-05-24 22:26:36'),
+(49, 'Quảng Ninh', 'QNH', '2025-05-24 22:26:36'),
+(50, 'Quảng Trị', 'QT', '2025-05-24 22:26:36'),
+(51, 'Sóc Trăng', 'ST', '2025-05-24 22:26:36'),
+(52, 'Sơn La', 'SL', '2025-05-24 22:26:36'),
+(53, 'Tây Ninh', 'TN', '2025-05-24 22:26:36'),
+(54, 'Thái Bình', 'TB', '2025-05-24 22:26:36'),
+(55, 'Thái Nguyên', 'TNG', '2025-05-24 22:26:36'),
+(56, 'Thanh Hóa', 'TH', '2025-05-24 22:26:36'),
+(57, 'Thừa Thiên Huế', 'TTH', '2025-05-24 22:26:36'),
+(58, 'Tiền Giang', 'TG', '2025-05-24 22:26:36'),
+(59, 'Trà Vinh', 'TV', '2025-05-24 22:26:36'),
+(60, 'Tuyên Quang', 'TQ', '2025-05-24 22:26:36'),
+(61, 'Vĩnh Long', 'VL', '2025-05-24 22:26:36'),
+(62, 'Vĩnh Phúc', 'VP', '2025-05-24 22:26:36'),
+(63, 'Yên Bái', 'YB', '2025-05-24 22:26:36');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `reviews`
 --
 
@@ -358,6 +512,46 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `cit
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `wards`
+--
+
+CREATE TABLE `wards` (
+  `id` int(11) NOT NULL,
+  `district_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `wards`
+--
+
+INSERT INTO `wards` (`id`, `district_id`, `name`, `code`, `created_at`) VALUES
+(1, 1, 'Phường Tân Định', 'PTD', '2025-05-24 22:26:36'),
+(2, 1, 'Phường Đa Kao', 'PDK', '2025-05-24 22:26:36'),
+(3, 1, 'Phường Bến Nghé', 'PBN', '2025-05-24 22:26:36'),
+(4, 1, 'Phường Bến Thành', 'PBT', '2025-05-24 22:26:36'),
+(5, 1, 'Phường Nguyễn Thái Bình', 'PNTB', '2025-05-24 22:26:36'),
+(6, 1, 'Phường Phạm Ngũ Lão', 'PPNL', '2025-05-24 22:26:36'),
+(7, 1, 'Phường Cầu Ông Lãnh', 'PCOL', '2025-05-24 22:26:36'),
+(8, 1, 'Phường Cô Giang', 'PCG', '2025-05-24 22:26:36'),
+(9, 1, 'Phường Nguyễn Cư Trinh', 'PNCT', '2025-05-24 22:26:36'),
+(10, 1, 'Phường Cầu Kho', 'PCK', '2025-05-24 22:26:36'),
+(11, 7, 'Phường Tân Thuận Đông', 'PTTD', '2025-05-24 22:26:36'),
+(12, 7, 'Phường Tân Thuận Tây', 'PTTT', '2025-05-24 22:26:36'),
+(13, 7, 'Phường Tân Kiểng', 'PTK', '2025-05-24 22:26:36'),
+(14, 7, 'Phường Tân Hưng', 'PTH', '2025-05-24 22:26:36'),
+(15, 7, 'Phường Bình Thuận', 'PBT7', '2025-05-24 22:26:36'),
+(16, 7, 'Phường Tân Quy', 'PTQ', '2025-05-24 22:26:36'),
+(17, 7, 'Phường Phú Thuận', 'PPT', '2025-05-24 22:26:36'),
+(18, 7, 'Phường Tân Phú', 'PTP7', '2025-05-24 22:26:36'),
+(19, 7, 'Phường Tân Phong', 'PTPG', '2025-05-24 22:26:36'),
+(20, 7, 'Phường Phú Mỹ', 'PPM', '2025-05-24 22:26:36');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `wishlists`
 --
 
@@ -423,6 +617,13 @@ ALTER TABLE `categories`
   ADD KEY `parent_id` (`parent_id`);
 
 --
+-- Chỉ mục cho bảng `districts`
+--
+ALTER TABLE `districts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `province_id` (`province_id`);
+
+--
 -- Chỉ mục cho bảng `orders`
 --
 ALTER TABLE `orders`
@@ -447,6 +648,12 @@ ALTER TABLE `products`
   ADD KEY `brand_id` (`brand_id`);
 
 --
+-- Chỉ mục cho bảng `provinces`
+--
+ALTER TABLE `provinces`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `reviews`
 --
 ALTER TABLE `reviews`
@@ -467,6 +674,13 @@ ALTER TABLE `tags`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Chỉ mục cho bảng `wards`
+--
+ALTER TABLE `wards`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `district_id` (`district_id`);
 
 --
 -- Chỉ mục cho bảng `wishlists`
@@ -511,6 +725,12 @@ ALTER TABLE `categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
+-- AUTO_INCREMENT cho bảng `districts`
+--
+ALTER TABLE `districts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
@@ -529,6 +749,12 @@ ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
+-- AUTO_INCREMENT cho bảng `provinces`
+--
+ALTER TABLE `provinces`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+
+--
 -- AUTO_INCREMENT cho bảng `reviews`
 --
 ALTER TABLE `reviews`
@@ -545,6 +771,12 @@ ALTER TABLE `tags`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT cho bảng `wards`
+--
+ALTER TABLE `wards`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT cho bảng `wishlists`
@@ -584,6 +816,12 @@ ALTER TABLE `categories`
   ADD CONSTRAINT `fk_category_parent` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL;
 
 --
+-- Các ràng buộc cho bảng `districts`
+--
+ALTER TABLE `districts`
+  ADD CONSTRAINT `districts_ibfk_1` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`);
+
+--
 -- Các ràng buộc cho bảng `orders`
 --
 ALTER TABLE `orders`
@@ -609,6 +847,12 @@ ALTER TABLE `products`
 ALTER TABLE `reviews`
   ADD CONSTRAINT `fk_review_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_review_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Các ràng buộc cho bảng `wards`
+--
+ALTER TABLE `wards`
+  ADD CONSTRAINT `wards_ibfk_1` FOREIGN KEY (`district_id`) REFERENCES `districts` (`id`);
 
 --
 -- Các ràng buộc cho bảng `wishlists`
