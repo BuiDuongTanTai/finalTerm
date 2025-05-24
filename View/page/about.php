@@ -144,7 +144,7 @@
                     <div class="team-card">
                         <img src="View/assets/images/team1.jpg" alt="Nguyễn Văn A" class="img-fluid">
                         <div class="p-4 text-center">
-                            <h5>Nguyễn Văn A</h5>
+                            <h5>Đặng Triệu Vỹ</h5>
                             <p class="text-muted mb-3">Giám đốc điều hành</p>
                             <div class="team-social">
                                 <a href="#"><i class="bi bi-facebook"></i></a>
@@ -158,7 +158,7 @@
                     <div class="team-card">
                         <img src="View/assets/images/team2.jpg" alt="Trần Thị B" class="img-fluid">
                         <div class="p-4 text-center">
-                            <h5>Trần Thị B</h5>
+                            <h5>Bùi Dương Tấn Tài</h5>
                             <p class="text-muted mb-3">Giám đốc sản phẩm</p>
                             <div class="team-social">
                                 <a href="#"><i class="bi bi-facebook"></i></a>
@@ -172,7 +172,7 @@
                     <div class="team-card">
                         <img src="View/assets/images/team3.jpg" alt="Lê Văn C" class="img-fluid">
                         <div class="p-4 text-center">
-                            <h5>Lê Văn C</h5>
+                            <h5>Phạm Hoài Thương</h5>
                             <p class="text-muted mb-3">Trưởng bộ phận kỹ thuật</p>
                             <div class="team-social">
                                 <a href="#"><i class="bi bi-facebook"></i></a>
