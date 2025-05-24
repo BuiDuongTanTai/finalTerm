@@ -10,24 +10,16 @@ if (!isset($_SESSION['admin']) && $action != 'login') {
     $action = 'login';
 }
 
-// Không load header cho trang login
-if ($action != 'login') {
-    include 'view/header.php';
-}
+// XỬ LÝ LOGIC TRƯỚC KHI CÓ OUTPUT
 
 switch ($action) {
-    case "home":
-        include 'view/home.php';
-        break;
-
+    // ========== XỬ LÝ ĐĂNG NHẬP/ĐĂNG XUẤT ==========
     case "login":
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_submit'])) {
             $email = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_EMAIL);
             $pass = $_POST['password'];
 
-            // Kiểm tra đăng nhập
             if (CheckLogin($email, $pass)) {
-                // Lấy thông tin người dùng từ DB để lưu vào session
                 $DBH = connect();
                 $stmt = $DBH->prepare("SELECT id, name, email, role, avatar FROM users WHERE email = :email");
                 $stmt->bindParam(':email', $email);
@@ -36,33 +28,25 @@ switch ($action) {
                 
                 $_SESSION['admin'] = $user;
                 
-                // Nếu người dùng chọn "Ghi nhớ đăng nhập"
                 if (isset($_POST['remember']) && $_POST['remember'] == 'on') {
-                    setcookie('admin_username', $email, time() + (86400 * 30), "/"); // 30 ngày
+                    setcookie('admin_username', $email, time() + (86400 * 30), "/");
                 }
                 
                 header("Location: index.php");
                 exit;
             } else {
                 $login_error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
-                include 'view/login.php';
             }
-        } else {
-            include 'view/login.php';
         }
         break;
 
     case "logout":
         unset($_SESSION['admin']);
-        setcookie('admin_username', '', time() - 3600, "/"); // Xóa cookie
+        setcookie('admin_username', '', time() - 3600, "/");
         header("Location: index.php");
         exit;
 
-    // Quản lý danh mục
-    case "cate":
-        include 'view/catalog.php';
-        break;
-
+    // ========== QUẢN LÝ DANH MỤC ==========
     case "add_category":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
@@ -70,14 +54,23 @@ switch ($action) {
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
             if (empty($name)) {
-                header("Location: index.php?act=cate&error=Vui lòng nhập tên danh mục");
+                header("Location: index.php?act=cate&error=" . urlencode("Vui lòng nhập tên danh mục"));
                 exit;
             }
             
-            // Tạo slug từ tên danh mục
             $slug = createSlug($name);
             
             $DBH = connect();
+            
+            // Kiểm tra slug trùng lặp
+            $checkSlug = $DBH->prepare("SELECT id FROM categories WHERE slug = :slug");
+            $checkSlug->bindParam(':slug', $slug);
+            $checkSlug->execute();
+            
+            if ($checkSlug->rowCount() > 0) {
+                $slug = $slug . '-' . time();
+            }
+            
             $stmt = $DBH->prepare("INSERT INTO categories (name, slug, description, status) VALUES (:name, :slug, :description, :status)");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':slug', $slug);
@@ -85,35 +78,14 @@ switch ($action) {
             $stmt->bindParam(':status', $status);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=cate&success=Thêm danh mục thành công");
-                exit;
+                header("Location: index.php?act=cate&success=" . urlencode("Thêm danh mục thành công"));
             } else {
-                header("Location: index.php?act=cate&error=Lỗi khi thêm danh mục");
-                exit;
+                header("Location: index.php?act=cate&error=" . urlencode("Lỗi khi thêm danh mục"));
             }
-        }
-        break;
-
-    case "edit_category":
-        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        if ($id) {
-            $DBH = connect();
-            $stmt = $DBH->prepare("SELECT * FROM categories WHERE id = :id");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-            $category = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($category) {
-                include 'view/edit_category.php';
-            } else {
-                header("Location: index.php?act=cate&error=Danh mục không tồn tại");
-                exit;
-            }
-        } else {
-            header("Location: index.php?act=cate");
             exit;
         }
-        break;
+        header("Location: index.php?act=cate");
+        exit;
 
     case "update_category":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -123,14 +95,24 @@ switch ($action) {
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
             if (empty($name) || !$id) {
-                header("Location: index.php?act=cate&error=Dữ liệu không hợp lệ");
+                header("Location: index.php?act=cate&error=" . urlencode("Dữ liệu không hợp lệ"));
                 exit;
             }
             
-            // Tạo slug từ tên danh mục
             $slug = createSlug($name);
             
             $DBH = connect();
+            
+            // Kiểm tra slug trùng lặp (ngoại trừ chính nó)
+            $checkSlug = $DBH->prepare("SELECT id FROM categories WHERE slug = :slug AND id != :id");
+            $checkSlug->bindParam(':slug', $slug);
+            $checkSlug->bindParam(':id', $id);
+            $checkSlug->execute();
+            
+            if ($checkSlug->rowCount() > 0) {
+                $slug = $slug . '-' . time();
+            }
+            
             $stmt = $DBH->prepare("UPDATE categories SET name = :name, slug = :slug, description = :description, status = :status WHERE id = :id");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':slug', $slug);
@@ -139,27 +121,26 @@ switch ($action) {
             $stmt->bindParam(':id', $id);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=cate&success=Cập nhật danh mục thành công");
-                exit;
+                header("Location: index.php?act=cate&success=" . urlencode("Cập nhật danh mục thành công"));
             } else {
-                header("Location: index.php?act=cate&error=Lỗi khi cập nhật danh mục");
-                exit;
+                header("Location: index.php?act=cate&error=" . urlencode("Lỗi khi cập nhật danh mục"));
             }
+            exit;
         }
-        break;
+        header("Location: index.php?act=cate");
+        exit;
 
     case "delete_category":
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if ($id) {
             $DBH = connect();
             
-            // Kiểm tra xem danh mục có sản phẩm không
             $check = $DBH->prepare("SELECT COUNT(*) FROM products WHERE category_id = :id");
             $check->bindParam(':id', $id);
             $check->execute();
             
             if ($check->fetchColumn() > 0) {
-                header("Location: index.php?act=cate&error=Không thể xóa danh mục đang có sản phẩm");
+                header("Location: index.php?act=cate&error=" . urlencode("Không thể xóa danh mục đang có sản phẩm"));
                 exit;
             }
             
@@ -167,20 +148,15 @@ switch ($action) {
             $stmt->bindParam(':id', $id);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=cate&success=Xóa danh mục thành công");
-                exit;
+                header("Location: index.php?act=cate&success=" . urlencode("Xóa danh mục thành công"));
             } else {
-                header("Location: index.php?act=cate&error=Lỗi khi xóa danh mục");
-                exit;
+                header("Location: index.php?act=cate&error=" . urlencode("Lỗi khi xóa danh mục"));
             }
         }
-        break;
+        header("Location: index.php?act=cate");
+        exit;
 
-    // Quản lý sản phẩm
-    case "product":
-        include 'view/product.php';
-        break;
-
+    // ========== QUẢN LÝ SẢN PHẨM ==========
     case "add_product":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
@@ -191,25 +167,34 @@ switch ($action) {
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
             if (empty($name) || !$category_id || !$price) {
-                header("Location: index.php?act=product&error=Vui lòng điền đầy đủ thông tin bắt buộc");
+                header("Location: index.php?act=product&error=" . urlencode("Vui lòng điền đầy đủ thông tin bắt buộc"));
                 exit;
             }
             
-            // Tạo slug từ tên sản phẩm
             $slug = createSlug($name);
             
-            // Lấy thông tin thương hiệu từ category_id
             $DBH = connect();
+            
+            // Kiểm tra slug trùng lặp
+            $checkSlug = $DBH->prepare("SELECT id FROM products WHERE slug = :slug");
+            $checkSlug->bindParam(':slug', $slug);
+            $checkSlug->execute();
+            
+            if ($checkSlug->rowCount() > 0) {
+                $slug = $slug . '-' . time();
+            }
+            
+            // Lấy brand_id từ category
             $brand_stmt = $DBH->prepare("SELECT brand_id FROM products WHERE category_id = :category_id LIMIT 1");
             $brand_stmt->bindParam(':category_id', $category_id);
             $brand_stmt->execute();
             $brand_result = $brand_stmt->fetch(PDO::FETCH_ASSOC);
-            $brand_id = $brand_result ? $brand_result['brand_id'] : 1; // Mặc định là 1 nếu không tìm thấy
+            $brand_id = $brand_result ? $brand_result['brand_id'] : 1;
             
             // Xử lý upload ảnh
             $image_url = '';
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-                $target_dir = "View/assets/images/products/";
+                $target_dir = "../View/assets/images/products/";
                 if (!file_exists($target_dir)) {
                     mkdir($target_dir, 0777, true);
                 }
@@ -218,16 +203,13 @@ switch ($action) {
                 $target_file = $target_dir . $image_url;
                 
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                // Kiểm tra các định dạng file hợp lệ
                 if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
-                    header("Location: index.php?act=product&error=Chỉ chấp nhận file JPG, JPEG, PNG & GIF");
+                    header("Location: index.php?act=product&error=" . urlencode("Chỉ chấp nhận file JPG, JPEG, PNG & GIF"));
                     exit;
                 }
                 
-                if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                    // File uploaded successfully
-                } else {
-                    header("Location: index.php?act=product&error=Lỗi khi tải lên hình ảnh");
+                if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                    header("Location: index.php?act=product&error=" . urlencode("Lỗi khi tải lên hình ảnh"));
                     exit;
                 }
             }
@@ -246,35 +228,14 @@ switch ($action) {
             $stmt->bindParam(':status', $status);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=product&success=Thêm sản phẩm thành công");
-                exit;
+                header("Location: index.php?act=product&success=" . urlencode("Thêm sản phẩm thành công"));
             } else {
-                header("Location: index.php?act=product&error=Lỗi khi thêm sản phẩm");
-                exit;
+                header("Location: index.php?act=product&error=" . urlencode("Lỗi khi thêm sản phẩm"));
             }
-        }
-        break;
-
-    case "edit_product":
-        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        if ($id) {
-            $DBH = connect();
-            $stmt = $DBH->prepare("SELECT * FROM products WHERE id = :id");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-            $product = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($product) {
-                include 'view/edit_product.php';
-            } else {
-                header("Location: index.php?act=product&error=Sản phẩm không tồn tại");
-                exit;
-            }
-        } else {
-            header("Location: index.php?act=product");
             exit;
         }
-        break;
+        header("Location: index.php?act=product");
+        exit;
 
     case "update_product":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -287,19 +248,28 @@ switch ($action) {
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
             if (empty($name) || !$category_id || !$price || !$id) {
-                header("Location: index.php?act=product&error=Dữ liệu không hợp lệ");
+                header("Location: index.php?act=product&error=" . urlencode("Dữ liệu không hợp lệ"));
                 exit;
             }
             
-            // Tạo slug từ tên sản phẩm
             $slug = createSlug($name);
             
             $DBH = connect();
             
+            // Kiểm tra slug trùng lặp (ngoại trừ chính nó)
+            $checkSlug = $DBH->prepare("SELECT id FROM products WHERE slug = :slug AND id != :id");
+            $checkSlug->bindParam(':slug', $slug);
+            $checkSlug->bindParam(':id', $id);
+            $checkSlug->execute();
+            
+            if ($checkSlug->rowCount() > 0) {
+                $slug = $slug . '-' . time();
+            }
+            
             // Xử lý upload ảnh mới nếu có
             $image_sql = "";
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-                $target_dir = "View/assets/images/products/";
+                $target_dir = "../View/assets/images/products/";
                 if (!file_exists($target_dir)) {
                     mkdir($target_dir, 0777, true);
                 }
@@ -308,9 +278,8 @@ switch ($action) {
                 $target_file = $target_dir . $image_url;
                 
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                // Kiểm tra các định dạng file hợp lệ
                 if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
-                    header("Location: index.php?act=product&error=Chỉ chấp nhận file JPG, JPEG, PNG & GIF");
+                    header("Location: index.php?act=product&error=" . urlencode("Chỉ chấp nhận file JPG, JPEG, PNG & GIF"));
                     exit;
                 }
                 
@@ -327,7 +296,7 @@ switch ($action) {
                     
                     $image_sql = ", image_url = :image_url";
                 } else {
-                    header("Location: index.php?act=product&error=Lỗi khi tải lên hình ảnh");
+                    header("Location: index.php?act=product&error=" . urlencode("Lỗi khi tải lên hình ảnh"));
                     exit;
                 }
             }
@@ -351,14 +320,14 @@ switch ($action) {
             }
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=product&success=Cập nhật sản phẩm thành công");
-                exit;
+                header("Location: index.php?act=product&success=" . urlencode("Cập nhật sản phẩm thành công"));
             } else {
-                header("Location: index.php?act=product&error=Lỗi khi cập nhật sản phẩm");
-                exit;
+                header("Location: index.php?act=product&error=" . urlencode("Lỗi khi cập nhật sản phẩm"));
             }
+            exit;
         }
-        break;
+        header("Location: index.php?act=product");
+        exit;
 
     case "delete_product":
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -371,59 +340,23 @@ switch ($action) {
             $image_stmt->execute();
             $image = $image_stmt->fetchColumn();
             
-            if ($image && file_exists("View/assets/images/products/" . $image)) {
-                unlink("View/assets/images/products/" . $image);
+            if ($image && file_exists("../View/assets/images/products/" . $image)) {
+                unlink("../View/assets/images/products/" . $image);
             }
             
             $stmt = $DBH->prepare("DELETE FROM products WHERE id = :id");
             $stmt->bindParam(':id', $id);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=product&success=Xóa sản phẩm thành công");
-                exit;
+                header("Location: index.php?act=product&success=" . urlencode("Xóa sản phẩm thành công"));
             } else {
-                header("Location: index.php?act=product&error=Lỗi khi xóa sản phẩm");
-                exit;
+                header("Location: index.php?act=product&error=" . urlencode("Lỗi khi xóa sản phẩm"));
             }
         }
-        break;
+        header("Location: index.php?act=product");
+        exit;
 
-    // Quản lý đơn hàng
-    case "order":
-        include 'view/order.php';
-        break;
-
-    case "order_detail":
-        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        if ($id) {
-            $DBH = connect();
-            
-            // Lấy thông tin đơn hàng
-            $order_stmt = $DBH->prepare("SELECT * FROM orders WHERE id = :id");
-            $order_stmt->bindParam(':id', $id);
-            $order_stmt->execute();
-            $order = $order_stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Lấy các sản phẩm trong đơn hàng
-            $items_stmt = $DBH->prepare("SELECT oi.*, p.image_url FROM order_items oi 
-                                        LEFT JOIN products p ON oi.product_id = p.id 
-                                        WHERE oi.order_id = :order_id");
-            $items_stmt->bindParam(':order_id', $id);
-            $items_stmt->execute();
-            $order_items = $items_stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            if ($order) {
-                include 'view/order_detail.php';
-            } else {
-                header("Location: index.php?act=order&error=Đơn hàng không tồn tại");
-                exit;
-            }
-        } else {
-            header("Location: index.php?act=order");
-            exit;
-        }
-        break;
-
+    // ========== QUẢN LÝ ĐƠN HÀNG ==========
     case "update_order":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
@@ -431,7 +364,7 @@ switch ($action) {
             $tracking_number = filter_input(INPUT_POST, 'tracking_number', FILTER_SANITIZE_STRING);
             
             if (!$id || !in_array($status, ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])) {
-                header("Location: index.php?act=order&error=Dữ liệu không hợp lệ");
+                header("Location: index.php?act=order&error=" . urlencode("Dữ liệu không hợp lệ"));
                 exit;
             }
             
@@ -442,20 +375,16 @@ switch ($action) {
             $stmt->bindParam(':id', $id);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=order&success=Cập nhật đơn hàng thành công");
-                exit;
+                header("Location: index.php?act=order&success=" . urlencode("Cập nhật đơn hàng thành công"));
             } else {
-                header("Location: index.php?act=order&error=Lỗi khi cập nhật đơn hàng");
-                exit;
+                header("Location: index.php?act=order&error=" . urlencode("Lỗi khi cập nhật đơn hàng"));
             }
+            exit;
         }
-        break;
+        header("Location: index.php?act=order");
+        exit;
 
-    // Quản lý người dùng
-    case "user":
-        include 'view/user_manage.php';
-        break;
-
+    // ========== QUẢN LÝ NGƯỜI DÙNG ==========
     case "add_user":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
@@ -466,7 +395,7 @@ switch ($action) {
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
             if (empty($name) || empty($email) || empty($_POST['password'])) {
-                header("Location: index.php?act=user&error=Vui lòng điền đầy đủ thông tin bắt buộc");
+                header("Location: index.php?act=user&error=" . urlencode("Vui lòng điền đầy đủ thông tin bắt buộc"));
                 exit;
             }
             
@@ -478,7 +407,7 @@ switch ($action) {
             $check->execute();
             
             if ($check->rowCount() > 0) {
-                header("Location: index.php?act=user&error=Email đã tồn tại");
+                header("Location: index.php?act=user&error=" . urlencode("Email đã tồn tại"));
                 exit;
             }
             
@@ -492,34 +421,14 @@ switch ($action) {
             $stmt->bindParam(':status', $status);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=user&success=Thêm người dùng thành công");
+                header("Location: index.php?act=user&success=" . urlencode("Thêm người dùng thành công"));
             } else {
-                header("Location: index.php?act=user&error=Lỗi khi thêm người dùng");
+                header("Location: index.php?act=user&error=" . urlencode("Lỗi khi thêm người dùng"));
             }
             exit;
         }
-        break;
-
-    case "edit_user":
-        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        if ($id) {
-            $DBH = connect();
-            $stmt = $DBH->prepare("SELECT * FROM users WHERE id = :id");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($user) {
-                include 'view/edit_user.php';
-            } else {
-                header("Location: index.php?act=user&error=Người dùng không tồn tại");
-                exit;
-            }
-        } else {
-            header("Location: index.php?act=user");
-            exit;
-        }
-        break;
+        header("Location: index.php?act=user");
+        exit;
 
     case "update_user":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -530,7 +439,7 @@ switch ($action) {
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
             if (empty($name) || !$id) {
-                header("Location: index.php?act=user&error=Dữ liệu không hợp lệ");
+                header("Location: index.php?act=user&error=" . urlencode("Dữ liệu không hợp lệ"));
                 exit;
             }
             
@@ -556,21 +465,21 @@ switch ($action) {
             }
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=user&success=Cập nhật người dùng thành công");
-                exit;
+                header("Location: index.php?act=user&success=" . urlencode("Cập nhật người dùng thành công"));
             } else {
-                header("Location: index.php?act=user&error=Lỗi khi cập nhật người dùng");
-                exit;
+                header("Location: index.php?act=user&error=" . urlencode("Lỗi khi cập nhật người dùng"));
             }
+            exit;
         }
-        break;
+        header("Location: index.php?act=user");
+        exit;
 
     case "delete_user":
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if ($id) {
             // Không cho phép xóa chính mình
             if (isset($_SESSION['admin']['id']) && $id == $_SESSION['admin']['id']) {
-                header("Location: index.php?act=user&error=Không thể xóa tài khoản đang đăng nhập");
+                header("Location: index.php?act=user&error=" . urlencode("Không thể xóa tài khoản đang đăng nhập"));
                 exit;
             }
             
@@ -579,20 +488,15 @@ switch ($action) {
             $stmt->bindParam(':id', $id);
             
             if ($stmt->execute()) {
-                header("Location: index.php?act=user&success=Xóa người dùng thành công");
-                exit;
+                header("Location: index.php?act=user&success=" . urlencode("Xóa người dùng thành công"));
             } else {
-                header("Location: index.php?act=user&error=Lỗi khi xóa người dùng");
-                exit;
+                header("Location: index.php?act=user&error=" . urlencode("Lỗi khi xóa người dùng"));
             }
         }
-        break;
+        header("Location: index.php?act=user");
+        exit;
 
-    // Quản lý đánh giá/bình luận
-    case "comment":
-        include 'view/comment.php';
-        break;
-
+    // ========== QUẢN LÝ ĐÁNH GIÁ ==========
     case "update_review_status":
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         $status = filter_input(INPUT_GET, 'status', FILTER_SANITIZE_STRING);
@@ -616,13 +520,14 @@ switch ($action) {
                     }
                 }
                 
-                header("Location: index.php?act=comment&success=Cập nhật trạng thái thành công");
+                header("Location: index.php?act=comment&success=" . urlencode("Cập nhật trạng thái thành công"));
             } else {
-                header("Location: index.php?act=comment&error=Lỗi khi cập nhật trạng thái");
+                header("Location: index.php?act=comment&error=" . urlencode("Lỗi khi cập nhật trạng thái"));
             }
-            exit;
+        } else {
+            header("Location: index.php?act=comment&error=" . urlencode("Dữ liệu không hợp lệ"));
         }
-        break;
+        exit;
 
     case "delete_review":
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -644,20 +549,15 @@ switch ($action) {
                     updateProductRating($product_id);
                 }
                 
-                header("Location: index.php?act=comment&success=Xóa đánh giá thành công");
-                exit;
+                header("Location: index.php?act=comment&success=" . urlencode("Xóa đánh giá thành công"));
             } else {
-                header("Location: index.php?act=comment&error=Lỗi khi xóa đánh giá");
-                exit;
+                header("Location: index.php?act=comment&error=" . urlencode("Lỗi khi xóa đánh giá"));
             }
         }
-        break;
-        
-    // Quản lý thông tin cá nhân
-    case "profile":
-        include 'view/profile.php';
-        break;
+        header("Location: index.php?act=comment");
+        exit;
 
+    // ========== QUẢN LÝ THÔNG TIN CÁ NHÂN ==========
     case "update_profile":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_SESSION['admin']['id'];
@@ -665,7 +565,7 @@ switch ($action) {
             $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
             
             if (empty($name)) {
-                header("Location: index.php?act=profile&error=Vui lòng nhập họ tên");
+                header("Location: index.php?act=profile&error=" . urlencode("Vui lòng nhập họ tên"));
                 exit;
             }
             
@@ -674,7 +574,7 @@ switch ($action) {
             // Xử lý upload avatar nếu có
             $avatar_sql = "";
             if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
-                $target_dir = "View/assets/images/uploads/users/";
+                $target_dir = "../View/assets/images/uploads/users/";
                 if (!file_exists($target_dir)) {
                     mkdir($target_dir, 0777, true);
                 }
@@ -683,9 +583,8 @@ switch ($action) {
                 $target_file = $target_dir . $avatar;
                 
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                // Kiểm tra các định dạng file hợp lệ
                 if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
-                    header("Location: index.php?act=profile&error=Chỉ chấp nhận file JPG, JPEG, PNG & GIF");
+                    header("Location: index.php?act=profile&error=" . urlencode("Chỉ chấp nhận file JPG, JPEG, PNG & GIF"));
                     exit;
                 }
                 
@@ -702,7 +601,7 @@ switch ($action) {
                     
                     $avatar_sql = ", avatar = :avatar";
                 } else {
-                    header("Location: index.php?act=profile&error=Lỗi khi tải lên avatar");
+                    header("Location: index.php?act=profile&error=" . urlencode("Lỗi khi tải lên avatar"));
                     exit;
                 }
             }
@@ -711,8 +610,7 @@ switch ($action) {
             $password_sql = "";
             if (!empty($_POST['new_password']) && !empty($_POST['current_password'])) {
                 // Kiểm tra mật khẩu hiện tại
-                $check_pass = $DBH->prepare("SELECT password FROM users WHERE id = :id");
-                $check_pass->bindParam(':id', $id);
+$check_pass->bindParam(':id', $id);
                 $check_pass->execute();
                 $current_hashed_password = $check_pass->fetchColumn();
                 
@@ -720,7 +618,7 @@ switch ($action) {
                     $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
                     $password_sql = ", password = :password";
                 } else {
-                    header("Location: index.php?act=profile&error=Mật khẩu hiện tại không đúng");
+                    header("Location: index.php?act=profile&error=" . urlencode("Mật khẩu hiện tại không đúng"));
                     exit;
                 }
             }
@@ -743,43 +641,21 @@ switch ($action) {
                 // Cập nhật thông tin trong session
                 $_SESSION['admin']['name'] = $name;
                 
-                header("Location: index.php?act=profile&success=Cập nhật thông tin thành công");
-                exit;
+                header("Location: index.php?act=profile&success=" . urlencode("Cập nhật thông tin thành công"));
             } else {
-                header("Location: index.php?act=profile&error=Lỗi khi cập nhật thông tin");
-                exit;
+                header("Location: index.php?act=profile&error=" . urlencode("Lỗi khi cập nhật thông tin"));
             }
-        }
-        break;
-        
-    case "blog_manage":
-        include_once 'model/blog.php';
-        
-        // Xử lý xóa nếu có
-        if (isset($_GET['delete'])) {
-            $blogModel = new Blog();
-            $blogModel->deleteBlog($_GET['delete']);
-            header('Location: index.php?act=blog_manage');
             exit;
         }
-        
-        // Lấy tham số filter
-        $search = $_GET['search'] ?? null;
-        $category = $_GET['category'] ?? null;
-        $status = $_GET['status'] ?? null;
-        
-        $blogModel = new Blog();
-        $blogs = $blogModel->getAllBlogs($status, $search, $category);
-        $categories = $blogModel->getAllCategories();
-        
-        include 'view/blog_manage.php';
-        break;
-        
+        header("Location: index.php?act=profile");
+        exit;
+
+    // ========== QUẢN LÝ BLOG ==========
     case "add_blog":
-        include_once 'model/blog.php';
-        $blogModel = new Blog();
-        
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            require_once 'model/blog.php';
+            $blogModel = new Blog();
+            
             $data = [
                 'title' => $_POST['title'],
                 'summary' => $_POST['summary'],
@@ -813,29 +689,18 @@ switch ($action) {
                 $blogModel->addTagsToBlog($blogId, $_POST['tags']);
             }
             
-            header('Location: index.php?act=blog_manage&success=Thêm bài viết thành công');
-            exit;
-        }
-        
-        $categories = $blogModel->getAllCategories();
-        $tags = $blogModel->getAllTags();
-        
-        include 'view/add_blog.php';
-        break;
-        
-    case "edit_blog":
-        include_once 'model/blog.php';
-        $blogModel = new Blog();
-        
-        $id = $_GET['id'] ?? 0;
-        $blog = $blogModel->getBlogById($id);
-        
-        if (!$blog) {
             header('Location: index.php?act=blog_manage');
             exit;
         }
-        
+        header('Location: index.php?act=blog_manage');
+        exit;
+
+    case "update_blog":
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            require_once 'model/blog.php';
+            $blogModel = new Blog();
+            
+            $id = $_POST['id'] ?? 0;
             $data = [
                 'title' => $_POST['title'],
                 'summary' => $_POST['summary'],
@@ -857,8 +722,9 @@ switch ($action) {
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
                     $data['image'] = 'uploads/blog/' . $fileName;
                     
-                    // Xóa ảnh cũ
-                    if ($blog['image'] && file_exists('../' . $blog['image'])) {
+                    // Xóa ảnh cũ nếu có
+                    $blog = $blogModel->getBlogById($id);
+                    if ($blog && $blog['image'] && file_exists('../' . $blog['image'])) {
                         unlink('../' . $blog['image']);
                     }
                 }
@@ -870,7 +736,203 @@ switch ($action) {
             $tags = $_POST['tags'] ?? [];
             $blogModel->addTagsToBlog($id, $tags);
             
-            header('Location: index.php?act=blog_manage&success=Cập nhật bài viết thành công');
+            header('Location: index.php?act=blog_manage');
+            exit;
+        }
+        header('Location: index.php?act=blog_manage');
+        exit;
+
+    case "delete_blog":
+        $id = $_GET['id'] ?? 0;
+        
+        if ($id) {
+            require_once 'model/blog.php';
+            $blogModel = new Blog();
+            $blogModel->deleteBlog($id);
+        }
+        
+        header('Location: index.php?act=blog_manage');
+        exit;
+}
+
+
+// HIỂN THỊ VIEW SAU KHI XỬ LÝ LOGIC
+
+
+// Không load header/footer cho trang login
+if ($action != 'login') {
+    include 'view/header.php';
+}
+
+switch ($action) {
+    case "home":
+        include 'view/home.php';
+        break;
+
+    case "login":
+        include 'view/login.php';
+        break;
+
+    // Quản lý danh mục
+    case "cate":
+        include 'view/catalog.php';
+        break;
+
+    case "edit_category":
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if ($id) {
+            $DBH = connect();
+            $stmt = $DBH->prepare("SELECT * FROM categories WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            $category = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($category) {
+                include 'view/edit_category.php';
+            } else {
+                header("Location: index.php?act=cate&error=" . urlencode("Danh mục không tồn tại"));
+                exit;
+            }
+        } else {
+            header("Location: index.php?act=cate");
+            exit;
+        }
+        break;
+
+    // Quản lý sản phẩm
+    case "product":
+        include 'view/product.php';
+        break;
+
+    case "edit_product":
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if ($id) {
+            $DBH = connect();
+            $stmt = $DBH->prepare("SELECT * FROM products WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            $product = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($product) {
+                include 'view/edit_product.php';
+            } else {
+                header("Location: index.php?act=product&error=" . urlencode("Sản phẩm không tồn tại"));
+                exit;
+            }
+        } else {
+            header("Location: index.php?act=product");
+            exit;
+        }
+        break;
+
+    // Quản lý đơn hàng
+    case "order":
+        include 'view/order.php';
+        break;
+
+    case "order_detail":
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if ($id) {
+            $DBH = connect();
+            
+            // Lấy thông tin đơn hàng
+            $order_stmt = $DBH->prepare("SELECT * FROM orders WHERE id = :id");
+            $order_stmt->bindParam(':id', $id);
+            $order_stmt->execute();
+            $order = $order_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Lấy các sản phẩm trong đơn hàng
+            $items_stmt = $DBH->prepare("SELECT oi.*, p.image_url FROM order_items oi 
+                                        LEFT JOIN products p ON oi.product_id = p.id 
+                                        WHERE oi.order_id = :order_id");
+            $items_stmt->bindParam(':order_id', $id);
+            $items_stmt->execute();
+            $order_items = $items_stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            if ($order) {
+                include 'view/order_detail.php';
+            } else {
+                header("Location: index.php?act=order&error=" . urlencode("Đơn hàng không tồn tại"));
+                exit;
+            }
+        } else {
+            header("Location: index.php?act=order");
+            exit;
+        }
+        break;
+
+    // Quản lý người dùng
+    case "user":
+        include 'view/user_manage.php';
+        break;
+
+    case "edit_user":
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if ($id) {
+            $DBH = connect();
+            $stmt = $DBH->prepare("SELECT * FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($user) {
+                include 'view/edit_user.php';
+            } else {
+                header("Location: index.php?act=user&error=" . urlencode("Người dùng không tồn tại"));
+                exit;
+            }
+        } else {
+            header("Location: index.php?act=user");
+            exit;
+        }
+        break;
+
+    // Quản lý đánh giá
+    case "comment":
+        include 'view/comment.php';
+        break;
+
+    // Quản lý thông tin cá nhân
+    case "profile":
+        include 'view/profile.php';
+        break;
+
+    // Quản lý blog
+    case "blog_manage":
+        require_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        // Lấy tham số filter
+        $search = $_GET['search'] ?? null;
+        $category = $_GET['category'] ?? null;
+        $status = $_GET['status'] ?? null;
+        
+        $blogs = $blogModel->getAllBlogs($status, $search, $category);
+        $categories = $blogModel->getAllCategories();
+        
+        include 'view/blog_manage.php';
+        break;
+
+    case "add_blog":
+        require_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        $categories = $blogModel->getAllCategories();
+        $tags = $blogModel->getAllTags();
+        
+        include 'view/add_blog.php';
+        break;
+
+    case "edit_blog":
+        $id = $_GET['id'] ?? 0;
+        
+        require_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        $blog = $blogModel->getBlogById($id);
+        
+        if (!$blog) {
+            header('Location: index.php?act=blog_manage');
             exit;
         }
         
@@ -879,32 +941,22 @@ switch ($action) {
         
         include 'view/edit_blog.php';
         break;
-        
-    case "delete_blog":
-        include_once 'model/blog.php';
-        $blogModel = new Blog();
-        
-        $id = $_GET['id'] ?? 0;
-        
-        if ($id) {
-            $blogModel->deleteBlog($id);
-        }
-        
-        header('Location: index.php?act=blog_manage');
-        exit;
-        break;
 
     default:
         include 'view/home.php';
         break;
 }
 
-// Không load footer cho trang login
+// Không load header/footer cho trang login
 if ($action != 'login') {
     include 'view/footer.php';
 }
 
-// Hàm hỗ trợ tạo slug
+
+// HÀM HỖ TRỢ
+
+
+// Hàm tạo slug
 function createSlug($string) {
     $search = array(
         '#(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)#u',
