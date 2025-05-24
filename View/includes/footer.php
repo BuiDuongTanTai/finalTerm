@@ -5,9 +5,9 @@
                 <a href="index.php" class="footer-logo"><i class="bi bi-camera-fill me-2"></i>CameraVN</a>
                 <p>Cung cấp các dòng máy ảnh chính hãng từ các thương hiệu hàng đầu thế giới với dịch vụ chuyên nghiệp nhất.</p>
                 <div class="footer-social">
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-instagram"></i></a>
-                    <a href="#"><i class="bi bi-youtube"></i></a>
+                    <a href="https://www.facebook.com/1408.TT/"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.facebook.com/vy.dang.796569"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.facebook.com/tantai0606"><i class="bi bi-facebook"></i></a>
                 </div>
             </div>
             
@@ -24,10 +24,10 @@
             <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                 <h5>Dịch vụ khách hàng</h5>
                 <ul class="footer-links list-unstyled">
-                    <li><a href="#">Câu hỏi thường gặp</a></li>
-                    <li><a href="#">Chính sách bảo hành</a></li>
-                    <li><a href="#">Chính sách đổi trả</a></li>
-                    <li><a href="#">Thông tin vận chuyển</a></li>
+                    <li><a href="index.php?page=contact#faq-section">Câu hỏi thường gặp</a></li>
+                    <li><a href="index.php?page=contact#">Chính sách bảo hành</a></li>
+                    <li><a href="index.php?page=contact#">Chính sách đổi trả</a></li>
+                    <li><a href="index.php?page=contact#">Thông tin vận chuyển</a></li>
                 </ul>
             </div>
             

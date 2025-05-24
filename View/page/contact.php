@@ -228,7 +228,7 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-5 bg-light">
+    <section id="faq-section" class="py-5 bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mx-auto text-center" data-aos="fade-up">

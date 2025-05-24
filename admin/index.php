@@ -652,7 +652,7 @@ switch ($action) {
             }
         }
         break;
-
+        
     // Quản lý thông tin cá nhân
     case "profile":
         include 'view/profile.php';
@@ -750,6 +750,148 @@ switch ($action) {
                 exit;
             }
         }
+        break;
+        
+    case "blog_manage":
+        include_once 'model/blog.php';
+        
+        // Xử lý xóa nếu có
+        if (isset($_GET['delete'])) {
+            $blogModel = new Blog();
+            $blogModel->deleteBlog($_GET['delete']);
+            header('Location: index.php?act=blog_manage');
+            exit;
+        }
+        
+        // Lấy tham số filter
+        $search = $_GET['search'] ?? null;
+        $category = $_GET['category'] ?? null;
+        $status = $_GET['status'] ?? null;
+        
+        $blogModel = new Blog();
+        $blogs = $blogModel->getAllBlogs($status, $search, $category);
+        $categories = $blogModel->getAllCategories();
+        
+        include 'view/blog_manage.php';
+        break;
+        
+    case "add_blog":
+        include_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'title' => $_POST['title'],
+                'summary' => $_POST['summary'],
+                'content' => $_POST['content'],
+                'category_id' => $_POST['category_id'],
+                'author_id' => $_SESSION['admin']['id'] ?? 1,
+                'author_name' => $_SESSION['admin']['name'] ?? 'Admin',
+                'status' => $_POST['status'],
+                'published_at' => $_POST['status'] == 'published' ? date('Y-m-d H:i:s') : null,
+                'image' => ''
+            ];
+            
+            // Xử lý upload ảnh
+            if (!empty($_FILES['image']['name'])) {
+                $uploadDir = '../uploads/blog/';
+                if (!file_exists($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
+                $fileName = time() . '_' . basename($_FILES['image']['name']);
+                $uploadPath = $uploadDir . $fileName;
+                
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+                    $data['image'] = 'uploads/blog/' . $fileName;
+                }
+            }
+            
+            $blogId = $blogModel->createBlog($data);
+            
+            if ($blogId && !empty($_POST['tags'])) {
+                $blogModel->addTagsToBlog($blogId, $_POST['tags']);
+            }
+            
+            header('Location: index.php?act=blog_manage&success=Thêm bài viết thành công');
+            exit;
+        }
+        
+        $categories = $blogModel->getAllCategories();
+        $tags = $blogModel->getAllTags();
+        
+        include 'view/add_blog.php';
+        break;
+        
+    case "edit_blog":
+        include_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        $id = $_GET['id'] ?? 0;
+        $blog = $blogModel->getBlogById($id);
+        
+        if (!$blog) {
+            header('Location: index.php?act=blog_manage');
+            exit;
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'title' => $_POST['title'],
+                'summary' => $_POST['summary'],
+                'content' => $_POST['content'],
+                'category_id' => $_POST['category_id'],
+                'status' => $_POST['status']
+            ];
+            
+            // Xử lý upload ảnh mới
+            if (!empty($_FILES['image']['name'])) {
+                $uploadDir = '../uploads/blog/';
+                if (!file_exists($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
+                $fileName = time() . '_' . basename($_FILES['image']['name']);
+                $uploadPath = $uploadDir . $fileName;
+                
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+                    $data['image'] = 'uploads/blog/' . $fileName;
+                    
+                    // Xóa ảnh cũ
+                    if ($blog['image'] && file_exists('../' . $blog['image'])) {
+                        unlink('../' . $blog['image']);
+                    }
+                }
+            }
+            
+            $blogModel->updateBlog($id, $data);
+            
+            // Cập nhật tags
+            $tags = $_POST['tags'] ?? [];
+            $blogModel->addTagsToBlog($id, $tags);
+            
+            header('Location: index.php?act=blog_manage&success=Cập nhật bài viết thành công');
+            exit;
+        }
+        
+        $categories = $blogModel->getAllCategories();
+        $tags = $blogModel->getAllTags();
+        
+        include 'view/edit_blog.php';
+        break;
+        
+    case "delete_blog":
+        include_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        $id = $_GET['id'] ?? 0;
+        
+        if ($id) {
+            $blogModel->deleteBlog($id);
+        }
+        
+        header('Location: index.php?act=blog_manage');
+        exit;
         break;
 
     default:

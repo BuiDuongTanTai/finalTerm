@@ -51,6 +51,11 @@
                                 <i class="bi bi-star"></i> Đánh giá
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= ($_GET['act'] ?? '') == 'blog_manage' ? 'active' : '' ?>" href="?act=blog_manage">
+                                <i class="bi bi-newspaper"></i> Blog
+                            </a>
+                        </li>
                     </ul>
                     
                     <ul class="navbar-nav ms-auto">
@@ -66,6 +71,8 @@
                             </ul>
                         </li>
                     </ul>
+
+                    
                 </div>
             </div>
         </nav>
