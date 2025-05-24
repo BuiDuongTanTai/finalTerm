@@ -529,7 +529,6 @@ class CartController {
             require_once 'Model/UserModel.php';
             $userModel = new UserModel();
             $order = $userModel->getOrderById($order_id, $_SESSION['user_id']);
-            var_dump($order);
             if ($order) {
                 $order_items = $userModel->getOrderItems($order_id);
             }

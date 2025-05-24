@@ -65,20 +65,20 @@ if (!isset($order) || empty($order)) {
                                 <div class="col-md-6">
                                     <h6 class="mb-3">Thông tin giao hàng</h6>
                                     <p class="mb-1"><strong>Người nhận:</strong> <?php echo $order->name; ?></p>
-                                    <p class="mb-1"><strong>Địa chỉ:</strong> <?php echo $order->shipping_address; ?></p>
-                                    <p class="mb-1"><strong>Quận/Huyện:</strong> <?php echo $order->shipping_district; ?></p>
-                                    <p class="mb-1"><strong>Phường/Xã:</strong> <?php echo $order->shipping_ward; ?></p>
-                                    <p class="mb-1"><strong>Tỉnh/Thành phố:</strong> <?php echo $order->shipping_city; ?></p>
-                                    <p class="mb-1"><strong>Số điện thoại:</strong> <?php echo $order->customer_phone; ?></p>
-                                    <?php if ($order->note): ?>
-                                    <p class="mb-0"><strong>Ghi chú:</strong> <?php echo $order->note; ?></p>
+                                    <p class="mb-1"><strong>Địa chỉ:</strong> <?php echo $order->address; ?></p>
+                                    <p class="mb-1"><strong>Quận/Huyện:</strong> <?php echo $order->district; ?></p>
+                                    <p class="mb-1"><strong>Phường/Xã:</strong> <?php echo $order->ward; ?></p>
+                                    <p class="mb-1"><strong>Tỉnh/Thành phố:</strong> <?php echo $order->city; ?></p>
+                                    <p class="mb-1"><strong>Số điện thoại:</strong> <?php echo $order->phone; ?></p>
+                                    <?php if ($order->notes): ?>
+                                    <p class="mb-0"><strong>Ghi chú:</strong> <?php echo $order->notes; ?></p>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <h6 class="mb-3">Thông tin thanh toán</h6>
                                     <p class="mb-1"><strong>Phương thức thanh toán:</strong> 
                                         <?php
-                                        switch($order->payment_type) {
+                                        switch($order->payment_method) {
                                             case 'cod':
                                                 echo 'Thanh toán khi nhận hàng (COD)';
                                                 break;
@@ -99,7 +99,7 @@ if (!isset($order) || empty($order)) {
                                     </p>
                                     <p class="mb-1"><strong>Phương thức vận chuyển:</strong> 
                                         <?php
-                                        switch($order->shipping_type) {
+                                        switch($order->shipping_method) {
                                             case 'standard':
                                                 echo 'Giao hàng tiêu chuẩn';
                                                 break;
@@ -131,19 +131,19 @@ if (!isset($order) || empty($order)) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($order->order_items as $item): ?>
+                                        <?php foreach ($order_items as $item): ?>
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <img src="<?php echo $item->product_image; ?>" alt="<?php echo $item->product_name; ?>" class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                                    <img src="<?php echo $item->image_url; ?>" alt="<?php echo $item->name; ?>" class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                                     <div>
-                                                        <h6 class="mb-0"><?php echo $item->product_name; ?></h6>
-                                                        <?php if ($item->color): ?>
+                                                        <h6 class="mb-0"><?php echo $item->name; ?></h6>
+                                                        <!-- <?php if ($item->color): ?>
                                                         <small class="text-muted">Màu: <?php echo $item->color; ?></small>
                                                         <?php endif; ?>
                                                         <?php if ($item->size): ?>
                                                         <small class="text-muted">Size: <?php echo $item->size; ?></small>
-                                                        <?php endif; ?>
+                                                        <?php endif; ?> -->
                                                     </div>
                                                 </div>
                                             </td>
@@ -155,22 +155,20 @@ if (!isset($order) || empty($order)) {
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="3" class="text-end">Tạm tính:</td>
-                                            <td class="text-end"><?php echo number_format($order->subtotal); ?>đ</td>
+                                            <td colspan="3" class="text-end">VAT 10%:</td>
+                                            <td class="text-end"><?php echo number_format($order->tax_amount); ?>đ</td>
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-end">Phí vận chuyển:</td>
                                             <td class="text-end"><?php echo number_format($order->shipping_fee); ?>đ</td>
                                         </tr>
-                                        <?php if ($order->discount > 0): ?>
                                         <tr>
                                             <td colspan="3" class="text-end">Giảm giá:</td>
-                                            <td class="text-end text-danger">-<?php echo number_format($order->discount); ?>đ</td>
+                                            <td class="text-end text-danger">-<?php echo number_format($order->discount_amount); ?>đ</td>
                                         </tr>
-                                        <?php endif; ?>
                                         <tr>
                                             <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
-                                            <td class="text-end fw-bold"><?php echo number_format($order->total); ?>đ</td>
+                                            <td class="text-end fw-bold"><?php echo number_format($order->total_amount); ?>đ</td>
                                         </tr>
                                     </tfoot>
                                 </table>
