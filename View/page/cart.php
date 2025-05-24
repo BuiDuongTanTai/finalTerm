@@ -118,9 +118,9 @@
                         <a href="index.php?page=all_products" class="btn btn-outline-primary">
                             <i class="bi bi-arrow-left me-2"></i>Tiếp tục mua sắm
                         </a>
-                        <!-- <button type="button" class="btn btn-outline-success cart-update-all">
+                        <button type="button" class="btn btn-outline-success cart-update-all">
                             <i class="bi bi-arrow-repeat me-2"></i>Cập nhật giỏ hàng
-                        </button> -->
+                        </button>
                     </div>
                 </div>
                 
@@ -299,40 +299,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // // Xử lý nút cập nhật tất cả
-    // const updateAllButton = document.querySelector('.cart-update-all');
-    // if (updateAllButton) {
-    //     updateAllButton.addEventListener('click', function() {
-    //         const quantityInputs = document.querySelectorAll('.cart-quantity-input');
-    //         const updates = [];
+    // Xử lý nút cập nhật tất cả
+    const updateAllButton = document.querySelector('.cart-update-all');
+    if (updateAllButton) {
+        updateAllButton.addEventListener('click', function() {
+            const quantityInputs = document.querySelectorAll('.cart-quantity-input');
+            const updates = [];
             
-    //         quantityInputs.forEach(input => {
-    //             const cartId = input.getAttribute('data-cart-id');
-    //             const quantity = parseInt(input.value);
-    //             updates.push({ cartId, quantity });
-    //         });
+            quantityInputs.forEach(input => {
+                const cartId = input.getAttribute('data-cart-id');
+                const quantity = parseInt(input.value);
+                updates.push({ cartId, quantity });
+            });
             
-    //         // Cập nhật tất cả sản phẩm
-    //         if (updates.length > 0) {
-    //             const loadingButton = this.innerHTML;
-    //             this.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Đang cập nhật...';
-    //             this.disabled = true;
+            // Cập nhật tất cả sản phẩm
+            if (updates.length > 0) {
+                const loadingButton = this.innerHTML;
+                this.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Đang cập nhật...';
+                this.disabled = true;
                 
-    //             let completedUpdates = 0;
+                let completedUpdates = 0;
                 
-    //             updates.forEach(update => {
-    //                 updateCartItemDirect(update.cartId, update.quantity, function() {
-    //                     completedUpdates++;
-    //                     if (completedUpdates === updates.length) {
-    //                         updateAllButton.innerHTML = loadingButton;
-    //                         updateAllButton.disabled = false;
-    //                         alert('Đã cập nhật tất cả sản phẩm trong giỏ hàng!');
-    //                     }
-    //                 });
-    //             });
-    //         }
-    //     });
-    // }
+                updates.forEach(update => {
+                    updateCartItemDirect(update.cartId, update.quantity, function() {
+                        completedUpdates++;
+                        if (completedUpdates === updates.length) {
+                            updateAllButton.innerHTML = loadingButton;
+                            updateAllButton.disabled = false;
+                            alert('Đã cập nhật tất cả sản phẩm trong giỏ hàng!');
+                        }
+                    });
+                });
+            }
+        });
+    }
     
     // Xử lý nút xóa tất cả
     const clearCartButton = document.getElementById('clearCart');
@@ -417,35 +417,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // // Hàm cập nhật số lượng sản phẩm
-    // function updateCartItem(cartId, quantityChange) {
-    //     fetch('index.php?page=update_cart', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/x-www-form-urlencoded',
-    //             'X-Requested-With': 'XMLHttpRequest'
-    //         },
-    //         body: `cart_id=${cartId}&quantity=${quantityChange}`
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         if (data.success) {
-    //             // Cập nhật tổng tiền
-    //             document.querySelector('.text-primary').textContent = data.total_amount;
+    // Hàm cập nhật số lượng sản phẩm
+    function updateCartItem(cartId, quantityChange) {
+        fetch('index.php?page=update_cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `cart_id=${cartId}&quantity=${quantityChange}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Cập nhật tổng tiền
+                document.querySelector('.text-primary').textContent = data.total_amount;
                 
-    //             // Cập nhật số lượng giỏ hàng
-    //             document.querySelectorAll('.cart-count').forEach(element => {
-    //                 element.textContent = data.cart_count || '0';
-    //             });
-    //         } else {
-    //             alert(data.message || 'Có lỗi xảy ra khi cập nhật giỏ hàng.');
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error('Error updating cart:', error);
-    //         alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-    //     });
-    // }
+                // Cập nhật số lượng giỏ hàng
+                document.querySelectorAll('.cart-count').forEach(element => {
+                    element.textContent = data.cart_count || '0';
+                });
+            } else {
+                alert(data.message || 'Có lỗi xảy ra khi cập nhật giỏ hàng.');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating cart:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+        });
+    }
     
     // Hàm cập nhật trực tiếp số lượng sản phẩm
     function updateCartItemDirect(cartId, quantity, callback) {
