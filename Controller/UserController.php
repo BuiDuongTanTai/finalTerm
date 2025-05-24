@@ -10,6 +10,7 @@ class UserController {
         $this->userModel = new UserModel();
     }
     
+    
     // Xử lý đăng ký
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
