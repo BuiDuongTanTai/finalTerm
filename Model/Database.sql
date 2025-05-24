@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2025 at 01:10 AM
+-- Generation Time: May 24, 2025 at 08:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -66,6 +66,13 @@ CREATE TABLE `carts` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `carts`
+--
+
+INSERT INTO `carts` (`id`, `user_id`, `session_id`, `product_id`, `quantity`, `options`, `created_at`, `updated_at`) VALUES
+(8, 4, NULL, 6, 1, NULL, '2025-05-24 00:35:00', '2025-05-24 02:44:40');
 
 -- --------------------------------------------------------
 
@@ -185,7 +192,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `slug`, `sku`, `short_description`, `description`, `price`, `old_price`, `cost`, `stock`, `sold_count`, `image_url`, `images`, `category_id`, `brand_id`, `weight`, `dimensions`, `specifications`, `colors`, `variations`, `is_featured`, `is_new`, `is_hot`, `is_best`, `rating`, `reviews_count`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Canon EOS R6 Mark II', 'canon-eos-r6-mark-ii', 'CAM-CAN-R6MK2', 'Máy ảnh mirrorless full-frame với khả năng chụp liên tiếp nhanh và quay video chất lượng cao', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.', 62990000.00, 64990000.00, NULL, 15, 25, 'View/assets/images/product/canon-eos-r6-mark-ii.jpg', NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 0, 4.8, 13, 1, '2025-05-23 09:16:50', '2025-05-23 15:27:15'),
+(1, 'Canon EOS R6 Mark II', 'canon-eos-r6-mark-ii', 'CAM-CAN-R6MK2', 'Máy ảnh mirrorless full-frame với khả năng chụp liên tiếp nhanh và quay video chất lượng cao', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.', 62990000.00, 64990000.00, NULL, 15, 25, 'View/assets/images/products/canon-eos-r6-mark-ii.jpg', NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 0, 4.8, 12, 1, '2025-05-23 09:16:50', '2025-05-23 23:31:33'),
 (2, 'Sony Alpha A7 IV', 'sony-alpha-a7-iv', 'CAM-SON-A7IV', 'Máy ảnh mirrorless full-frame đa dụng với cảm biến mới, lý tưởng cho cả nhiếp ảnh và video', 'Sony Alpha A7 IV là máy ảnh mirrorless full-frame thế hệ thứ 4 với cảm biến back-illuminated 33MP mới, bộ xử lý BIONZ XR, quay video 4K60p 10-bit 4:2:2 và khả năng kết nối trực tiếp. Máy còn được trang bị màn hình cảm ứng lật xoay và hệ thống AF tiên tiến.', 52490000.00, 54990000.00, NULL, 10, 30, 'View/assets/images/products/sony-alpha-a7-iv.jpg', NULL, 2, 2, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 28, 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
 (3, 'Nikon Z6 II', 'nikon-z6-ii', 'CAM-NIK-Z6II', 'Máy ảnh mirrorless full-frame đa dụng với hiệu suất cao và khả năng quay video chuyên nghiệp', 'Nikon Z6 II là máy ảnh mirrorless full-frame với cảm biến BSI CMOS 24.5MP, bộ xử lý kép EXPEED 6, chụp liên tiếp 14fps, quay video 4K60p và hệ thống AF 273 điểm. Máy còn được trang bị 2 khe cắm thẻ nhớ và khả năng kết nối không dây.', 44990000.00, 47990000.00, NULL, 12, 18, 'View/assets/images/products/nikon-z6-ii.jpg', NULL, 2, 3, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 0, 4.7, 15, 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
 (4, 'Fujifilm X-T5', 'fujifilm-x-t5', 'CAM-FUJ-XT5', 'Máy ảnh mirrorless APS-C với cảm biến 40MP, lý tưởng cho nhiếp ảnh phong cảnh và đường phố', 'Fujifilm X-T5 là máy ảnh mirrorless cao cấp với cảm biến X-Trans CMOS 5 HR 40.2MP, bộ xử lý X-Processor 5, chụp liên tiếp 15fps, quay video 6.2K và ổn định hình ảnh trong thân máy 7 stop. Thiết kế nhỏ gọn với nút điều khiển vật lý đặc trưng của Fujifilm.', 42990000.00, 0.00, NULL, 8, 12, 'View/assets/images/products/fujifilm-x-t5.jpg', NULL, 2, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 4.8, 9, 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
@@ -241,9 +248,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `city`, `district`, `ward`, `avatar`, `role`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'Admin', 'admin@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0123456789', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'admin', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'admin', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(3, 'Khách hàng', 'customer@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0909123456', '123 Nguyễn Trãi', 'TP.HCM', 'Quận 1', 'Phường Bến Thành', NULL, 'admin', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-23 16:42:12', '2025-05-23 16:42:12');
+(2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'staff', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
+(3, 'Khách hàng', 'customer@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0909123456', '123 Nguyễn Trãi', 'TP.HCM', 'Quận 1', 'Phường Bến Thành', NULL, 'customer', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
+(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', '', '', '', '', 'View/assets/images/uploads/users/683123efce74f_IMG_4423.jpeg', 'admin', 1, '2025-05-23 16:42:12', '2025-05-24 01:42:20');
 
 -- --------------------------------------------------------
 
@@ -347,7 +354,7 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -389,7 +396,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Constraints for dumped tables
