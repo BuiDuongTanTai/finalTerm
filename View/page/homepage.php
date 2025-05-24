@@ -146,9 +146,19 @@
                                         <button class="btn btn-sm btn-outline-primary product-quick-view-btn" data-product-id="<?php echo $product->id; ?>">
                                             <i class="bi bi-eye me-1"></i>Xem nhanh
                                         </button>
-                                        <button class="btn btn-sm btn-primary product-add-to-cart-btn" data-product-id="<?php echo $product->id; ?>">
-                                            <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
-                                        </button>
+                                        <?php if($product->stock > 0): ?>
+                                            <form action="index.php?page=add_to_cart" method="post" class="d-inline">
+                                                <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
+                                                </button>
+                                            </form>
+                                            <?php else: ?>
+                                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                                <i class="bi bi-x-circle me-1"></i>Hết hàng
+                                            </button>
+                                            <?php endif; ?>
                                     </div>
                                 </div>
                                 
@@ -278,9 +288,19 @@
                                             <button class="btn btn-sm btn-outline-primary product-quick-view-btn" data-product-id="<?php echo $product->id; ?>">
                                                 <i class="bi bi-eye me-1"></i>Xem nhanh
                                             </button>
-                                            <button class="btn btn-sm btn-primary product-add-to-cart-btn" data-product-id="<?php echo $product->id; ?>">
-                                                <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
+                                            <?php if($product->stock > 0): ?>
+                                            <form action="index.php?page=add_to_cart" method="post" class="d-inline">
+                                                <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
+                                                </button>
+                                            </form>
+                                            <?php else: ?>
+                                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                                <i class="bi bi-x-circle me-1"></i>Hết hàng
                                             </button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     
@@ -353,9 +373,19 @@
                                             <button class="btn btn-sm btn-outline-primary product-quick-view-btn" data-product-id="<?php echo $product->id; ?>">
                                                 <i class="bi bi-eye me-1"></i>Xem nhanh
                                             </button>
-                                            <button class="btn btn-sm btn-primary product-add-to-cart-btn" data-product-id="<?php echo $product->id; ?>">
-                                                <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
+                                            <?php if($product->stock > 0): ?>
+                                            <form action="index.php?page=add_to_cart" method="post" class="d-inline">
+                                                <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
+                                                </button>
+                                            </form>
+                                            <?php else: ?>
+                                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                                <i class="bi bi-x-circle me-1"></i>Hết hàng
                                             </button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     
@@ -639,9 +669,19 @@
                             </div>
                             
                             <div class="d-flex gap-3 mb-3">
-                                <button type="button" class="btn btn-primary flex-grow-1" id="quickViewAddToCart">
-                                    <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ hàng
-                                </button>
+                                <?php if($product->stock > 0): ?>
+                                    <form action="index.php?page=add_to_cart" method="post" class="d-inline">
+                                        <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ
+                                        </button>
+                                    </form>
+                                    <?php else: ?>
+                                    <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                        <i class="bi bi-x-circle me-1"></i>Hết hàng
+                                    </button>
+                                    <?php endif; ?>
                                 <button type="button" class="btn btn-outline-primary" id="quickViewWishlist">
                                     <i class="bi bi-heart me-1"></i>Thêm vào yêu thích
                                 </button>
