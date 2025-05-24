@@ -329,6 +329,7 @@
                 <?php endif; ?>
             </div>
             
+            
             <?php if (count($new_products) > 4): ?>
             <div class="text-center mt-4">
                 <a href="index.php?page=all_products?sort=newest" class="btn btn-outline-primary">
@@ -337,6 +338,12 @@
             </div>
             <?php endif; ?>
         </div>
+
+                    <div class="text-center mt-5" data-aos="fade-up">
+                <a href="index.php?page=all_products" class="btn btn-outline-primary view-all-products-btn">
+                    Xem tất cả sản phẩm <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
     </section>
 
     <!-- Best Selling Products -->
@@ -438,6 +445,11 @@
             <?php if (count($bestselling_products) > 4): ?>
             <?php endif; ?>
         </div>
+                    <div class="text-center mt-5" data-aos="fade-up">
+                <a href="index.php?page=all_products" class="btn btn-outline-primary view-all-products-btn">
+                    Xem tất cả sản phẩm <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
     </section>
 
         <!-- Why Choose Us Section -->
