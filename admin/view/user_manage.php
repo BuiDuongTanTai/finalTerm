@@ -142,10 +142,10 @@
                             echo "<div class='btn-group'>";
                             echo "<a href='index.php?act=edit_user&id={$row['id']}' class='btn btn-sm btn-primary'><i class='bi bi-pencil'></i></a>";
                             
-                            // Không cho phép xóa chính mình
-                            if ($row['id'] != $_SESSION['admin']['id']) {
-                                echo "<a href='javascript:void(0)' onclick='confirmDelete({$row['id']})' class='btn btn-sm btn-danger'><i class='bi bi-trash'></i></a>";
-                            }
+                        // Không cho phép xóa chính mình hoặc người cùng role admin
+                        if ($row['id'] != $_SESSION['admin']['id'] && $row['role'] != 'admin') {
+                            echo "<a href='javascript:void(0)' onclick='confirmDelete({$row['id']})' class='btn btn-sm btn-danger'><i class='bi bi-trash'></i></a>";
+                        }
                             
                             echo "</div>";
                             echo "</td>";

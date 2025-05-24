@@ -62,7 +62,7 @@
                         
                         // Xây dựng câu truy vấn
                         $sql = "SELECT r.*, p.name as product_name 
-                                FROM reviews r 
+                                FROM reviews r
                                 LEFT JOIN products p ON r.product_id = p.id 
                                 WHERE 1=1";
                         $params = [];
