@@ -219,4 +219,19 @@ class CartModel {
         
         return true;
     }
+    public function getCartItemWithStock($cart_id, $user_id = null, $session_id = null) {
+    if ($user_id) {
+        $query = "SELECT c.*, p.stock FROM carts c 
+                  JOIN products p ON c.product_id = p.id 
+                  WHERE c.id = ? AND c.user_id = ?";
+        return $this->db->fetchOne($query, [$cart_id, $user_id]);
+    } elseif ($session_id) {
+        $query = "SELECT c.*, p.stock FROM carts c 
+                  JOIN products p ON c.product_id = p.id 
+                  WHERE c.id = ? AND c.session_id = ?";
+        return $this->db->fetchOne($query, [$cart_id, $session_id]);
+    }
+    
+    return null;
+}
 }

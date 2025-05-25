@@ -458,8 +458,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartItemsContainer = document.getElementById('cart-items');
     const totalPriceElement = document.getElementById('total-price');
     const checkoutButton = document.getElementById('checkout');
+    let isLoggedIn = false;
     const cartCountElements = document.querySelectorAll('.cart-count');
-    let isLoggedIn = false; // Biến kiểm tra trạng thái đăng nhập
+ // Biến kiểm tra trạng thái đăng nhập
     
     // Kiểm tra trạng thái đăng nhập từ PHP session
     if (document.body.classList.contains('logged-in')) {
@@ -886,48 +887,103 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Thêm vào giỏ hàng
-    function setupAddToCartButtons() {
-        document.querySelectorAll('form[action="index.php?page=add_to_cart"]').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                if (!isLoggedIn) {
-                    showLoginModal();
-                    return;
+// Thêm vào giỏ hàng với cập nhật trực tiếp cart modal
+function setupAddToCartButtons() {
+    document.querySelectorAll('form[action="index.php?page=add_to_cart"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            // Lấy thông tin sản phẩm từ form/page để cập nhật ngay lập tức
+            const productId = formData.get('product_id');
+            const quantity = parseInt(formData.get('quantity')) || 1;
+            
+            submitButton.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i>Đang thêm...';
+            submitButton.disabled = true;
+            
+            fetch('index.php?page=add_to_cart', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
-                
-                const formData = new FormData(this);
-                
-                fetch('index.php?page=add_to_cart', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Thành công
-                        // alert(data.message || 'Đã thêm sản phẩm vào giỏ hàng.');
-                        
-                        // Cập nhật số lượng giỏ hàng
-                        cartCountElements.forEach(element => {
-                            element.textContent = data.cart_count || '0';
-                        });
-                        
-                        // Cập nhật giỏ hàng
-                        loadCart();
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    submitButton.innerHTML = '<i class="bi bi-check-circle me-1"></i>Đã thêm';
+                    submitButton.classList.add('btn-success');
+                    submitButton.classList.remove('btn-primary');
+                    
+                    // Cập nhật số lượng cart
+                    cartCountElements.forEach(element => {
+                        element.textContent = data.cart_count || '0';
+                    });
+                    
+                    // Thêm sản phẩm vào cart modal ngay lập tức (nếu có thông tin)
+                    if (data.product_info) {
+                        window.addProductToCartModal(data.product_info);
                     } else {
-                        alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+                        // Fallback: refresh cart modal
+                        if (window.updateCartModal) {
+                            window.updateCartModal('refresh');
+                        }
                     }
-                })
-                .catch(error => {
-                    console.error('Error adding to cart:', error);
-                    alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-                });
+                    
+                    showCartNotification('Đã thêm sản phẩm vào giỏ hàng!');
+                    
+                    setTimeout(() => {
+                        submitButton.innerHTML = originalText;
+                        submitButton.classList.remove('btn-success');
+                        submitButton.classList.add('btn-primary');
+                        submitButton.disabled = false;
+                    }, 2000);
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+                    submitButton.innerHTML = originalText;
+                    submitButton.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
             });
+        });
+    });
+}
+
+    // Hàm hiển thị thông báo thêm giỏ hàng
+    function showCartNotification(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast position-fixed top-0 end-0 m-3';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="toast-header bg-success text-white">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <strong class="me-auto">Thành công</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', function() {
+            this.remove();
         });
     }
     
@@ -1026,64 +1082,82 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     // Thêm vào giỏ hàng từ Quick View
-    const quickViewAddToCartBtn = document.getElementById('quickViewAddToCart');
-    if (quickViewAddToCartBtn) {
-        quickViewAddToCartBtn.addEventListener('click', function() {
-            if (!isLoggedIn) {
-                const quickViewModal = bootstrap.Modal.getInstance(document.getElementById('quickViewModal'));
-                if (quickViewModal) quickViewModal.hide();
+const quickViewAddToCartBtn = document.getElementById('quickViewAddToCart');
+if (quickViewAddToCartBtn) {
+    quickViewAddToCartBtn.addEventListener('click', function() {
+        if (!isLoggedIn) {
+            const quickViewModal = bootstrap.Modal.getInstance(document.getElementById('quickViewModal'));
+            if (quickViewModal) quickViewModal.hide();
+            
+            setTimeout(() => {
+                showLoginModal();
+            }, 500);
+            return;
+        }
+        
+        const productId = this.getAttribute('data-product');
+        const quantity = document.getElementById('quantityInput') ? 
+            parseInt(document.getElementById('quantityInput').value) : 1;
+        
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i>Đang thêm...';
+        this.disabled = true;
+        
+        fetch('index.php?page=add_to_cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `product_id=${productId}&quantity=${quantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.innerHTML = '<i class="bi bi-check me-1"></i>Đã thêm';
+                this.classList.add('btn-success');
+                this.classList.remove('btn-primary');
+                
+                // Cập nhật số lượng cart
+                cartCountElements.forEach(element => {
+                    element.textContent = data.cart_count || '0';
+                });
+                
+                // Thêm sản phẩm vào cart modal ngay lập tức
+                if (data.product_info) {
+                    window.addProductToCartModal(data.product_info);
+                } else {
+                    // Fallback: refresh cart modal
+                    if (window.updateCartModal) {
+                        window.updateCartModal('refresh');
+                    }
+                }
+                
+                showCartNotification('Đã thêm sản phẩm vào giỏ hàng!');
                 
                 setTimeout(() => {
-                    showLoginModal();
-                }, 500);
-                return;
+                    this.innerHTML = originalText;
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-primary');
+                    this.disabled = false;
+                    
+                    const quickViewModal = bootstrap.Modal.getInstance(document.getElementById('quickViewModal'));
+                    if (quickViewModal) quickViewModal.hide();
+                }, 1500);
+            } else {
+                alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+                this.innerHTML = originalText;
+                this.disabled = false;
             }
-            
-            const productId = this.getAttribute('data-product');
-            const quantity = document.getElementById('quantityInput') ? 
-                parseInt(document.getElementById('quantityInput').value) : 1;
-            
-            fetch('index.php?page=add_to_cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: `product_id=${productId}&quantity=${quantity}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Thành công
-                    this.innerHTML = '<i class="bi bi-check me-1"></i>Đã thêm';
-                    this.classList.add('btn-success');
-                    
-                    // Cập nhật số lượng giỏ hàng
-                    cartCountElements.forEach(element => {
-                        element.textContent = data.cart_count || '0';
-                    });
-                    
-                    // Cập nhật giỏ hàng
-                    loadCart();
-                    
-                    // Đóng modal sau 1.5 giây
-                    setTimeout(() => {
-                        this.innerHTML = '<i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ hàng';
-                        this.classList.remove('btn-success');
-                        
-                        const quickViewModal = bootstrap.Modal.getInstance(document.getElementById('quickViewModal'));
-                        if (quickViewModal) quickViewModal.hide();
-                    }, 1500);
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
-                }
-            })
-            .catch(error => {
-                console.error('Error adding to cart:', error);
-                alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-            });
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+            this.innerHTML = originalText;
+            this.disabled = false;
         });
-    }
+    });
+}
     
     // Quick View Wishlist Button
     const quickViewWishlistBtn = document.getElementById('quickViewWishlist');
@@ -1482,45 +1556,55 @@ function updateUserInfo(userName) {
             }
         });
     });
-    // Xử lý "Mua ngay"
-    document.querySelectorAll('.buy-now-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Kiểm tra đăng nhập
-            if (!isLoggedIn) {
-                showLoginModal();
-                return;
-            }
-            
-            const productId = this.getAttribute('data-product-id');
-            const quantity = document.querySelector('#quantity') ? parseInt(document.querySelector('#quantity').value) : 1;
-            
-            // Thêm vào giỏ hàng và chuyển hướng đến trang checkout
-            fetch('index.php?page=add_to_cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: `product_id=${productId}&quantity=${quantity}&buy_now=1`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Chuyển hướng đến trang checkout
-                    window.location.href = 'index.php?page=checkout';
-                } else {
-                    if (data.message.includes('đăng nhập')) {
-                        showLoginModal();
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
-                    }
+        // Xử lý "Mua ngay"
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.buy-now-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Kiểm tra đăng nhập
+                if (!isLoggedIn) {
+                    showLoginModal();
+                    return;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+                
+                const productId = this.getAttribute('data-product-id');
+                const quantity = document.querySelector('#quantity') ? parseInt(document.querySelector('#quantity').value) : 1;
+                
+                // Thêm vào giỏ hàng và chuyển hướng đến trang checkout
+                fetch('index.php?page=add_to_cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `product_id=${productId}&quantity=${quantity}&buy_now=1`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Cập nhật cart modal trước khi chuyển hướng
+                        if (window.updateCartModal) {
+                            window.updateCartModal('clear'); // Clear vì "mua ngay" xóa cart hiện tại
+                            if (data.product_info) {
+                                window.addProductToCartModal(data.product_info);
+                            }
+                        }
+                        
+                        // Chuyển hướng đến trang checkout
+                        window.location.href = 'index.php?page=checkout';
+                    } else {
+                        if (data.message.includes('đăng nhập')) {
+                            showLoginModal();
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+                });
             });
         });
     });

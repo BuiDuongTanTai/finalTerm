@@ -89,7 +89,7 @@
                             $params[':category'] = $category;
                         }
                         
-                        $sql .= " ORDER BY p.id DESC";
+                        $sql .= " ORDER BY p.id ASC";
                         
                         // Phân trang
                         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;

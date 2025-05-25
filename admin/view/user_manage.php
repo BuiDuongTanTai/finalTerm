@@ -81,7 +81,7 @@
                             $params[':role'] = $role;
                         }
                         
-                        $sql .= " ORDER BY id DESC";
+                        $sql .= " ORDER BY id ASC";
                         
                         // Phân trang
                         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;

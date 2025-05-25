@@ -163,73 +163,105 @@ class CartController {
         }
     }
     
-    // Xử lý cập nhật số lượng sản phẩm trong giỏ hàng
-    public function updateCart() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: index.php');
+// Xử lý cập nhật số lượng sản phẩm trong giỏ hàng
+public function updateCart() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php');
+        exit;
+    }
+    
+    $cart_id = isset($_POST['cart_id']) ? (int)$_POST['cart_id'] : 0;
+    $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
+    
+    if ($cart_id <= 0) {
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            echo json_encode(['success' => false, 'message' => 'Thông tin không hợp lệ.']);
+            exit;
+        } else {
+            $_SESSION['error'] = 'Thông tin không hợp lệ.';
+            header('Location: index.php?page=cart');
             exit;
         }
-        
-        $cart_id = isset($_POST['cart_id']) ? (int)$_POST['cart_id'] : 0;
-        $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
-        
-        if ($cart_id <= 0) {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Thông tin không hợp lệ.']);
-                exit;
-            } else {
-                $_SESSION['error'] = 'Thông tin không hợp lệ.';
-                header('Location: index.php?page=cart');
-                exit;
-            }
-        }
-        
-        // Cập nhật giỏ hàng
-        $success = false;
-        if (isset($_SESSION['user_id'])) {
-            $success = $this->cartModel->updateCart($cart_id, $quantity, $_SESSION['user_id']);
-        } elseif (isset($_SESSION['cart_id'])) {
-            $success = $this->cartModel->updateCart($cart_id, $quantity, null, $_SESSION['cart_id']);
-        }
-        
-        if ($success) {
-            // Tính lại tổng tiền
-            $total_amount = 0;
-            if (isset($_SESSION['user_id'])) {
-                $total_amount = $this->cartModel->calculateCartTotal($_SESSION['user_id']);
-            } elseif (isset($_SESSION['cart_id'])) {
-                $total_amount = $this->cartModel->calculateCartTotal(null, $_SESSION['cart_id']);
-            }
-            
-            // Đếm số lượng sản phẩm trong giỏ hàng
-            $cart_count = isset($_SESSION['user_id']) ? 
-                $this->cartModel->countCartItems($_SESSION['user_id']) : 
-                (isset($_SESSION['cart_id']) ? $this->cartModel->countCartItems(null, $_SESSION['cart_id']) : 0);
-            
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode([
-                    'success' => true, 
-                    'message' => 'Đã cập nhật giỏ hàng.',
-                    'total_amount' => number_format($total_amount, 0, ',', '.') . 'đ',
-                    'cart_count' => $cart_count
-                ]);
-                exit;
-            } else {
-                $_SESSION['success'] = 'Đã cập nhật giỏ hàng.';
-                header('Location: index.php?page=cart');
-                exit;
-            }
+    }
+    
+    // Lấy thông tin sản phẩm trong giỏ hàng
+    if (isset($_SESSION['user_id'])) {
+        $check_query = "SELECT c.*, p.stock FROM carts c 
+                       JOIN products p ON c.product_id = p.id 
+                       WHERE c.id = ? AND c.user_id = ?";
+        $cart_item = $this->cartModel->getCartItemWithStock($cart_id, $_SESSION['user_id']);
+    } else {
+        $check_query = "SELECT c.*, p.stock FROM carts c 
+                       JOIN products p ON c.product_id = p.id 
+                       WHERE c.id = ? AND c.session_id = ?";
+        $cart_item = $this->cartModel->getCartItemWithStock($cart_id, $_SESSION['user_id']);
+    }
+    
+    if (!$cart_item) {
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            echo json_encode(['success' => false, 'message' => 'Không tìm thấy sản phẩm trong giỏ hàng.']);
+            exit;
         } else {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra. Vui lòng thử lại sau.']);
-                exit;
-            } else {
-                $_SESSION['error'] = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
-                header('Location: index.php?page=cart');
-                exit;
-            }
+            $_SESSION['error'] = 'Không tìm thấy sản phẩm trong giỏ hàng.';
+            header('Location: index.php?page=cart');
+            exit;
         }
     }
+    
+    // Kiểm tra số lượng
+    if ($quantity <= 0) {
+        // Nếu quantity <= 0, xóa sản phẩm
+        return $this->removeFromCart();
+    }
+    
+    // Giới hạn số lượng theo tồn kho
+    if ($quantity > $cart_item->stock) {
+        $quantity = $cart_item->stock;
+    }
+    
+    // Cập nhật số lượng trực tiếp
+    $update_query = "UPDATE carts SET quantity = ?, updated_at = NOW() WHERE id = ?";
+    $success = $this->cartModel->updateCartQuantity($cart_id, $quantity);
+    
+    if ($success) {
+        // Tính lại tổng tiền
+        $total_amount = 0;
+        if (isset($_SESSION['user_id'])) {
+            $total_amount = $this->cartModel->calculateCartTotal($_SESSION['user_id']);
+        } elseif (isset($_SESSION['cart_id'])) {
+            $total_amount = $this->cartModel->calculateCartTotal(null, $_SESSION['cart_id']);
+        }
+        
+        // Đếm số lượng sản phẩm trong giỏ hàng
+        $cart_count = isset($_SESSION['user_id']) ? 
+            $this->cartModel->countCartItems($_SESSION['user_id']) : 
+            (isset($_SESSION['cart_id']) ? $this->cartModel->countCartItems(null, $_SESSION['cart_id']) : 0);
+        
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Đã cập nhật giỏ hàng.',
+                'total_amount' => number_format($total_amount, 0, ',', '.') . 'đ',
+                'cart_count' => $cart_count,
+                'new_quantity' => $quantity
+            ]);
+            exit;
+        } else {
+            $_SESSION['success'] = 'Đã cập nhật giỏ hàng.';
+            header('Location: index.php?page=cart');
+            exit;
+        }
+    } else {
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra. Vui lòng thử lại sau.']);
+            exit;
+        } else {
+            $_SESSION['error'] = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+            header('Location: index.php?page=cart');
+            exit;
+        }
+    }
+}
     
     // Xử lý xóa sản phẩm khỏi giỏ hàng
     public function removeFromCart() {

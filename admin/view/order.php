@@ -79,7 +79,7 @@
                             $params[':status'] = $status;
                         }
                         
-                        $sql .= " ORDER BY created_at DESC";
+                        $sql .= " ORDER BY created_at ASC";
                         
                         // Phân trang
                         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;

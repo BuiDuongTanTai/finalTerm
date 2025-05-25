@@ -118,7 +118,7 @@
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $DBH->query("SELECT * FROM orders ORDER BY created_at DESC LIMIT 5");
+                                $stmt = $DBH->query("SELECT * FROM orders ORDER BY created_at ASC LIMIT 5");
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     $statusBadge = '';
                                     switch($row['status']) {
@@ -180,7 +180,7 @@
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $DBH->query("SELECT * FROM orders WHERE status = 'pending' ORDER BY created_at DESC LIMIT 5");
+                                $stmt = $DBH->query("SELECT * FROM orders WHERE status = 'pending' ORDER BY created_at ASC LIMIT 5");
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     echo "<tr>";
                                     echo "<td>#{$row['id']}</td>";
@@ -225,7 +225,7 @@
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $DBH->query("SELECT * FROM products ORDER BY sold_count DESC LIMIT 5");
+                                $stmt = $DBH->query("SELECT r.*, p.name as product_name FROM reviews r LEFT JOIN products p ON r.product_id = p.id ORDER BY r.created_at DESC LIMIT 5");
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     echo "<tr>";
                                     echo "<td>{$row['name']}</td>";
