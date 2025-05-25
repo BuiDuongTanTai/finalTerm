@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentValue < maxValue) {
                 currentValue++;
                 inputElement.value = currentValue;
-                // updateCartItem(cartId, 1);
+                updateCartItemDirect(cartId, currentValue);
             } else {
                 alert('Số lượng sản phẩm trong kho không đủ.');
             }
@@ -253,8 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentValue > 1) {
                 currentValue--;
                 inputElement.value = currentValue;
-
-                // updateCartItem(cartId, -1);
+                updateCartItemDirect(cartId, currentValue);
             } else {
                 if (confirm('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?')) {
                     removeCartItem(cartId);
