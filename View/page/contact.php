@@ -191,7 +191,7 @@
                     <p class="text-muted mb-5">Theo dõi CameraVN trên các nền tảng mạng xã hội</p>
                 </div>
             </div>
-            <div class="row g-4">
+            <div class="row g-4" style="display: flex; justify-content: center;">
                 <div class="col-md-3" data-aos="fade-up">
                     <div class="social-card facebook">
                         <div class="social-icon">
@@ -221,7 +221,6 @@
                         <p>Cập nhật tin tức và khuyến mãi mới nhất</p>
                         <a href="https://facebook.com" class="btn btn-light mt-3" target="_blank">Theo dõi</a>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
