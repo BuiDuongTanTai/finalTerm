@@ -1,15 +1,4 @@
 <main>
-    <!-- Page Header -->
-    <section class="page-header py-5 mb-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h1 class="fw-bold mb-3">Tài khoản của tôi</h1>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Profile Section -->
     <section class="profile-section py-5">
         <div class="container">
