@@ -31,7 +31,7 @@
             <?php else: ?>
             <div class="row">
                 <?php foreach($wishlist_products as $product): ?>
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4">
                     <div class="product-card h-100">
                         <div class="product-card-inner">
                             <div class="product-image-container">

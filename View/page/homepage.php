@@ -119,7 +119,7 @@
             <div class="row g-4" data-aos="fade-up">
                 <?php if (!empty($featured_products)): ?>
                     <?php foreach ($featured_products as $product): ?>
-                    <div class="col-md-6 col-lg-4 col-xl-3 mb-4 product-item" data-category="<?php echo $product->brand_name; ?>">
+                    <div class="col-md-6 col-lg-4 mb-4 product-item" data-category="<?php echo $product->brand_name; ?>">
                         <div class="product-card h-100">
                             <div class="product-card-inner">
                                 <div class="product-image-container">
@@ -270,7 +270,7 @@
                 <?php if (!empty($new_products)): ?>
                     <?php foreach ($new_products as $index => $product): ?>
                         <?php if ($index < 4): // Chỉ hiển thị 4 sản phẩm ?>
-                        <div class="col-md-6 col-lg-3">
+                        <div class="col-md-6 col-lg-4">
                             <div class="product-card h-100">
                                 <div class="product-card-inner">
                                     <div class="product-image-container">
@@ -358,7 +358,7 @@
                 <?php if (!empty($bestselling_products)): ?>
                     <?php foreach ($bestselling_products as $index => $product): ?>
                         <?php if ($index < 4): // Chỉ hiển thị 4 sản phẩm ?>
-                        <div class="col-md-6 col-lg-3">
+                        <div class="col-md-6 col-lg-4">
                             <div class="product-card h-100">
                                 <div class="product-card-inner">
                                     <div class="product-image-container">

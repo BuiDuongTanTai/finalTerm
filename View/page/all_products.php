@@ -50,7 +50,7 @@
                                     </li>
                                     <?php foreach($brands as $b): ?>
                                     <li>
-                                        <a href="index.php?page=all_products?brand=<?php echo $b->slug; ?><?php echo !empty($category) ? '&category=' . $category : ''; ?>" class="filter-link d-block py-2 <?php echo $brand == $b->slug ? 'text-primary fw-bold' : 'text-dark'; ?>">
+                                        <a href="index.php?page=all_products&brand=<?php echo $b->slug; ?><?php echo !empty($category) ? '&category=' . $category : ''; ?>" class="filter-link d-block py-2 <?php echo $brand == $b->slug ? 'text-primary fw-bold' : 'text-dark'; ?>">
                                             <i class="bi bi-chevron-right me-2"></i><?php echo $b->name; ?>
                                         </a>
                                     </li>
@@ -72,27 +72,27 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="index.php?page=all_products?price_range=0-5000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 0 && $max_price == 5000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
+                                        <a href="index.php?page=all_products&min_price=0&max_price=5000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 0 && $max_price == 5000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
                                             <i class="bi bi-chevron-right me-2"></i>Dưới 5 triệu
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="index.php?page=all_products?price_range=5000000-15000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 5000000 && $max_price == 15000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
+                                        <a href="index.php?page=all_products&min_price=5000000&max_price=15000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 5000000 && $max_price == 15000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
                                             <i class="bi bi-chevron-right me-2"></i>5 - 15 triệu
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="index.php?page=all_products?price_range=15000000-30000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 15000000 && $max_price == 30000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
+                                        <a href="index.php?page=all_products&min_price=15000000&max_price=30000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 15000000 && $max_price == 30000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
                                             <i class="bi bi-chevron-right me-2"></i>15 - 30 triệu
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="index.php?page=all_products?price_range=30000000-50000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 30000000 && $max_price == 50000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
+                                        <a href="index.php?page=all_products&min_price=30000000&max_price=50000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 30000000 && $max_price == 50000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
                                             <i class="bi bi-chevron-right me-2"></i>30 - 50 triệu
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="index.php?page=all_products?price_range=50000000-1000000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 50000000 && $max_price == 1000000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
+                                        <a href="index.php?page=all_products&min_price=50000000&max_price=1000000000<?php echo !empty($category) ? '&category=' . $category : ''; ?><?php echo !empty($brand) ? '&brand=' . $brand : ''; ?>" class="filter-link d-block py-2 <?php echo ($min_price == 50000000 && $max_price == 1000000000) ? 'text-primary fw-bold' : 'text-dark'; ?>">
                                             <i class="bi bi-chevron-right me-2"></i>Trên 50 triệu
                                         </a>
                                     </li>
@@ -163,7 +163,7 @@
                     <?php else: ?>
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                         <?php foreach($products as $product): ?>
-                        <div class="col-md-6 col-lg-4 col-xl-3 mb-4 product-item" data-category="<?php echo $product->brand_name; ?>">
+                        <div class="col-md-6 col-lg-4 mb-4 product-item" data-category="<?php echo $product->brand_name; ?>">
                         <div class="product-card h-100">
                             <div class="product-card-inner">
                                 <div class="product-image-container">
@@ -373,4 +373,47 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý tất cả các link lọc
+    const filterLinks = document.querySelectorAll('.filter-link');
+    filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+            loadProducts(url);
+        });
+    });
+
+    // Xử lý select sắp xếp
+    const sortSelect = document.getElementById('sortBy');
+    if(sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const url = this.value;
+            loadProducts(url);
+        });
+    }
+
+    // Hàm load sản phẩm bằng AJAX
+    function loadProducts(url) {
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const productsGrid = document.querySelector('.row-cols-1');
+                const newProductsGrid = doc.querySelector('.row-cols-1');
+                
+                if(productsGrid && newProductsGrid) {
+                    productsGrid.innerHTML = newProductsGrid.innerHTML;
+                }
+
+                // Cập nhật URL mà không reload trang
+                window.history.pushState({}, '', url);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+});
+</script>
 
