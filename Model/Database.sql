@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `blogs` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `summary` text NOT NULL,
@@ -42,7 +42,14 @@ CREATE TABLE `blogs` (
   `featured` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `published_at` datetime DEFAULT NULL
+  `published_at` datetime DEFAULT NULL,
+  `is_popular` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `category_id` (`category_id`),
+  KEY `author_id` (`author_id`),
+  CONSTRAINT `blogs_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `blog_categories` (`id`),
+  CONSTRAINT `blogs_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -50,8 +57,8 @@ CREATE TABLE `blogs` (
 --
 
 INSERT INTO `blogs` (`id`, `title`, `slug`, `summary`, `content`, `image`, `category_id`, `author_id`, `author_name`, `views`, `status`, `featured`, `created_at`, `updated_at`, `published_at`) VALUES
-(1, '10 kỹ thuật chụp ảnh phong cảnh đẹp mê hoặc', '10-ky-thuat-chup-anh-phong-canh', 'Khám phá những kỹ thuật chụp ảnh phong cảnh từ các nhiếp ảnh gia chuyên nghiệp. Bài viết tổng hợp 10 kỹ thuật giúp bạn nâng tầm bức ảnh phong cảnh của mình.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog1.jpg', 1, NULL, 'Nguyễn Văn A', 1250, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-15 00:00:00'),
-(2, 'Tìm hiểu về khẩu độ trong nhiếp ảnh: Từ F/1.4 đến F/22', 'tim-hieu-ve-khau-do-trong-nhiep-anh', 'Khẩu độ là một trong những yếu tố quan trọng nhất trong nhiếp ảnh. Bài viết giải thích chi tiết về khẩu độ và cách sử dụng hiệu quả.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog2.jpg', 2, NULL, 'Trần Thị B', 986, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-10 00:00:00');
+(1, '10 kỹ thuật chụp ảnh phong cảnh đẹp mê hoặc', '10-ky-thuat-chup-anh-phong-canh', 'Khám phá những kỹ thuật chụp ảnh phong cảnh từ các nhiếp ảnh gia chuyên nghiệp. Bài viết tổng hợp 10 kỹ thuật giúp bạn nâng tầm bức ảnh phong cảnh của mình.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog1.jpg', 1, NULL, 'Nguyễn Văn A', 1250, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-15 00:00:00', 0),
+(2, 'Tìm hiểu về khẩu độ trong nhiếp ảnh: Từ F/1.4 đến F/22', 'tim-hieu-ve-khau-do-trong-nhiep-anh', 'Khẩu độ là một trong những yếu tố quan trọng nhất trong nhiếp ảnh. Bài viết giải thích chi tiết về khẩu độ và cách sử dụng hiệu quả.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog2.jpg', 2, NULL, 'Trần Thị B', 986, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-10 00:00:00', 0);
 
 -- --------------------------------------------------------
 

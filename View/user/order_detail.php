@@ -284,7 +284,7 @@
                     </div>
                     <div class="mb-3" id="other_reason_container" style="display: none;">
                         <label for="other_reason" class="form-label">Lý do khác</label>
-                        <textarea class="form-control" id="other_reason" name="other_reason" rows="3"></textarea>
+                        <textarea class="form-control" id="other_reason" name="other_reason" rows="3" style="height: 300px;"></textarea>
                     </div>
                 </form>
             </div>
