@@ -1,63 +1,88 @@
 <main>
     <!-- Page Header -->
-    <section class="page-header py-5 mb-5 bg-light">
+    <section class="page-header py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h1 class="fw-bold mb-3">Tài khoản của tôi</h1>
+                    <h1 class="text-white fw-bold mb-3">Tài Khoản Của Tôi</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a href="index.php" class="text-white-50">Trang chủ</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Tài khoản</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Profile Section -->
-    <section class="profile-section py-5">
+    <section class="profile-section pb-5">
         <div class="container">
+            <!-- Alert Messages -->
             <?php if(isset($_SESSION['error'])): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
             
             <?php if(isset($_SESSION['success'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <i class="bi bi-check-circle-fill me-2"></i><?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
         
-            <div class="row">
+            <div class="row g-4">
                 <!-- Sidebar -->
-                <div class="col-lg-3 mb-4 mb-lg-0">
-                    <div class="profile-sidebar" style="top: 20px;">
-                        <div class="profile-info text-center mb-4">
-                            <?php if(!empty($user->avatar)): ?>
-                                <img src="<?php echo $user->avatar; ?>" alt="<?php echo $user->name; ?>" class="rounded-circle mb-3" width="100" height="100">
-                            <?php else: ?>
-                                <div class="profile-avatar-placeholder mb-3">
-                                    <?php echo substr($user->name, 0, 1); ?>
-                                </div>
+                <div class="col-lg-3">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body text-center py-4">
+                            <div class="position-relative d-inline-block mb-3">
+                                <?php 
+                                $avatarPath = !empty($user->avatar) ? $user->avatar : 'View/assets/images/uploads/users/default-avatar.png';
+                                ?>
+                                <img src="<?php echo $avatarPath; ?>" 
+                                     alt="Avatar" 
+                                     class="rounded-circle border border-3 border-primary" 
+                                     width="120" 
+                                     height="120"
+                                     style="object-fit: cover;">
+                                <span class="position-absolute bottom-0 end-0 bg-success rounded-circle p-2 border border-3 border-white">
+                                    <i class="bi bi-check text-white"></i>
+                                </span>
+                            </div>
+                            <h5 class="mb-1"><?php echo htmlspecialchars($user->name); ?></h5>
+                            <p class="text-muted small mb-0"><?php echo htmlspecialchars($user->email); ?></p>
+                            <?php if($user->phone): ?>
+                            <p class="text-muted small mb-0"><i class="bi bi-phone me-1"></i><?php echo htmlspecialchars($user->phone); ?></p>
                             <?php endif; ?>
-                            <h5 class="mb-1"><?php echo $user->name; ?></h5>
-                            <p class="text-muted mb-0"><?php echo $user->email; ?></p>
                         </div>
-                        
-                        <div class="list-group">
-                            <a href="#profile-info" class="list-group-item list-group-item-action active" data-bs-toggle="list">
-                                <i class="bi bi-person me-2"></i>Thông tin cá nhân
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action active" data-bs-toggle="list" data-bs-target="#profile-info">
+                                <i class="bi bi-person-circle me-2"></i>Thông tin cá nhân
                             </a>
-                            <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                                <i class="bi bi-bag me-2"></i>Đơn hàng của tôi
+                            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list" data-bs-target="#orders">
+                                <i class="bi bi-bag-check me-2"></i>Đơn hàng
+                                <?php if(isset($orderCount) && $orderCount > 0): ?>
+                                <span class="badge bg-primary rounded-pill float-end"><?php echo $orderCount; ?></span>
+                                <?php endif; ?>
                             </a>
-                            <a href="#change-password" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list" data-bs-target="#addresses">
+                                <i class="bi bi-geo-alt me-2"></i>Địa chỉ giao hàng
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list" data-bs-target="#change-password">
                                 <i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu
                             </a>
                             <a href="index.php?page=wishlist" class="list-group-item list-group-item-action">
-                                <i class="bi bi-heart me-2"></i>Sản phẩm yêu thích
-                            </a>
-                            <a href="index.php?page=recently_viewed" class="list-group-item list-group-item-action">
-                                <i class="bi bi-clock-history"></i>Sản phẩm đã xem gần đây
+                                <i class="bi bi-heart me-2"></i>Yêu thích
+                                <?php if(isset($wishlistCount) && $wishlistCount > 0): ?>
+                                <span class="badge bg-danger rounded-pill float-end"><?php echo $wishlistCount; ?></span>
+                                <?php endif; ?>
                             </a>
                             <a href="index.php?page=logout" class="list-group-item list-group-item-action text-danger">
                                 <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
@@ -65,268 +90,126 @@
                         </div>
                     </div>
                 </div>
-                
                 <!-- Main Content -->
                 <div class="col-lg-9">
                     <div class="tab-content">
                         <!-- Profile Information -->
                         <div class="tab-pane fade show active" id="profile-info">
-                            <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="card-title mb-0">Thông tin cá nhân</h5>
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white py-3 px-4">
+                                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Thông tin cá nhân</h5>
                                 </div>
                                 <div class="card-body p-4">
-                                    <form action="index.php?page=update_profile" method="post" enctype="multipart/form-data">
-                                        <div class="mb-4 text-center">
-                                            <?php if(!empty($user->avatar)): ?>
-                                                <img src="<?php echo $user->avatar; ?>" alt="<?php echo $user->name; ?>" class="rounded-circle mb-3" width="120" height="120" id="avatarPreview">
-                                            <?php else: ?>
-                                                <div class="profile-avatar-placeholder mb-3" id="avatarPreview">
-                                                    <?php echo substr($user->name, 0, 1); ?>
+                                    <form action="index.php?page=update_profile" method="post" enctype="multipart/form-data" id="profileForm">
+                                        <!-- Avatar Upload -->
+                                        <div class="row mb-4">
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold">Ảnh đại diện</label>
+                                                <div class="d-flex align-items-center gap-4">
+                                                    <img src="<?php echo $avatarPath; ?>" 
+                                                         alt="Avatar" 
+                                                         class="rounded-circle border" 
+                                                         width="100" 
+                                                         height="100"
+                                                         id="avatarPreview"
+                                                         style="object-fit: cover;">
+                                                    <div>
+                                                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*" style="display: none;">
+                                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('avatar').click();">
+                                                            <i class="bi bi-upload me-1"></i>Tải ảnh lên
+                                                        </button>
+                                                        <p class="text-muted small mb-0 mt-2">JPG, PNG hoặc GIF. Tối đa 2MB</p>
+                                                    </div>
                                                 </div>
-                                            <?php endif; ?>
-                                            <div class="mb-3">
-                                                <label for="avatar" class="form-label d-none">Avatar</label>
-                                                <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
-                                                <div class="form-text">Tối đa 2MB, định dạng JPG, PNG, GIF</div>
                                             </div>
                                         </div>
-                                    
+                                        
+                                        <!-- Personal Information -->
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label for="name" class="form-label">Họ và tên</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="<?php echo $user->name; ?>" required>
+                                                <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="name" value="<?php echo htmlspecialchars($user->name); ?>" required>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="email" class="form-label">Địa chỉ email</label>
-                                                <input type="email" class="form-control" id="email" value="<?php echo $user->email; ?>" readonly>
-                                                <div class="form-text">Email không thể thay đổi</div>
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" value="<?php echo htmlspecialchars($user->email); ?>" readonly style="background-color: #f8f9fa;">
+                                                <small class="text-muted">Email không thể thay đổi</small>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="phone" class="form-label">Số điện thoại</label>
-                                                <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo $user->phone; ?>">
+                                                <label class="form-label">Số điện thoại</label>
+                                                <input type="tel" class="form-control" name="phone" value="<?php echo htmlspecialchars($user->phone ?? ''); ?>" pattern="[0-9]{10}" placeholder="0123456789">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Ngày sinh</label>
+                                                <input type="date" class="form-control" name="birthday" value="<?php echo $user->birthday ?? ''; ?>">
                                             </div>
                                             <div class="col-12">
-                                                <label for="address" class="form-label">Địa chỉ</label>
-                                                <input type="text" class="form-control" id="address" name="address" value="<?php echo $user->address; ?>">
+                                                <label class="form-label">Giới tính</label>
+                                                <div class="d-flex gap-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="male" <?php echo ($user->gender ?? '') == 'male' ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label" for="male">Nam</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="gender" id="female" value="female" <?php echo ($user->gender ?? '') == 'female' ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label" for="female">Nữ</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="gender" id="other" value="other" <?php echo ($user->gender ?? '') == 'other' ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label" for="other">Khác</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr class="my-4">
+                                        
+                                        <!-- Address Information -->
+                                        <h6 class="mb-3">Địa chỉ mặc định</h6>
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <input type="text" class="form-control" name="address" value="<?php echo htmlspecialchars($user->address ?? ''); ?>" placeholder="Số nhà, tên đường...">
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="city" class="form-label">Tỉnh/Thành phố</label>
-                                                <select class="form-select" id="city" name="city">
+                                                <label class="form-label">Tỉnh/Thành phố</label>
+                                                <select class="form-select" id="province" name="city">
                                                     <option value="">Chọn tỉnh/thành phố</option>
-                                                    <option value="Hà Nội" <?php echo $user->city == 'Hà Nội' ? 'selected' : ''; ?>>Hà Nội</option>
-                                                    <option value="TP.HCM" <?php echo $user->city == 'TP.HCM' ? 'selected' : ''; ?>>TP.HCM</option>
-                                                    <option value="Đà Nẵng" <?php echo $user->city == 'Đà Nẵng' ? 'selected' : ''; ?>>Đà Nẵng</option>
-                                                    <option value="Cần Thơ" <?php echo $user->city == 'Cần Thơ' ? 'selected' : ''; ?>>Cần Thơ</option>
-                                                    <option value="Hải Phòng" <?php echo $user->city == 'Hải Phòng' ? 'selected' : ''; ?>>Hải Phòng</option>
+                                                    <?php
+                                                    // Lấy danh sách tỉnh/thành phố từ database
+                                                    $provinces = $db->query("SELECT * FROM provinces ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+                                                    foreach($provinces as $province):
+                                                    ?>
+                                                    <option value="<?php echo $province['name']; ?>" data-id="<?php echo $province['id']; ?>" 
+                                                            <?php echo ($user->city ?? '') == $province['name'] ? 'selected' : ''; ?>>
+                                                        <?php echo $province['name']; ?>
+                                                    </option>
+                                                    <?php endforeach; ?>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="district" class="form-label">Quận/Huyện</label>
-                                                <select class="form-select" id="district" name="district">
+                                                <label class="form-label">Quận/Huyện</label>
+                                                <select class="form-select" id="district" name="district" disabled>
                                                     <option value="">Chọn quận/huyện</option>
-                                                    <option value="Quận 1" <?php echo $user->district == 'Quận 1' ? 'selected' : ''; ?>>Quận 1</option>
-                                                    <option value="Quận 2" <?php echo $user->district == 'Quận 2' ? 'selected' : ''; ?>>Quận 2</option>
-                                                    <option value="Quận 3" <?php echo $user->district == 'Quận 3' ? 'selected' : ''; ?>>Quận 3</option>
-                                                    <option value="Quận 4" <?php echo $user->district == 'Quận 4' ? 'selected' : ''; ?>>Quận 4</option>
-                                                    <option value="Quận 5" <?php echo $user->district == 'Quận 5' ? 'selected' : ''; ?>>Quận 5</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="ward" class="form-label">Phường/Xã</label>
-                                                <select class="form-select" id="ward" name="ward">
+                                                <label class="form-label">Phường/Xã</label>
+                                                <select class="form-select" id="ward" name="ward" disabled>
                                                     <option value="">Chọn phường/xã</option>
-                                                    <option value="Phường 1" <?php echo $user->ward == 'Phường 1' ? 'selected' : ''; ?>>Phường 1</option>
-                                                    <option value="Phường 2" <?php echo $user->ward == 'Phường 2' ? 'selected' : ''; ?>>Phường 2</option>
-                                                    <option value="Phường 3" <?php echo $user->ward == 'Phường 3' ? 'selected' : ''; ?>>Phường 3</option>
-                                                    <option value="Phường 4" <?php echo $user->ward == 'Phường 4' ? 'selected' : ''; ?>>Phường 4</option>
-                                                    <option value="Phường 5" <?php echo $user->ward == 'Phường 5' ? 'selected' : ''; ?>>Phường 5</option>
                                                 </select>
                                             </div>
                                         </div>
                                         
                                         <div class="mt-4">
-                                            <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
+                                            </button>
+                                            <button type="reset" class="btn btn-light ms-2">
+                                                <i class="bi bi-arrow-clockwise me-2"></i>Đặt lại
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Order History -->
-                        <div class="tab-pane fade" id="orders">
-                            <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="card-title mb-0">Đơn hàng của tôi</h5>
-                                </div>
-                                <div class="card-body p-0">
-                                    <?php if(isset($orders) && !empty($orders)): ?>
-                                    <div class="table-responsive">
-                                        <table class="table mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Mã đơn hàng</th>
-                                                    <th>Ngày đặt</th>
-                                                    <th>Tổng tiền</th>
-                                                    <th>Trạng thái</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach($orders as $order): ?>
-                                                <tr>
-                                                    <td>#<?php echo str_pad($order->id, 6, '0', STR_PAD_LEFT); ?></td>
-                                                    <td><?php echo date('d/m/Y', strtotime($order->created_at)); ?></td>
-                                                    <td><?php echo number_format($order->total_amount, 0, ',', '.'); ?>đ</td>
-                                                    <td>
-                                                        <?php
-                                                        $status_class = '';
-                                                        $status_text = '';
-                                                        
-                                                        switch($order->status) {
-                                                            case 'pending':
-                                                                $status_class = 'bg-warning';
-                                                                $status_text = 'Chờ xác nhận';
-                                                                break;
-                                                            case 'processing':
-                                                                $status_class = 'bg-info';
-                                                                $status_text = 'Đang xử lý';
-                                                                break;
-                                                            case 'shipped':
-                                                                $status_class = 'bg-primary';
-                                                                $status_text = 'Đang giao hàng';
-                                                                break;
-                                                            case 'delivered':
-                                                                $status_class = 'bg-success';
-                                                                $status_text = 'Đã giao hàng';
-                                                                break;
-                                                            case 'cancelled':
-                                                                $status_class = 'bg-danger';
-                                                                $status_text = 'Đã hủy';
-                                                                break;
-                                                        }
-                                                        ?>
-                                                        <span class="badge <?php echo $status_class; ?>"><?php echo $status_text; ?></span>
-                                                    </td>
-                                                    <td>
-                                                        <a href="index.php?page=order_detail&id=<?php echo $order->id; ?>" class="btn btn-sm btn-outline-primary">
-                                                            Chi tiết
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <?php else: ?>
-                                    <div class="text-center py-5">
-                                        <i class="bi bi-bag-x" style="font-size: 3rem; color: #ccc;"></i>
-                                        <p class="mt-3 mb-0">Bạn chưa có đơn hàng nào.</p>
-                                        <a href="index.php?page=all_products" class="btn btn-primary mt-3">Mua sắm ngay</a>
-                                    </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Change Password -->
-                        <div class="tab-pane fade" id="change-password">
-                            <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="card-title mb-0">Đổi mật khẩu</h5>
-                                </div>
-                                <div class="card-body p-4">
-                                    <form action="index.php?page=change_password" method="post">
-                                        <div class="mb-3">
-                                            <label for="current_password" class="form-label">Mật khẩu hiện tại</label>
-                                            <input type="password" class="form-control" id="current_password" name="current_password" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="new_password" class="form-label">Mật khẩu mới</label>
-                                            <input type="password" class="form-control" id="new_password" name="new_password" minlength="6" required>
-                                            <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="confirm_password" class="form-label">Xác nhận mật khẩu mới</label>
-                                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" minlength="6" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Preview avatar image
-    const avatarInput = document.getElementById('avatar');
-    const avatarPreview = document.getElementById('avatarPreview');
-    
-    if (avatarInput && avatarPreview) {
-        avatarInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    if (avatarPreview.tagName.toLowerCase() === 'img') {
-                        avatarPreview.src = e.target.result;
-                    } else {
-                        // Create an image element
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'rounded-circle mb-3';
-                        img.width = 120;
-                        img.height = 120;
-                        img.id = 'avatarPreview';
-                        
-                        // Replace the placeholder with the image
-                        avatarPreview.parentNode.replaceChild(img, avatarPreview);
-                    }
-                }
-                
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-    }
-    
-    // Validate password confirmation
-    const newPassword = document.getElementById('new_password');
-    const confirmPassword = document.getElementById('confirm_password');
-    const passwordForm = document.querySelector('#change-password form');
-    
-    if (passwordForm && newPassword && confirmPassword) {
-        passwordForm.addEventListener('submit', function(e) {
-            if (newPassword.value !== confirmPassword.value) {
-                e.preventDefault();
-                alert('Mật khẩu xác nhận không khớp!');
-                confirmPassword.focus();
-            }
-        });
-    }
-    
-    // Activate tab based on hash in URL
-    const hash = window.location.hash;
-    if (hash) {
-        const tab = document.querySelector(`.list-group-item[href="${hash}"]`);
-        if (tab) {
-            // Activate the tab
-            document.querySelectorAll('.list-group-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            tab.classList.add('active');
-            
-            // Show the tab content
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            document.querySelector(hash).classList.add('show', 'active');
-        }
-    }
-});
-</script>
