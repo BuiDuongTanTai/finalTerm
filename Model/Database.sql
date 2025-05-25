@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 25, 2025 lúc 06:30 PM
+-- Thời gian đã tạo: Th5 25, 2025 lúc 06:37 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -523,7 +523,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `birthday`, `gender`, `address`, `city`, `district`, `ward`, `avatar`, `role`, `status`, `created_at`, `updated_at`) VALUES
 (2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', NULL, NULL, 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'staff', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', NULL, NULL, '', '', '', '', 'View/assets/images/uploads/users/683123efce74f_IMG_4423.jpeg', 'admin', 1, '2025-05-23 16:42:12', '2025-05-24 01:42:20'),
+(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$ZIlbFSCaKAfMupItJsg0j.UH1hHRq4rzOd5sc6g/31T3zevUBg3PG', '0868212407', NULL, NULL, '', '', '', '', 'View/assets/images/uploads/users/683123efce74f_IMG_4423.jpeg', 'admin', 1, '2025-05-23 16:42:12', '2025-05-25 16:31:33'),
 (5, 'Phạm Hoài Thương', '52300262@student.tdtu.edu.vn', '$2y$10$v8pKe.YFjSAvyWFieZGGfeA657s8/sIYQRclmwfFeJpypNCFesSz2', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-24 06:59:29', '2025-05-24 06:59:29'),
 (6, 'Phạm Hoài Thương', 'binmin81@gmail.com', '$2y$10$7CrnacSQoNfEeQAWWxO2.u8tA57hr8hNfLhmBqfPxi/p6xqnsp1d.', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-24 07:13:52', '2025-05-24 07:13:52'),
 (7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '$2y$10$BtZSvDrK93ynw3953ImhPOcSWqCwknsu7ZP9uI4.VOBaDDokCvBo.', '', NULL, NULL, '', 'TP.HCM', '', '', NULL, 'admin', 1, '2025-05-24 12:17:25', '2025-05-25 16:29:55');
