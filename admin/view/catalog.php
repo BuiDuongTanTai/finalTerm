@@ -35,7 +35,7 @@
                     <tbody>
                         <?php
                         $DBH = connect();
-                        $stmt = $DBH->query("SELECT * FROM categories ORDER BY id DESC");
+                        $stmt = $DBH->query("SELECT * FROM categories ORDER BY id ASC");
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "<tr>";
                             echo "<td>{$row['id']}</td>";
