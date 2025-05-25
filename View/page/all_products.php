@@ -163,72 +163,34 @@
                     <?php else: ?>
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                         <?php foreach($products as $product): ?>
-                        <div class="col">
-                            <div class="product-card h-100">
-                                <div class="product-card-inner">
-                                    <div class="product-image-container">
-                                        <?php if(!empty($product->old_price) && $product->old_price > $product->price): 
-                                            $discount_percent = round(100 - ($product->price / $product->old_price * 100));
-                                        ?>
-                                            <div class="product-badge sale">-<?php echo $discount_percent; ?>%</div>
-                                        <?php endif; ?>
-                                        
-                                        <?php if($product->is_new): ?>
-                                            <div class="product-badge new">Mới</div>
-                                        <?php endif; ?>
-                                        
-                                        <?php if($product->is_hot): ?>
-                                            <div class="product-badge hot">Hot</div>
-                                        <?php endif; ?>
-                                        
-                                        <?php if($product->is_best): ?>
-                                            <div class="product-badge best">Best</div>
-                                        <?php endif; ?>
-                                        
-                                        <button type="button" class="product-wishlist-btn <?php echo in_array($product->id, $wishlist) ? 'active' : ''; ?>" data-product-id="<?php echo $product->id; ?>">
-                                            <i class="bi bi-heart"></i>
-                                            <i class="bi bi-heart-fill"></i>
-                                        </button>
-                                        
-                                        <div class="product-image" style="background-image: url('<?php echo $product->image_url; ?>');"></div>
-                                        
-                                        <div class="product-overlay">
-                                            <a href="#" class="btn btn-sm btn-outline-primary product-quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product="<?php echo $product->id; ?>">
-                                                <i class="bi bi-eye me-1"></i>Xem nhanh
-                                            </a>
-                                            <a href="index.php?page=product_detail&id=<?php echo $product->id; ?>" class="btn btn-sm btn-primary">
-                                                <i class="bi bi-info-circle me-1"></i>Chi tiết
-                                            </a>
-                                        </div>
-                                    </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3 mb-4 product-item" data-category="<?php echo $product->brand_name; ?>">
+                        <div class="product-card h-100">
+                            <div class="product-card-inner">
+                                <div class="product-image-container">
+                                    <?php if(!empty($product->old_price) && $product->old_price > $product->price): 
+                                        $discount_percent = round(100 - ($product->price / $product->old_price * 100));
+                                    ?>
+                                        <div class="product-badge sale">-<?php echo $discount_percent; ?>%</div>
+                                    <?php elseif($product->is_new): ?>
+                                        <div class="product-badge new">Mới</div>
+                                    <?php elseif($product->is_hot): ?>
+                                        <div class="product-badge hot">Hot</div>
+                                    <?php elseif($product->is_best): ?>
+                                        <div class="product-badge best">Best</div>
+                                    <?php endif; ?>
                                     
-                                    <div class="product-info">
-                                        <div class="product-brand"><?php echo $product->brand_name; ?></div>
-                                        <h5 class="product-title">
-                                            <a href="index.php?page=product_detail&id=<?php echo $product->id; ?>" class="text-decoration-none text-dark">
-                                                <?php echo $product->name; ?>
-                                            </a>
-                                        </h5>
-                                        <div class="product-rating">
-                                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                                <?php if($i <= floor($product->rating)): ?>
-                                                    <i class="bi bi-star-fill"></i>
-                                                <?php elseif($i - 0.5 <= $product->rating): ?>
-                                                    <i class="bi bi-star-half"></i>
-                                                <?php else: ?>
-                                                    <i class="bi bi-star"></i>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
-                                            <span class="ms-2"><?php echo $product->rating; ?> (<?php echo $product->reviews_count; ?>)</span>
-                                        </div>
-                                        <div class="product-price-wrapper">
-                                            <?php if(!empty($product->old_price) && $product->old_price > $product->price): ?>
-                                                <span class="product-price-old"><?php echo number_format($product->old_price, 0, ',', '.'); ?>đ</span>
-                                            <?php endif; ?>
-                                            <span class="product-price"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</span>
-                                        </div>
-                                        <div class="product-actions mt-3">
-                                            <?php if($product->stock > 0): ?>
+                                    <button type="button" class="product-wishlist-btn" data-product-id="<?php echo $product->id; ?>">
+                                        <i class="bi bi-heart"></i>
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    
+                                    <div class="product-image" style="background-image: url('<?php echo $product->image_url; ?>');"></div>
+                                    
+                                    <div class="product-overlay">
+                                        <button class="btn btn-sm btn-outline-primary product-quick-view-btn" data-product-id="<?php echo $product->id; ?>">
+                                            <i class="bi bi-eye me-1"></i>Xem nhanh
+                                        </button>
+                                        <?php if($product->stock > 0): ?>
                                             <form action="index.php?page=add_to_cart" method="post" class="d-inline">
                                                 <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
                                                 <input type="hidden" name="quantity" value="1">
@@ -241,11 +203,48 @@
                                                 <i class="bi bi-x-circle me-1"></i>Hết hàng
                                             </button>
                                             <?php endif; ?>
+                                    </div>
+                                </div>
+                                
+                                <div class="product-info">
+                                    <div class="product-brand"><?php echo $product->brand_name; ?></div>
+                                    <h5 class="product-title">
+                                        <a href="index.php?page=product_detail&id=<?php echo $product->id; ?>" class="text-decoration-none text-dark">
+                                            <?php echo $product->name; ?>
+                                        </a>
+                                    </h5>
+                                    <div class="product-rating">
+                                        <?php for($i = 1; $i <= 5; $i++): ?>
+                                            <?php if($i <= floor($product->rating)): ?>
+                                                <i class="bi bi-star-fill"></i>
+                                            <?php elseif($i - 0.5 <= $product->rating): ?>
+                                                <i class="bi bi-star-half"></i>
+                                            <?php else: ?>
+                                                <i class="bi bi-star"></i>
+                                            <?php endif; ?>
+                                        <?php endfor; ?>
+                                        <span><?php echo $product->rating; ?> (<?php echo $product->reviews_count; ?>)</span>
+                                    </div>
+                                    <div class="product-price-wrapper">
+                                        <?php if(!empty($product->old_price) && $product->old_price > $product->price): ?>
+                                            <span class="product-price-old"><?php echo number_format($product->old_price, 0, ',', '.'); ?>đ</span>
+                                        <?php endif; ?>
+                                        <span class="product-price"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</span>
+                                    </div>
+                                    <div class="product-meta">
+                                        <div class="product-stock <?php echo $product->stock > 10 ? 'in-stock' : ($product->stock > 0 ? 'limited' : 'out-of-stock'); ?>">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span><?php echo $product->stock > 10 ? 'Còn hàng' : ($product->stock > 0 ? 'Sắp hết hàng' : 'Hết hàng'); ?></span>
+                                        </div>
+                                        <div class="product-sold">
+                                            <i class="bi bi-bag-check"></i>
+                                            <span>Đã bán: <?php echo $product->sold_count; ?></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                         <?php endforeach; ?>
                     </div>
                     
