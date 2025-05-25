@@ -26,15 +26,15 @@
                             <div class="col-md-4">
                                 <input type="text" class="form-control" name="search" 
                                        placeholder="Tìm kiếm bài viết..." 
-                                       value="<?= $_GET['search'] ?? '' ?>">
+                                       value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                             </div>
                             <div class="col-md-3">
                                 <select class="form-select" name="category">
                                     <option value="">Tất cả danh mục</option>
                                     <?php foreach ($categories as $cat): ?>
                                         <option value="<?= $cat['id'] ?>" 
-                                                <?= ($_GET['category'] ?? '') == $cat['id'] ? 'selected' : '' ?>>
-                                            <?= $cat['name'] ?> (<?= $cat['post_count'] ?>)
+                                                <?= (isset($_GET['category']) && $_GET['category'] == $cat['id']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($cat['name']) ?> (<?= $cat['post_count'] ?>)
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -42,9 +42,9 @@
                             <div class="col-md-3">
                                 <select class="form-select" name="status">
                                     <option value="">Tất cả trạng thái</option>
-                                    <option value="published" <?= ($_GET['status'] ?? '') == 'published' ? 'selected' : '' ?>>Đã xuất bản</option>
-                                    <option value="draft" <?= ($_GET['status'] ?? '') == 'draft' ? 'selected' : '' ?>>Nháp</option>
-                                    <option value="archived" <?= ($_GET['status'] ?? '') == 'archived' ? 'selected' : '' ?>>Lưu trữ</option>
+                                    <option value="published" <?= (isset($_GET['status']) && $_GET['status'] == 'published') ? 'selected' : '' ?>>Đã xuất bản</option>
+                                    <option value="draft" <?= (isset($_GET['status']) && $_GET['status'] == 'draft') ? 'selected' : '' ?>>Nháp</option>
+                                    <option value="archived" <?= (isset($_GET['status']) && $_GET['status'] == 'archived') ? 'selected' : '' ?>>Lưu trữ</option>
                                 </select>
                             </div>
                             <div class="col-md-2">

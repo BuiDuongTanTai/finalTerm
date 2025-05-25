@@ -27,7 +27,7 @@ class Blog {
         }
         
         if ($search) {
-            $query .= " AND (b.title LIKE :search OR b.summary LIKE :search)";
+            $query .= " AND (b.title LIKE :search OR b.summary LIKE :search OR b.content LIKE :search)";
             $params['search'] = "%$search%";
         }
         
@@ -141,68 +141,88 @@ class Blog {
     
     // Lấy tất cả danh mục
     public function getAllCategories() {
-        $query = "SELECT *, (SELECT COUNT(*) FROM blogs WHERE category_id = blog_categories.id) as post_count 
-                  FROM blog_categories ORDER BY name";
-        $stmt = $this->conn->query($query);
+        $query = "SELECT c.*, COUNT(b.id) as post_count 
+                  FROM blog_categories c 
+                  LEFT JOIN blogs b ON c.id = b.category_id 
+                  GROUP BY c.id 
+                  ORDER BY c.name";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     // Lấy tất cả tags
     public function getAllTags() {
         $query = "SELECT * FROM tags ORDER BY name";
-        $stmt = $this->conn->query($query);
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     // Thêm tags cho blog
     public function addTagsToBlog($blogId, $tagIds) {
         // Xóa tags cũ
-        $deleteQuery = "DELETE FROM blog_tags WHERE blog_id = :blog_id";
-        $deleteStmt = $this->conn->prepare($deleteQuery);
-        $deleteStmt->bindParam(':blog_id', $blogId);
-        $deleteStmt->execute();
+        $query = "DELETE FROM blog_tags WHERE blog_id = :blog_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':blog_id', $blogId);
+        $stmt->execute();
         
         // Thêm tags mới
         if (!empty($tagIds)) {
-            $insertQuery = "INSERT INTO blog_tags (blog_id, tag_id) VALUES (:blog_id, :tag_id)";
-            $insertStmt = $this->conn->prepare($insertQuery);
+            $query = "INSERT INTO blog_tags (blog_id, tag_id) VALUES (:blog_id, :tag_id)";
+            $stmt = $this->conn->prepare($query);
             
             foreach ($tagIds as $tagId) {
-                $insertStmt->bindParam(':blog_id', $blogId);
-                $insertStmt->bindParam(':tag_id', $tagId);
-                $insertStmt->execute();
+                $stmt->bindParam(':blog_id', $blogId);
+                $stmt->bindParam(':tag_id', $tagId);
+                $stmt->execute();
             }
         }
     }
     
-    // Tạo slug từ title
+    // Tạo slug từ tiêu đề
     private function createSlug($title) {
-        $slug = mb_strtolower($title, 'UTF-8');
-        
-        // Chuyển đổi ký tự có dấu sang không dấu
-        $slug = preg_replace('/[áàảãạăắằẳẵặâấầẩẫậ]/u', 'a', $slug);
-        $slug = preg_replace('/[éèẻẽẹêếềểễệ]/u', 'e', $slug);
-        $slug = preg_replace('/[íìỉĩị]/u', 'i', $slug);
-        $slug = preg_replace('/[óòỏõọôốồổỗộơớờởỡợ]/u', 'o', $slug);
-        $slug = preg_replace('/[úùủũụưứừửữự]/u', 'u', $slug);
-        $slug = preg_replace('/[ýỳỷỹỵ]/u', 'y', $slug);
-        $slug = preg_replace('/[đ]/u', 'd', $slug);
-        
-        // Xóa ký tự đặc biệt
-        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
-        
-        // Thay thế khoảng trắng và dấu gạch ngang
-        $slug = preg_replace('/[\s-]+/', '-', $slug);
-        
-        return trim($slug, '-');
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
+        return $slug;
     }
     
-    // Tăng lượt xem
-    public function increaseView($id) {
+    // Lấy bài viết phổ biến
+    public function getPopularPosts($limit = 5) {
+        $query = "SELECT b.*, c.name as category_name 
+                  FROM blogs b 
+                  LEFT JOIN blog_categories c ON b.category_id = c.id 
+                  WHERE b.status = 'published' 
+                  ORDER BY b.views DESC 
+                  LIMIT :limit";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    // Cập nhật lượt xem
+    public function updateViews($id) {
         $query = "UPDATE blogs SET views = views + 1 WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
+    }
+    
+    // Lấy bài viết theo danh mục
+    public function getBlogsByCategory($category_id) {
+        $query = "SELECT b.*, c.name as category_name,
+                  (SELECT GROUP_CONCAT(t.name) FROM tags t 
+                   INNER JOIN blog_tags bt ON t.id = bt.tag_id 
+                   WHERE bt.blog_id = b.id) as tags
+                  FROM blogs b 
+                  LEFT JOIN blog_categories c ON b.category_id = c.id
+                  WHERE b.category_id = :category_id AND b.status = 'published'
+                  ORDER BY b.created_at DESC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':category_id', $category_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

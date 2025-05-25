@@ -64,8 +64,24 @@
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Trạng thái</label>
-                                        <select class="form-select" name="status">
+                                        <label class="form-label">Tags</label>
+                                        <select class="form-select" name="tags[]" multiple>
+                                            <?php 
+                                            $selectedTags = explode(',', $blog['tag_ids'] ?? '');
+                                            foreach ($tags as $tag): 
+                                            ?>
+                                                <option value="<?= $tag['id'] ?>" 
+                                                        <?= in_array($tag['id'], $selectedTags) ? 'selected' : '' ?>>
+                                                    <?= $tag['name'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <small class="text-muted">Giữ Ctrl để chọn nhiều tags</small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                                        <select class="form-select" name="status" required>
                                             <option value="draft" <?= $blog['status'] == 'draft' ? 'selected' : '' ?>>Nháp</option>
                                             <option value="published" <?= $blog['status'] == 'published' ? 'selected' : '' ?>>Đã xuất bản</option>
                                             <option value="archived" <?= $blog['status'] == 'archived' ? 'selected' : '' ?>>Lưu trữ</option>
@@ -73,84 +89,55 @@
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Hình ảnh đại diện</label>
+                                        <label class="form-label">Hình ảnh</label>
                                         <?php if ($blog['image']): ?>
                                             <div class="mb-2">
-                                                <img src="../<?= $blog['image'] ?>" class="img-thumbnail" style="max-width: 100%;">
+                                                <img src="../<?= $blog['image'] ?>" alt="" class="img-thumbnail" style="max-height: 200px;">
                                             </div>
                                         <?php endif; ?>
-                                        <input type="file" class="form-control" name="image" accept="image/*" onchange="previewImage(this)">
+                                        <input type="file" class="form-control" name="image" accept="image/*">
                                         <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
-                                        <div id="imagePreview" class="mt-2"></div>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <small class="text-muted">
-                                            <i class="bi bi-clock"></i> Tạo ngày: <?= date('d/m/Y H:i', strtotime($blog['created_at'])) ?><br>
-                                            <?php if ($blog['updated_at']): ?>
-                                                <i class="bi bi-pencil"></i> Cập nhật: <?= date('d/m/Y H:i', strtotime($blog['updated_at'])) ?><br>
-                                            <?php endif; ?>
-                                            <i class="bi bi-eye"></i> Lượt xem: <?= number_format($blog['views']) ?>
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Tags</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="tag-checkboxes" style="max-height: 200px; overflow-y: auto;">
-                                        <?php 
-                                        $currentTagIds = $blog['tag_ids'] ? explode(',', $blog['tag_ids']) : [];
-                                        foreach ($tags as $tag): 
-                                        ?>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       name="tags[]" value="<?= $tag['id'] ?>" 
-                                                       id="tag_<?= $tag['id'] ?>"
-                                                       <?= in_array($tag['id'], $currentTagIds) ? 'checked' : '' ?>>
-                                                <label class="form-check-label" for="tag_<?= $tag['id'] ?>">
-                                                    <?= $tag['name'] ?>
-                                                </label>
+                                        <label class="form-label">Thông tin thêm</label>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Ngày tạo: <?= date('d/m/Y H:i', strtotime($blog['created_at'])) ?></small>
+                                                <small class="text-muted d-block">Lượt xem: <?= number_format($blog['views']) ?></small>
                                             </div>
-                                        <?php endforeach; ?>
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Tác giả: <?= $blog['author_name'] ?></small>
+                                                <?php if ($blog['updated_at']): ?>
+                                                    <small class="text-muted d-block">Cập nhật lần cuối: <?= date('d/m/Y H:i', strtotime($blog['updated_at'])) ?></small>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-save"></i> Cập nhật bài viết
-                            </button>
                         </div>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Lưu thay đổi
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
     <script>
         tinymce.init({
             selector: '#content',
             height: 500,
-            plugins: 'image link lists code table media',
-            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image media | code',
-            menubar: false,
-            language: 'vi'
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            images_upload_url: 'upload.php',
+            automatic_uploads: true
         });
-        
-        function previewImage(input) {
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = '';
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-width: 100%;">`;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
     </script>
 </body>
 </html>

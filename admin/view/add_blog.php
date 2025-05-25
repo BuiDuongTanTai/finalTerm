@@ -91,6 +91,9 @@ $tags = $blogModel->getAllTags();
                         
                         <div class="col-lg-4">
                             <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Thông tin bài viết</h6>
+                                </div>
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <label class="form-label">Danh mục <span class="text-danger">*</span></label>
@@ -103,40 +106,38 @@ $tags = $blogModel->getAllTags();
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Trạng thái</label>
-                                        <select class="form-select" name="status">
+                                        <label class="form-label">Tags</label>
+                                        <select class="form-select" name="tags[]" multiple>
+                                            <?php foreach ($tags as $tag): ?>
+                                                <option value="<?= $tag['id'] ?>"><?= $tag['name'] ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <small class="text-muted">Giữ Ctrl để chọn nhiều tags</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                                        <select class="form-select" name="status" required>
                                             <option value="draft">Nháp</option>
-                                            <option value="published">Xuất bản ngay</option>
+                                            <option value="published">Đã xuất bản</option>
+                                            <option value="archived">Lưu trữ</option>
                                         </select>
                                     </div>
-                                    
+
                                     <div class="mb-3">
-                                        <label class="form-label">Hình ảnh đại diện</label>
+                                        <label class="form-label">Hình ảnh</label>
                                         <input type="file" class="form-control" name="image" accept="image/*">
+                                        <small class="text-muted">Kích thước đề xuất: 800x400px</small>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="card">
-                                <div class="card-body">
-                                    <label class="form-label">Tags</label>
-                                    <div class="tag-checkboxes" style="max-height: 200px; overflow-y: auto;">
-                                        <?php foreach ($tags as $tag): ?>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="tags[]" value="<?= $tag['id'] ?>" id="tag_<?= $tag['id'] ?>">
-                                                <label class="form-check-label" for="tag_<?= $tag['id'] ?>">
-                                                    <?= $tag['name'] ?>
-                                                </label>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary w-100 mt-3">
-                                <i class="bi bi-save"></i> Lưu bài viết
-                            </button>
                         </div>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm bài viết
+                        </button>
                     </div>
                 </form>
             </div>
@@ -149,10 +150,12 @@ $tags = $blogModel->getAllTags();
         tinymce.init({
             selector: '#content',
             height: 500,
-            plugins: 'image link lists code table',
-            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
-            menubar: false
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            images_upload_url: 'upload.php',
+            automatic_uploads: true
         });
     </script>
 </body>
+</html>
 </html>
