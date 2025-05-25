@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 25, 2025 lúc 12:49 AM
+-- Thời gian đã tạo: Th5 25, 2025 lúc 05:53 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -141,7 +141,8 @@ CREATE TABLE `carts` (
 --
 
 INSERT INTO `carts` (`id`, `user_id`, `session_id`, `product_id`, `quantity`, `options`, `created_at`, `updated_at`) VALUES
-(8, 4, NULL, 6, 1, NULL, '2025-05-24 00:35:00', '2025-05-24 02:44:40');
+(8, 4, NULL, 6, 1, NULL, '2025-05-24 00:35:00', '2025-05-24 02:44:40'),
+(9, 7, NULL, 2, 4, NULL, '2025-05-25 01:45:56', '2025-05-25 01:48:17');
 
 -- --------------------------------------------------------
 
@@ -487,6 +488,8 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `gender` enum('male','female','other') DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `city` varchar(100) DEFAULT NULL,
   `district` varchar(100) DEFAULT NULL,
@@ -502,12 +505,12 @@ CREATE TABLE `users` (
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `city`, `district`, `ward`, `avatar`, `role`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'staff', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
-(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', '', '', '', '', 'View/assets/images/uploads/users/683123efce74f_IMG_4423.jpeg', 'admin', 1, '2025-05-23 16:42:12', '2025-05-24 01:42:20'),
-(5, 'Phạm Hoài Thương', '52300262@student.tdtu.edu.vn', '$2y$10$v8pKe.YFjSAvyWFieZGGfeA657s8/sIYQRclmwfFeJpypNCFesSz2', '0708624193', NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-24 06:59:29', '2025-05-24 06:59:29'),
-(6, 'Phạm Hoài Thương', 'binmin81@gmail.com', '$2y$10$7CrnacSQoNfEeQAWWxO2.u8tA57hr8hNfLhmBqfPxi/p6xqnsp1d.', '0708624193', NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-24 07:13:52', '2025-05-24 07:13:52'),
-(7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '$2y$10$ByrkCnWPfEnBK/qtgn27YeT6Xg/6UU2STSeL6jOObFCSFeruiFn12', '0945727010', NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-24 12:17:25', '2025-05-24 12:17:25');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `birthday`, `gender`, `address`, `city`, `district`, `ward`, `avatar`, `role`, `status`, `created_at`, `updated_at`) VALUES
+(2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', NULL, NULL, 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'staff', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
+(4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$6w6BRg3FHdHndNZ3gdUES.f0bQ795crWi/ZCF.BYS9wvHS.eV16C6', '0868212407', NULL, NULL, '', '', '', '', 'View/assets/images/uploads/users/683123efce74f_IMG_4423.jpeg', 'admin', 1, '2025-05-23 16:42:12', '2025-05-24 01:42:20'),
+(5, 'Phạm Hoài Thương', '52300262@student.tdtu.edu.vn', '$2y$10$v8pKe.YFjSAvyWFieZGGfeA657s8/sIYQRclmwfFeJpypNCFesSz2', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-24 06:59:29', '2025-05-24 06:59:29'),
+(6, 'Phạm Hoài Thương', 'binmin81@gmail.com', '$2y$10$7CrnacSQoNfEeQAWWxO2.u8tA57hr8hNfLhmBqfPxi/p6xqnsp1d.', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-24 07:13:52', '2025-05-24 07:13:52'),
+(7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '$2y$10$ByrkCnWPfEnBK/qtgn27YeT6Xg/6UU2STSeL6jOObFCSFeruiFn12', '0945727010', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-24 12:17:25', '2025-05-24 12:17:25');
 
 -- --------------------------------------------------------
 
@@ -716,7 +719,7 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT cho bảng `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
