@@ -10,8 +10,10 @@
 </head>
 <body>
     <?php if (isset($_SESSION["admin"]) && $action != 'login'): ?>
-    <div class="page-container">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Main wrapper cho layout -->
+    <div class="main-wrapper">
+        <!-- Navbar sticky -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">
                     <i class="bi bi-camera"></i> CameraVN Admin
@@ -51,11 +53,11 @@
                                 <i class="bi bi-star"></i> Đánh giá
                             </a>
                         </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= ($_GET['act'] ?? '') == 'blog_manage' ? 'active' : '' ?>" href="?act=blog_manage">
-                            <i class="bi bi-newspaper"></i> Blog
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= ($_GET['act'] ?? '') == 'blog_manage' ? 'active' : '' ?>" href="?act=blog_manage">
+                                <i class="bi bi-newspaper"></i> Blog
+                            </a>
+                        </li>
                     </ul>
                     
                     <ul class="navbar-nav ms-auto">
@@ -71,12 +73,11 @@
                             </ul>
                         </li>
                     </ul>
-
-                    
                 </div>
             </div>
         </nav>
         
-        <div class="content-wrapper position-relative">
-            <div class="container-fluid py-4 main-content">
+        <!-- Main content area -->
+        <div class="main-content">
+            <div class="container-fluid">
     <?php endif; ?>

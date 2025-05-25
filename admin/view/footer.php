@@ -1,18 +1,23 @@
 <?php if (isset($_SESSION["admin"]) && $action != 'login'): ?>
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>CameraVN Admin</h5>
-                    <p class="small">Hệ thống quản trị của cửa hàng máy ảnh CameraVN.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0">© 2025 CameraVN - Trang Quản Trị</p>
+            </div> <!-- End container-fluid -->
+        </div> <!-- End main-content -->
+        
+        <!-- Footer nằm ngoài main-content -->
+        <footer class="bg-dark text-white">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>CameraVN Admin</h5>
+                        <p class="small">Hệ thống quản trị của cửa hàng máy ảnh CameraVN.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">© 2025 CameraVN - Trang Quản Trị</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
-    <?php endif; ?>
+        </footer>
+    </div> <!-- End main-wrapper -->
+<?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
