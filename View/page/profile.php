@@ -39,6 +39,8 @@
                             <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="list">
                                 <i class="bi bi-bag me-2"></i>Đơn hàng của tôi
                             </a>
+                            <a href="index.php?page=cart" class="list-group-item list-group-item-action">
+                                <i class="bi bi-cart"></i>Giỏ hàng - Thanh Toán
                             <a href="#change-password" class="list-group-item list-group-item-action" data-bs-toggle="list">
                                 <i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu
                             </a>
