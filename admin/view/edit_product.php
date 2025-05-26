@@ -74,56 +74,69 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Hiển thị sản phẩm trong các section</label>
-                            <div class="section-checkboxes">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1" id="is_featured" 
-                                        <?php echo $product['is_featured'] ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_featured">
-                                        <span class="badge bg-primary">NỔI BẬT</span> - Hiển thị trong section "Sản phẩm nổi bật"
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_new" value="1" id="is_new"
-                                        <?php echo $product['is_new'] ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_new">
-                                        <span class="badge bg-info">MỚI</span> - Hiển thị trong section "Sản phẩm mới"
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_bestseller" value="1" id="is_bestseller"
-                                        <?php echo $product['is_bestseller'] ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_bestseller">
-                                        <span class="badge bg-success">BÁN CHẠY</span> - Hiển thị trong section "Sản phẩm bán chạy"
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_discount" value="1" id="is_discount"
-                                        <?php echo $product['is_discount'] ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_discount">
-                                        <span class="badge bg-warning">GIẢM GIÁ</span> - Hiển thị trong section "Sản phẩm giảm giá"
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_promotion" value="1" id="is_promotion"
-                                        <?php echo $product['is_promotion'] ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_promotion">
-                                        <span class="badge bg-danger">KHUYẾN MÃI</span> - Hiển thị trong banner khuyến mãi
-                                    </label>
-                                </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="show_badges" value="1" id="show_badges"
+                                    <?php echo (!empty($product['badges']) || $product['is_featured'] || $product['is_new'] || $product['is_bestseller'] || $product['is_discount']) ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="show_badges">
+                                    Hiển thị badge và section
+                                </label>
                             </div>
-                            <small class="text-muted">Có thể chọn nhiều section để hiển thị sản phẩm</small>
+                            <small class="text-muted">Bỏ chọn nếu không muốn hiển thị badge và section</small>
                         </div>
 
-                        <div class="mb-3" id="promotion_url_section" style="<?php echo $product['is_promotion'] ? '' : 'display: none;'; ?>">
-                            <label for="promotion_url" class="form-label">Link tùy chỉnh cho nút "Mua ngay" (Khuyến mãi)</label>
-                            <input type="url" class="form-control" id="promotion_url" name="promotion_url" 
-                                value="<?php echo $product['promotion_url'] ?? ''; ?>" 
-                                placeholder="Ví dụ: index.php?page=product_detail&id=<?php echo $product['id']; ?>">
-                            <small class="text-muted">Để trống sẽ dùng link mặc định đến trang chi tiết sản phẩm</small>
+                        <div id="badges_section" style="<?php echo (!empty($product['badges']) || $product['is_featured'] || $product['is_new'] || $product['is_bestseller'] || $product['is_discount']) ? '' : 'display: none;'; ?>">
+                            <div class="mb-3">
+                                <label class="form-label">Hiển thị sản phẩm trong các section</label>
+                                <div class="section-checkboxes">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="is_featured" value="1" id="is_featured" 
+                                            <?php echo $product['is_featured'] ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="is_featured">
+                                            <span class="badge bg-primary">NỔI BẬT</span> - Hiển thị trong section "Sản phẩm nổi bật"
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="is_new" value="1" id="is_new"
+                                            <?php echo $product['is_new'] ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="is_new">
+                                            <span class="badge bg-info">MỚI</span> - Hiển thị trong section "Sản phẩm mới"
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="is_bestseller" value="1" id="is_bestseller"
+                                            <?php echo $product['is_bestseller'] ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="is_bestseller">
+                                            <span class="badge bg-success">BÁN CHẠY</span> - Hiển thị trong section "Sản phẩm bán chạy"
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="is_discount" value="1" id="is_discount"
+                                            <?php echo $product['is_discount'] ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="is_discount">
+                                            <span class="badge bg-warning">GIẢM GIÁ</span> - Hiển thị trong section "Sản phẩm giảm giá"
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="is_promotion" value="1" id="is_promotion"
+                                            <?php echo $product['is_promotion'] ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="is_promotion">
+                                            <span class="badge bg-danger">KHUYẾN MÃI</span> - Hiển thị trong banner khuyến mãi
+                                        </label>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Có thể chọn nhiều section để hiển thị sản phẩm</small>
+                            </div>
+
+                            <div class="mb-3" id="promotion_url_section" style="<?php echo $product['is_promotion'] ? '' : 'display: none;'; ?>">
+                                <label for="promotion_url" class="form-label">Link tùy chỉnh cho nút "Mua ngay" (Khuyến mãi)</label>
+                                <input type="url" class="form-control" id="promotion_url" name="promotion_url" 
+                                    value="<?php echo $product['promotion_url'] ?? ''; ?>" 
+                                    placeholder="Ví dụ: index.php?page=product_detail&id=<?php echo $product['id']; ?>">
+                                <small class="text-muted">Để trống sẽ dùng link mặc định đến trang chi tiết sản phẩm</small>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-3" id="badge_checkboxes" style="<?php echo (!empty($product['badges']) || $product['is_featured'] || $product['is_new'] || $product['is_bestseller'] || $product['is_discount']) ? '' : 'display: none;'; ?>">
                             <label class="form-label">Badge hiển thị trên sản phẩm</label>
                             <div class="badge-checkboxes">
                                 <?php 
@@ -137,28 +150,32 @@
                                 ?>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="badges[]" value="hot" id="badge_hot" 
-                                        <?php echo in_array('hot', $current_badges) ? 'checked' : ''; ?>>
+                                        <?php echo (in_array('hot', $current_badges) || $product['is_featured']) ? 'checked' : ''; ?>
+                                        <?php echo $product['is_featured'] ? 'disabled' : ''; ?>>
                                     <label class="form-check-label" for="badge_hot">
                                         <span class="badge bg-danger">HOT</span> - Badge nổi bật
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="badges[]" value="new" id="badge_new"
-                                        <?php echo in_array('new', $current_badges) ? 'checked' : ''; ?>>
+                                        <?php echo (in_array('new', $current_badges) || $product['is_new']) ? 'checked' : ''; ?>
+                                        <?php echo $product['is_new'] ? 'disabled' : ''; ?>>
                                     <label class="form-check-label" for="badge_new">
                                         <span class="badge bg-info">NEW</span> - Badge mới
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="badges[]" value="bestseller" id="badge_bestseller"
-                                        <?php echo in_array('bestseller', $current_badges) ? 'checked' : ''; ?>>
+                                        <?php echo (in_array('bestseller', $current_badges) || $product['is_bestseller']) ? 'checked' : ''; ?>
+                                        <?php echo $product['is_bestseller'] ? 'disabled' : ''; ?>>
                                     <label class="form-check-label" for="badge_bestseller">
                                         <span class="badge bg-success">BESTSELLER</span> - Badge bán chạy
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="badges[]" value="discount" id="badge_discount"
-                                        <?php echo in_array('discount', $current_badges) ? 'checked' : ''; ?>>
+                                        <?php echo (in_array('discount', $current_badges) || $product['is_discount']) ? 'checked' : ''; ?>
+                                        <?php echo $product['is_discount'] ? 'disabled' : ''; ?>>
                                     <label class="form-check-label" for="badge_discount">
                                         <span class="badge bg-warning">DISCOUNT</span> - Badge giảm giá
                                     </label>
@@ -194,6 +211,68 @@
                                 promotionUrlSection.style.display = 'none';
                             }
                         });
+
+                        // Hiển thị/ẩn badge và section
+                        document.getElementById('show_badges').addEventListener('change', function() {
+                            const badgesSection = document.getElementById('badges_section');
+                            const badgeCheckboxes = document.getElementById('badge_checkboxes');
+                            
+                            if (this.checked) {
+                                badgesSection.style.display = 'block';
+                                badgeCheckboxes.style.display = 'block';
+                            } else {
+                                badgesSection.style.display = 'none';
+                                badgeCheckboxes.style.display = 'none';
+                                
+                                // Uncheck tất cả các checkbox
+                                document.querySelectorAll('.section-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                                    checkbox.checked = false;
+                                });
+                                document.querySelectorAll('.badge-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                                    checkbox.checked = false;
+                                });
+                            }
+                        });
+
+                        // Xử lý logic section và badge
+                        const sectionCheckboxes = document.querySelectorAll('.section-checkboxes input[type="checkbox"]');
+                        const badgeCheckboxes = document.querySelectorAll('.badge-checkboxes input[type="checkbox"]');
+
+                        // Hàm cập nhật trạng thái badge dựa trên section
+                        function updateBadgeStatus() {
+                            const isFeatured = document.getElementById('is_featured').checked;
+                            const isNew = document.getElementById('is_new').checked;
+                            const isBestseller = document.getElementById('is_bestseller').checked;
+                            const isDiscount = document.getElementById('is_discount').checked;
+
+                            // Chỉ cập nhật disabled state cho các badge
+                            document.getElementById('badge_hot').disabled = isFeatured;
+                            document.getElementById('badge_new').disabled = isNew;
+                            document.getElementById('badge_bestseller').disabled = isBestseller;
+                            document.getElementById('badge_discount').disabled = isDiscount;
+
+                            // Nếu section được chọn và badge chưa được chọn, tự động check
+                            if (isFeatured && !document.getElementById('badge_hot').checked) {
+                                document.getElementById('badge_hot').checked = true;
+                            }
+                            if (isNew && !document.getElementById('badge_new').checked) {
+                                document.getElementById('badge_new').checked = true;
+                            }
+                            if (isBestseller && !document.getElementById('badge_bestseller').checked) {
+                                document.getElementById('badge_bestseller').checked = true;
+                            }
+                            if (isDiscount && !document.getElementById('badge_discount').checked) {
+                                document.getElementById('badge_discount').checked = true;
+                            }
+                        }
+
+                        // Thêm event listener cho các section checkbox
+                        sectionCheckboxes.forEach(checkbox => {
+                            checkbox.addEventListener('change', updateBadgeStatus);
+                        });
+
+                        // Khởi tạo trạng thái ban đầu
+                        updateBadgeStatus();
                         </script>
                     </div>
                 </div>

@@ -182,12 +182,6 @@ switch ($action) {
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
             $status = isset($_POST['status']) ? 1 : 0;
             
-            // Xử lý badges - Sắp xếp theo thứ tự ưu tiên
-            $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
-            $badge_priority = ['hot', 'new', 'bestseller', 'discount'];
-            $sorted_badges = array_intersect($badge_priority, $badges);
-            $badges_json = !empty($sorted_badges) ? json_encode(array_values($sorted_badges)) : null;
-            
             // Xử lý section flags
             $is_featured = isset($_POST['is_featured']) ? 1 : 0;
             $is_new = isset($_POST['is_new']) ? 1 : 0;
@@ -195,7 +189,35 @@ switch ($action) {
             $is_discount = isset($_POST['is_discount']) ? 1 : 0;
             $is_promotion = isset($_POST['is_promotion']) ? 1 : 0;
             $promotion_url = isset($_POST['promotion_url']) ? trim($_POST['promotion_url']) : null;
-    
+
+            // Xử lý badges với thứ tự ưu tiên
+            $badges = [];
+            
+            // Thêm badge dựa trên section
+            if ($is_featured) $badges[] = 'hot';
+            if ($is_new) $badges[] = 'new';
+            if ($is_bestseller) $badges[] = 'bestseller';
+            if ($is_discount) $badges[] = 'discount';
+            
+            // Thêm các badge khác nếu có
+            if (isset($_POST['badges']) && is_array($_POST['badges'])) {
+                foreach ($_POST['badges'] as $badge) {
+                    if (!in_array($badge, $badges)) {
+                        $badges[] = $badge;
+                    }
+                }
+            }
+            
+            // Sắp xếp badge theo thứ tự ưu tiên
+            $priority = ['hot', 'new', 'bestseller', 'discount'];
+            usort($badges, function($a, $b) use ($priority) {
+                $pos_a = array_search($a, $priority);
+                $pos_b = array_search($b, $priority);
+                return $pos_a - $pos_b;
+            });
+            
+            $badges_json = !empty($badges) ? json_encode($badges) : null;
+            
             if ($is_promotion && empty($promotion_url)) {
                 $promotion_url = null; // Sẽ được set sau khi có product ID
             }
@@ -305,12 +327,6 @@ switch ($action) {
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
             $status = isset($_POST['status']) ? 1 : 0;
             
-            // Xử lý badges - Sắp xếp theo thứ tự ưu tiên
-            $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
-            $badge_priority = ['hot', 'new', 'bestseller', 'discount'];
-            $sorted_badges = array_intersect($badge_priority, $badges);
-            $badges_json = !empty($sorted_badges) ? json_encode(array_values($sorted_badges)) : null;
-            
             // Xử lý section flags
             $is_featured = isset($_POST['is_featured']) ? 1 : 0;
             $is_new = isset($_POST['is_new']) ? 1 : 0;
@@ -318,7 +334,35 @@ switch ($action) {
             $is_discount = isset($_POST['is_discount']) ? 1 : 0;
             $is_promotion = isset($_POST['is_promotion']) ? 1 : 0;
             $promotion_url = isset($_POST['promotion_url']) ? trim($_POST['promotion_url']) : null;
-    
+
+            // Xử lý badges với thứ tự ưu tiên
+            $badges = [];
+            
+            // Thêm badge dựa trên section
+            if ($is_featured) $badges[] = 'hot';
+            if ($is_new) $badges[] = 'new';
+            if ($is_bestseller) $badges[] = 'bestseller';
+            if ($is_discount) $badges[] = 'discount';
+            
+            // Thêm các badge khác nếu có
+            if (isset($_POST['badges']) && is_array($_POST['badges'])) {
+                foreach ($_POST['badges'] as $badge) {
+                    if (!in_array($badge, $badges)) {
+                        $badges[] = $badge;
+                    }
+                }
+            }
+            
+            // Sắp xếp badge theo thứ tự ưu tiên
+            $priority = ['hot', 'new', 'bestseller', 'discount'];
+            usort($badges, function($a, $b) use ($priority) {
+                $pos_a = array_search($a, $priority);
+                $pos_b = array_search($b, $priority);
+                return $pos_a - $pos_b;
+            });
+            
+            $badges_json = !empty($badges) ? json_encode($badges) : null;
+            
             // Nếu là promotion nhưng không có custom URL, dùng link mặc định
             if ($is_promotion && empty($promotion_url)) {
                 $promotion_url = "index.php?page=product_detail&id=" . $id;
