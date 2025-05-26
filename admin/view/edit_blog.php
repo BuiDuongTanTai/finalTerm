@@ -19,7 +19,8 @@
                     </a>
                 </div>
                 
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" action="index.php?act=update_blog" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="<?= $blog['id'] ?>">
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="card">
@@ -101,16 +102,32 @@
                                     
                                     <div class="mb-3">
                                         <label class="form-label">Thông tin thêm</label>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <small class="text-muted d-block">Ngày tạo: <?= date('d/m/Y H:i', strtotime($blog['created_at'])) ?></small>
-                                                <small class="text-muted d-block">Lượt xem: <?= number_format($blog['views']) ?></small>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <small class="text-muted d-block">Tác giả: <?= $blog['author_name'] ?></small>
-                                                <?php if ($blog['updated_at']): ?>
-                                                    <small class="text-muted d-block">Cập nhật lần cuối: <?= date('d/m/Y H:i', strtotime($blog['updated_at'])) ?></small>
-                                                <?php endif; ?>
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-2">
+                                                            <strong>Ngày tạo:</strong>
+                                                            <span class="text-muted ms-2"><?= date('d/m/Y H:i', strtotime($blog['created_at'])) ?></span>
+                                                        </div>
+                                                        <div class="mb-2">
+                                                            <label class="form-label">Lượt xem:</label>
+                                                            <input type="number" class="form-control" name="views" value="<?= $blog['views'] ?>" min="0">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-2">
+                                                            <label class="form-label">Tác giả:</label>
+                                                            <input type="text" class="form-control" name="author_name" value="<?= htmlspecialchars($blog['author_name']) ?>">
+                                                        </div>
+                                                        <?php if ($blog['updated_at']): ?>
+                                                        <div class="mb-2">
+                                                            <strong>Cập nhật lần cuối:</strong>
+                                                            <span class="text-muted ms-2"><?= date('d/m/Y H:i', strtotime($blog['updated_at'])) ?></span>
+                                                        </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

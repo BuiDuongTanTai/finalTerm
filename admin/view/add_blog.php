@@ -1,44 +1,6 @@
 <?php
-require_once '../model/blog.php';
+require_once 'model/blog.php';
 $blogModel = new Blog();
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = [
-        'title' => $_POST['title'],
-        'summary' => $_POST['summary'],
-        'content' => $_POST['content'],
-        'category_id' => $_POST['category_id'],
-        'author_id' => $_SESSION['user_id'] ?? 1,
-        'author_name' => $_SESSION['user_name'] ?? 'Admin',
-        'status' => $_POST['status'],
-        'published_at' => $_POST['status'] == 'published' ? date('Y-m-d H:i:s') : null,
-        'image' => ''
-    ];
-    
-    // Xử lý upload ảnh
-    if (!empty($_FILES['image']['name'])) {
-        $uploadDir = '../uploads/blog/';
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-        
-        $fileName = time() . '_' . basename($_FILES['image']['name']);
-        $uploadPath = $uploadDir . $fileName;
-        
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-            $data['image'] = 'uploads/blog/' . $fileName;
-        }
-    }
-    
-    $blogId = $blogModel->createBlog($data);
-    
-    if ($blogId && !empty($_POST['tags'])) {
-        $blogModel->addTagsToBlog($blogId, $_POST['tags']);
-    }
-    
-    header('Location: index.php?page=blog_manage');
-    exit;
-}
 
 $categories = $blogModel->getAllCategories();
 $tags = $blogModel->getAllTags();
@@ -61,12 +23,12 @@ $tags = $blogModel->getAllTags();
             <div class="col-md-12">
                 <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
                     <h2>Thêm bài viết mới</h2>
-                    <a href="?page=blog_manage" class="btn btn-secondary">
+                    <a href="?act=blog_manage" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Quay lại
                     </a>
                 </div>
                 
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" action="index.php?act=add_blog" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="card">
@@ -129,6 +91,19 @@ $tags = $blogModel->getAllTags();
                                         <input type="file" class="form-control" name="image" accept="image/*">
                                         <small class="text-muted">Kích thước đề xuất: 800x400px</small>
                                     </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Thông tin thêm</label>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Ngày tạo: <?= date('d/m/Y H:i') ?></small>
+                                                <small class="text-muted d-block">Lượt xem: 0</small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Tác giả: <?= $_SESSION['admin']['name'] ?? 'Admin' ?></small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -157,5 +132,4 @@ $tags = $blogModel->getAllTags();
         });
     </script>
 </body>
-</html>
 </html>

@@ -824,11 +824,18 @@ switch ($action) {
                 $blogModel->addTagsToBlog($blogId, $_POST['tags']);
             }
             
-            header('Location: index.php?act=blog_manage');
+            header('Location: index.php?act=blog_manage&success=' . urlencode('Thêm bài viết thành công'));
             exit;
         }
-        header('Location: index.php?act=blog_manage');
-        exit;
+        
+        require_once 'model/blog.php';
+        $blogModel = new Blog();
+        
+        $categories = $blogModel->getAllCategories();
+        $tags = $blogModel->getAllTags();
+        
+        include 'view/add_blog.php';
+        break;
 
     case "update_blog":
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -841,7 +848,10 @@ switch ($action) {
                 'summary' => $_POST['summary'],
                 'content' => $_POST['content'],
                 'category_id' => $_POST['category_id'],
-                'status' => $_POST['status']
+                'status' => $_POST['status'],
+                'views' => $_POST['views'] ?? 0,
+                'author_name' => $_POST['author_name'],
+                'updated_at' => date('Y-m-d H:i:s')
             ];
             
             // Xử lý upload ảnh mới
@@ -865,13 +875,15 @@ switch ($action) {
                 }
             }
             
-            $blogModel->updateBlog($id, $data);
-            
-            // Cập nhật tags
-            $tags = $_POST['tags'] ?? [];
-            $blogModel->addTagsToBlog($id, $tags);
-            
-            header('Location: index.php?act=blog_manage');
+            if ($blogModel->updateBlog($id, $data)) {
+                // Cập nhật tags
+                $tags = $_POST['tags'] ?? [];
+                $blogModel->addTagsToBlog($id, $tags);
+                
+                header('Location: index.php?act=blog_manage&success=' . urlencode('Cập nhật bài viết thành công'));
+            } else {
+                header('Location: index.php?act=blog_manage&error=' . urlencode('Có lỗi xảy ra khi cập nhật bài viết'));
+            }
             exit;
         }
         header('Location: index.php?act=blog_manage');
@@ -1046,16 +1058,6 @@ switch ($action) {
         $categories = $blogModel->getAllCategories();
         
         include 'view/blog_manage.php';
-        break;
-
-    case "add_blog":
-        require_once 'model/blog.php';
-        $blogModel = new Blog();
-        
-        $categories = $blogModel->getAllCategories();
-        $tags = $blogModel->getAllTags();
-        
-        include 'view/add_blog.php';
         break;
 
     case "edit_blog":
