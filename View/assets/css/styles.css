@@ -2795,7 +2795,7 @@ body.dark-theme .comparison-table tr:hover {
 }
 
 .blog-hero {
-    background: linear-gradient(rgba(13, 110, 253, 0.7), rgba(13, 110, 253, 0.7)), url('View/assets/images/blog-bg.jpg');
+    background: linear-gradient(rgba(13, 110, 253, 0.7), rgba(13, 110, 253, 0.7));
     background-size: cover;
     background-position: center;
     color: white;
