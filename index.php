@@ -1,6 +1,10 @@
 <?php
 // index.php - Entry point
 
+// Bật hiển thị lỗi cho mục đích debug
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Bắt đầu session
 session_start();
 

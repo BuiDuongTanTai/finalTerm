@@ -37,3 +37,17 @@ define('REVIEW_IMG_PATH', UPLOAD_PATH . 'reviews/');
 
 // Session settings
 define('SESSION_LIFETIME', 7200);
+
+// Khởi tạo kết nối PDO
+global $db; // Khai báo biến $db là global
+try {
+    $db = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+} catch(PDOException $e) {
+    // Ghi log lỗi hoặc xử lý theo cách phù hợp
+    error_log("Lỗi kết nối database: " . $e->getMessage());
+    // Tùy chọn: hiển thị lỗi cho admin hoặc chuyển hướng đến trang lỗi
+    // die("Lỗi kết nối database.");
+}

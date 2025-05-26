@@ -1,11 +1,11 @@
 <?php
-require_once '../model/blog.php';
+require_once '../Model/BlogModel.php';
 
 class AdminBlogController {
     private $blogModel;
     
     public function __construct() {
-        $this->blogModel = new Blog();
+        $this->blogModel = new BlogModel();
     }
     
     public function index() {
