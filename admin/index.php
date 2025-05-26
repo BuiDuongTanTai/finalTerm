@@ -180,13 +180,15 @@ switch ($action) {
             $old_price = filter_input(INPUT_POST, 'old_price', FILTER_VALIDATE_FLOAT) ?: 0;
             $stock = filter_input(INPUT_POST, 'stock', FILTER_VALIDATE_INT);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
-            $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+            $status = isset($_POST['status']) ? 1 : 0;
             
-            // Xử lý badges
+            // Xử lý badges - Sắp xếp theo thứ tự ưu tiên
             $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
-            $badges_json = !empty($badges) ? json_encode($badges) : null;
+            $badge_priority = ['hot', 'new', 'bestseller', 'discount'];
+            $sorted_badges = array_intersect($badge_priority, $badges);
+            $badges_json = !empty($sorted_badges) ? json_encode(array_values($sorted_badges)) : null;
             
-            // Xử lý section flags - THÊM PHẦN NÀY
+            // Xử lý section flags
             $is_featured = isset($_POST['is_featured']) ? 1 : 0;
             $is_new = isset($_POST['is_new']) ? 1 : 0;
             $is_bestseller = isset($_POST['is_bestseller']) ? 1 : 0;
@@ -298,13 +300,15 @@ switch ($action) {
             $old_price = filter_input(INPUT_POST, 'old_price', FILTER_VALIDATE_FLOAT) ?: 0;
             $stock = filter_input(INPUT_POST, 'stock', FILTER_VALIDATE_INT);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
-            $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+            $status = isset($_POST['status']) ? 1 : 0;
             
-            // Xử lý badges
+            // Xử lý badges - Sắp xếp theo thứ tự ưu tiên
             $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
-            $badges_json = !empty($badges) ? json_encode($badges) : null;
+            $badge_priority = ['hot', 'new', 'bestseller', 'discount'];
+            $sorted_badges = array_intersect($badge_priority, $badges);
+            $badges_json = !empty($sorted_badges) ? json_encode(array_values($sorted_badges)) : null;
             
-            // Xử lý section flags - THÊM PHẦN NÀY
+            // Xử lý section flags
             $is_featured = isset($_POST['is_featured']) ? 1 : 0;
             $is_new = isset($_POST['is_new']) ? 1 : 0;
             $is_bestseller = isset($_POST['is_bestseller']) ? 1 : 0;

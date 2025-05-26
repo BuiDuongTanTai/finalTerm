@@ -164,7 +164,18 @@
                                     </label>
                                 </div>
                             </div>
-                            <small class="text-muted">Badge sẽ hiển thị trên ảnh sản phẩm theo thứ tự ưu tiên</small>
+                            <small class="text-muted">Badge sẽ hiển thị trên ảnh sản phẩm theo thứ tự ưu tiên: HOT > NEW > BESTSELLER > DISCOUNT</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="status" value="1" id="status"
+                                    <?php echo $product['status'] ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="status">
+                                    Hiển thị sản phẩm
+                                </label>
+                            </div>
+                            <small class="text-muted">Bỏ chọn nếu muốn ẩn sản phẩm</small>
                         </div>
 
                         <script>
