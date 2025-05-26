@@ -154,44 +154,55 @@ class ProductModel {
     // Lấy sản phẩm nổi bật
     public function getFeaturedProducts($limit = 6) {
         $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
-                  JOIN categories c ON p.category_id = c.id 
-                  JOIN brands b ON p.brand_id = b.id 
-                  WHERE p.status = 1 AND p.is_featured = 1 
-                  ORDER BY p.sold_count DESC 
-                  LIMIT ?";
+                JOIN categories c ON p.category_id = c.id 
+                JOIN brands b ON p.brand_id = b.id 
+                WHERE p.status = 1 AND p.is_featured = 1 
+                ORDER BY p.sold_count DESC 
+                LIMIT ?";
         return $this->db->fetchAll($query, [$limit]);
     }
 
     // Lấy sản phẩm mới
     public function getNewProducts($limit = 6) {
         $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
-                  JOIN categories c ON p.category_id = c.id 
-                  JOIN brands b ON p.brand_id = b.id 
-                  WHERE p.status = 1 AND p.is_new = 1 
-                  ORDER BY p.created_at DESC 
-                  LIMIT ?";
+                JOIN categories c ON p.category_id = c.id 
+                JOIN brands b ON p.brand_id = b.id 
+                WHERE p.status = 1 AND p.is_new = 1 
+                ORDER BY p.created_at DESC 
+                LIMIT ?";
         return $this->db->fetchAll($query, [$limit]);
     }
 
     // Lấy sản phẩm bán chạy
     public function getBestSellingProducts($limit = 6) {
         $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
-                  JOIN categories c ON p.category_id = c.id 
-                  JOIN brands b ON p.brand_id = b.id 
-                  WHERE p.status = 1 
-                  ORDER BY p.sold_count DESC 
-                  LIMIT ?";
+                JOIN categories c ON p.category_id = c.id 
+                JOIN brands b ON p.brand_id = b.id 
+                WHERE p.status = 1 AND p.is_bestseller = 1 
+                ORDER BY p.sold_count DESC 
+                LIMIT ?";
         return $this->db->fetchAll($query, [$limit]);
     }
 
-    // Lấy sản phẩm đang giảm giá
+    // Lấy sản phẩm giảm giá
     public function getDiscountedProducts($limit = 6) {
         $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
                     JOIN categories c ON p.category_id = c.id 
                     JOIN brands b ON p.brand_id = b.id 
-                    WHERE p.status = 1 AND p.old_price > 0 AND p.old_price > p.price 
+                    WHERE p.status = 1 AND p.is_discount = 1 
                     ORDER BY (p.old_price - p.price) / p.old_price DESC 
                     LIMIT ?";
+        return $this->db->fetchAll($query, [$limit]);
+    }
+
+    // Lấy sản phẩm khuyến mãi
+    public function getPromotionProducts($limit = 6) {
+        $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
+                JOIN categories c ON p.category_id = c.id 
+                JOIN brands b ON p.brand_id = b.id 
+                WHERE p.status = 1 AND p.is_promotion = 1 
+                ORDER BY p.created_at DESC 
+                LIMIT ?";
         return $this->db->fetchAll($query, [$limit]);
     }
 

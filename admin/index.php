@@ -55,6 +55,18 @@ switch ($action) {
             // Xử lý badges
             $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
             $badges_json = !empty($badges) ? json_encode($badges) : null;
+            // Xử lý section flags
+            $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+            $is_new = isset($_POST['is_new']) ? 1 : 0;
+            $is_bestseller = isset($_POST['is_bestseller']) ? 1 : 0;
+            $is_discount = isset($_POST['is_discount']) ? 1 : 0;
+            $is_promotion = isset($_POST['is_promotion']) ? 1 : 0;
+            $promotion_url = isset($_POST['promotion_url']) ? trim($_POST['promotion_url']) : null;
+
+            // Nếu là promotion nhưng không có custom URL, dùng link mặc định
+            if ($is_promotion && empty($promotion_url)) {
+                $promotion_url = null; // Sẽ được set sau khi có product ID
+            }
             
             if (empty($name)) {
                 header("Location: index.php?act=cate&error=" . urlencode("Vui lòng nhập tên danh mục"));
@@ -165,9 +177,26 @@ switch ($action) {
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
             $category_id = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT);
             $price = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT);
+            $old_price = filter_input(INPUT_POST, 'old_price', FILTER_VALIDATE_FLOAT) ?: 0;
             $stock = filter_input(INPUT_POST, 'stock', FILTER_VALIDATE_INT);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+            
+            // Xử lý badges
+            $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
+            $badges_json = !empty($badges) ? json_encode($badges) : null;
+            
+            // Xử lý section flags - THÊM PHẦN NÀY
+            $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+            $is_new = isset($_POST['is_new']) ? 1 : 0;
+            $is_bestseller = isset($_POST['is_bestseller']) ? 1 : 0;
+            $is_discount = isset($_POST['is_discount']) ? 1 : 0;
+            $is_promotion = isset($_POST['is_promotion']) ? 1 : 0;
+            $promotion_url = isset($_POST['promotion_url']) ? trim($_POST['promotion_url']) : null;
+    
+            if ($is_promotion && empty($promotion_url)) {
+                $promotion_url = null; // Sẽ được set sau khi có product ID
+            }
             
             if (empty($name) || !$category_id || !$price) {
                 header("Location: index.php?act=product&error=" . urlencode("Vui lòng điền đầy đủ thông tin bắt buộc"));
@@ -217,20 +246,40 @@ switch ($action) {
                 }
             }
             
-            $stmt = $DBH->prepare("INSERT INTO products (name, slug, short_description, description, price, stock, image_url, category_id, brand_id, badges, status) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $DBH->prepare("INSERT INTO products (name, slug, short_description, description, price, old_price, stock, image_url, category_id, brand_id, badges, is_featured, is_new, is_bestseller, is_discount, is_promotion, promotion_url, status) 
+                VALUES (:name, :slug, :short_description, :description, :price, :old_price, :stock, :image_url, :category_id, :brand_id, :badges, :is_featured, :is_new, :is_bestseller, :is_discount, :is_promotion, :promotion_url, :status)");
+            
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':slug', $slug);
             $stmt->bindParam(':short_description', $description);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':old_price', $old_price);
             $stmt->bindParam(':stock', $stock);
             $stmt->bindParam(':image_url', $image_url);
             $stmt->bindParam(':category_id', $category_id);
             $stmt->bindParam(':brand_id', $brand_id);
+            $stmt->bindParam(':badges', $badges_json);
+            $stmt->bindParam(':is_featured', $is_featured);
+            $stmt->bindParam(':is_new', $is_new);
+            $stmt->bindParam(':is_bestseller', $is_bestseller);
+            $stmt->bindParam(':is_discount', $is_discount);
+            $stmt->bindParam(':is_promotion', $is_promotion);
+            $stmt->bindParam(':promotion_url', $promotion_url);
             $stmt->bindParam(':status', $status);
             
             if ($stmt->execute()) {
+                $product_id = $DBH->lastInsertId();
+                
+                // Nếu là promotion mà chưa có URL, set URL mặc định
+                if ($is_promotion && empty($promotion_url)) {
+                    $default_url = "index.php?page=product_detail&id=" . $product_id;
+                    $update_stmt = $DBH->prepare("UPDATE products SET promotion_url = :promotion_url WHERE id = :id");
+                    $update_stmt->bindParam(':promotion_url', $default_url);
+                    $update_stmt->bindParam(':id', $product_id);
+                    $update_stmt->execute();
+                }
+                
                 header("Location: index.php?act=product&success=" . urlencode("Thêm sản phẩm thành công"));
             } else {
                 header("Location: index.php?act=product&error=" . urlencode("Lỗi khi thêm sản phẩm"));
@@ -239,17 +288,35 @@ switch ($action) {
         }
         header("Location: index.php?act=product");
         exit;
-
+    
     case "update_product":
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
             $category_id = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT);
             $price = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT);
+            $old_price = filter_input(INPUT_POST, 'old_price', FILTER_VALIDATE_FLOAT) ?: 0;
             $stock = filter_input(INPUT_POST, 'stock', FILTER_VALIDATE_INT);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
             
+            // Xử lý badges
+            $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
+            $badges_json = !empty($badges) ? json_encode($badges) : null;
+            
+            // Xử lý section flags - THÊM PHẦN NÀY
+            $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+            $is_new = isset($_POST['is_new']) ? 1 : 0;
+            $is_bestseller = isset($_POST['is_bestseller']) ? 1 : 0;
+            $is_discount = isset($_POST['is_discount']) ? 1 : 0;
+            $is_promotion = isset($_POST['is_promotion']) ? 1 : 0;
+            $promotion_url = isset($_POST['promotion_url']) ? trim($_POST['promotion_url']) : null;
+    
+            // Nếu là promotion nhưng không có custom URL, dùng link mặc định
+            if ($is_promotion && empty($promotion_url)) {
+                $promotion_url = "index.php?page=product_detail&id=" . $id;
+            }
+        
             if (empty($name) || !$category_id || !$price || !$id) {
                 header("Location: index.php?act=product&error=" . urlencode("Dữ liệu không hợp lệ"));
                 exit;
@@ -305,7 +372,9 @@ switch ($action) {
             }
             
             $sql = "UPDATE products SET name = :name, slug = :slug, short_description = :short_description, description = :description, 
-                    price = :price, stock = :stock, category_id = :category_id, status = :status" . $image_sql . " WHERE id = :id";
+                price = :price, old_price = :old_price, stock = :stock, category_id = :category_id, badges = :badges, 
+                is_featured = :is_featured, is_new = :is_new, is_bestseller = :is_bestseller, is_discount = :is_discount, 
+                is_promotion = :is_promotion, promotion_url = :promotion_url, status = :status" . $image_sql . " WHERE id = :id";
             
             $stmt = $DBH->prepare($sql);
             $stmt->bindParam(':name', $name);
@@ -313,8 +382,16 @@ switch ($action) {
             $stmt->bindParam(':short_description', $description);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':old_price', $old_price);
             $stmt->bindParam(':stock', $stock);
             $stmt->bindParam(':category_id', $category_id);
+            $stmt->bindParam(':badges', $badges_json);
+            $stmt->bindParam(':is_featured', $is_featured);
+            $stmt->bindParam(':is_new', $is_new);
+            $stmt->bindParam(':is_bestseller', $is_bestseller);
+            $stmt->bindParam(':is_discount', $is_discount);
+            $stmt->bindParam(':is_promotion', $is_promotion);
+            $stmt->bindParam(':promotion_url', $promotion_url);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':id', $id);
             
@@ -613,7 +690,8 @@ switch ($action) {
             $password_sql = "";
             if (!empty($_POST['new_password']) && !empty($_POST['current_password'])) {
                 // Kiểm tra mật khẩu hiện tại
-$check_pass->bindParam(':id', $id);
+                $check_pass = $DBH->prepare("SELECT password FROM users WHERE id = :id");
+                $check_pass->bindParam(':id', $id);
                 $check_pass->execute();
                 $current_hashed_password = $check_pass->fetchColumn();
                 

@@ -125,7 +125,7 @@
                                 <div class="product-image-container">
                                     
                                 <?php 
-                                    // Xử lý hiển thị badges từ database
+                                    // Xử lý hiển thị badge theo thứ tự ưu tiên: discount > hot > new > bestseller
                                     $badges = [];
                                     if (!empty($product->badges)) {
                                         $badges = json_decode($product->badges, true);
@@ -133,12 +133,12 @@
                                             $badges = [];
                                         }
                                     }
-                                    
-                                    // Ưu tiên hiển thị badge theo thứ tự: discount > hot > new > bestseller
+
+                                    // Chỉ hiển thị 1 badge theo thứ tự ưu tiên
                                     $badge_displayed = false;
-                                    
-                                    // Badge discount
-                                    if (in_array('discount', $badges) || (!empty($product->old_price) && $product->old_price > $product->price)) {
+
+                                    // 1. Ưu tiên cao nhất: Badge discount
+                                    if (!$badge_displayed && (in_array('discount', $badges) || (!empty($product->old_price) && $product->old_price > $product->price))) {
                                         $discount_percent = 0;
                                         if (!empty($product->old_price) && $product->old_price > $product->price) {
                                             $discount_percent = round(100 - ($product->price / $product->old_price * 100));
@@ -150,22 +150,22 @@
                                         }
                                         $badge_displayed = true;
                                     }
-                                    // Badge hot
-                                    elseif (in_array('hot', $badges) || $product->is_hot) {
+                                    // 2. Ưu tiên thứ 2: Badge hot
+                                    elseif (!$badge_displayed && (in_array('hot', $badges) || $product->is_hot)) {
                                         echo '<div class="product-badge hot">Hot</div>';
                                         $badge_displayed = true;
                                     }
-                                    // Badge new
-                                    elseif (in_array('new', $badges) || $product->is_new) {
+                                    // 3. Ưu tiên thứ 3: Badge new
+                                    elseif (!$badge_displayed && (in_array('new', $badges) || $product->is_new)) {
                                         echo '<div class="product-badge new">Mới</div>';
                                         $badge_displayed = true;
                                     }
-                                    // Badge bestseller
-                                    elseif (in_array('bestseller', $badges) || $product->is_best) {
+                                    // 4. Ưu tiên thấp nhất: Badge bestseller
+                                    elseif (!$badge_displayed && (in_array('bestseller', $badges) || $product->is_best)) {
                                         echo '<div class="product-badge best">Best</div>';
                                         $badge_displayed = true;
                                     }
-                                    ?>
+                                ?>
                                     
                                     <button type="button" class="product-wishlist-btn" data-product-id="<?php echo $product->id; ?>">
                                         <i class="bi bi-heart"></i>
@@ -276,7 +276,16 @@
                                     <div class="countdown-label">Giây</div>
                                 </div>
                             </div>
-                            <a href="index.php?page=product_detail&id=1" class="btn btn-cta mt-4">Mua ngay</a>
+                            <?php 
+                                // Lấy sản phẩm khuyến mãi đầu tiên
+                                $promotion_products = $productModel->getPromotionProducts(1);
+                                $promotion_link = "index.php?page=all_products";
+                                if (!empty($promotion_products)) {
+                                    $promo_product = $promotion_products[0];
+                                    $promotion_link = !empty($promo_product->promotion_url) ? $promo_product->promotion_url : "index.php?page=product_detail&id=" . $promo_product->id;
+                                }
+                                ?>
+                                <a href="<?php echo $promotion_link; ?>" class="btn btn-cta mt-4">Mua ngay</a>
                         </div>
                     </div>
                     <!-- <div class="col-lg-4 position-relative promo-image-container"> -->

@@ -248,13 +248,22 @@
                             
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="price" class="form-label">Giá</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="price" name="price" required>
-                                            <span class="input-group-text">VND</span>
-                                        </div>
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">Giá</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="price" name="price" required>
+                                        <span class="input-group-text">VND</span>
                                     </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="old_price" class="form-label">Giá cũ (để tính giảm giá)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="old_price" name="old_price">
+                                        <span class="input-group-text">VND</span>
+                                    </div>
+                                    <small class="text-muted">Để trống hoặc 0 nếu không có giá cũ</small>
+                                </div>
+
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
@@ -280,36 +289,70 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label class="form-label">Badge</label>
-                                <div class="badge-checkboxes">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="badges[]" value="hot" id="badge_hot">
-                                        <label class="form-check-label" for="badge_hot">
-                                            <span class="badge bg-danger">HOT</span> - Sản phẩm nổi bật
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="badges[]" value="new" id="badge_new">
-                                        <label class="form-check-label" for="badge_new">
-                                            <span class="badge bg-info">NEW</span> - Sản phẩm mới
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="badges[]" value="bestseller" id="badge_bestseller">
-                                        <label class="form-check-label" for="badge_bestseller">
-                                            <span class="badge bg-success">BESTSELLER</span> - Bán chạy
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="badges[]" value="discount" id="badge_discount">
-                                        <label class="form-check-label" for="badge_discount">
-                                            <span class="badge bg-warning">DISCOUNT</span> - Giảm giá
-                                        </label>
+                                <label class="form-label">Section hiển thị</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured">
+                                    <label class="form-check-label" for="is_featured">Nổi bật</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_new" id="is_new">
+                                    <label class="form-check-label" for="is_new">Mới</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_bestseller" id="is_bestseller">
+                                    <label class="form-check-label" for="is_bestseller">Bán chạy</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_discount" id="is_discount">
+                                    <label class="form-check-label" for="is_discount">Giảm giá</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_promotion" id="is_promotion">
+                                    <label class="form-check-label" for="is_promotion">Khuyến mãi</label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3" id="promotion_url_div" style="display: none;">
+                                        <label for="promotion_url" class="form-label">Link khuyến mãi</label>
+                                        <input type="url" class="form-control" id="promotion_url" name="promotion_url" placeholder="Nhập link khuyến mãi">
                                     </div>
                                 </div>
-                                <small class="text-muted">Có thể chọn nhiều badge cho một sản phẩm</small>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Badge hiển thị trên sản phẩm</label>
+                                        <div class="badge-checkboxes">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="badges[]" value="hot" id="add_badge_hot">
+                                                <label class="form-check-label" for="add_badge_hot">
+                                                    <span class="badge bg-danger">HOT</span> - Badge nổi bật
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="badges[]" value="new" id="add_badge_new">
+                                                <label class="form-check-label" for="add_badge_new">
+                                                    <span class="badge bg-info">NEW</span> - Badge mới
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="badges[]" value="bestseller" id="add_badge_bestseller">
+                                                <label class="form-check-label" for="add_badge_bestseller">
+                                                    <span class="badge bg-success">BESTSELLER</span> - Badge bán chạy
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="badges[]" value="discount" id="add_badge_discount">
+                                                <label class="form-check-label" for="add_badge_discount">
+                                                    <span class="badge bg-warning">DISCOUNT</span> - Badge giảm giá
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">Badge sẽ hiển thị trên ảnh sản phẩm theo thứ tự ưu tiên</small>
+                                    </div>
+                                </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     
@@ -344,4 +387,18 @@ function confirmDelete(id) {
         window.location.href = `index.php?act=delete_product&id=${id}`;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const promotionCheckbox = document.querySelector('input[name="is_promotion"]');
+    const promotionUrlDiv = document.getElementById('promotion_url_div');
+    
+    if (promotionCheckbox && promotionUrlDiv) {
+        promotionCheckbox.addEventListener('change', function() {
+            promotionUrlDiv.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Set initial state
+        promotionUrlDiv.style.display = promotionCheckbox.checked ? 'block' : 'none';
+    }
+});
 </script>

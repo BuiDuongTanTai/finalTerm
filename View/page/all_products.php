@@ -167,17 +167,48 @@
                         <div class="product-card h-100">
                             <div class="product-card-inner">
                                 <div class="product-image-container">
-                                    <?php if(!empty($product->old_price) && $product->old_price > $product->price): 
-                                        $discount_percent = round(100 - ($product->price / $product->old_price * 100));
-                                    ?>
-                                        <div class="product-badge sale">-<?php echo $discount_percent; ?>%</div>
-                                    <?php elseif($product->is_new): ?>
-                                        <div class="product-badge new">Mới</div>
-                                    <?php elseif($product->is_hot): ?>
-                                        <div class="product-badge hot">Hot</div>
-                                    <?php elseif($product->is_best): ?>
-                                        <div class="product-badge best">Best</div>
-                                    <?php endif; ?>
+                                <?php 
+                                    // Xử lý hiển thị badge theo thứ tự ưu tiên: discount > hot > new > bestseller
+                                    $badges = [];
+                                    if (!empty($product->badges)) {
+                                        $badges = json_decode($product->badges, true);
+                                        if (!is_array($badges)) {
+                                            $badges = [];
+                                        }
+                                    }
+
+                                    // Chỉ hiển thị 1 badge theo thứ tự ưu tiên
+                                    $badge_displayed = false;
+
+                                    // 1. Ưu tiên cao nhất: Badge discount
+                                    if (!$badge_displayed && (in_array('discount', $badges) || (!empty($product->old_price) && $product->old_price > $product->price))) {
+                                        $discount_percent = 0;
+                                        if (!empty($product->old_price) && $product->old_price > $product->price) {
+                                            $discount_percent = round(100 - ($product->price / $product->old_price * 100));
+                                        }
+                                        if ($discount_percent > 0) {
+                                            echo '<div class="product-badge sale">-' . $discount_percent . '%</div>';
+                                        } else {
+                                            echo '<div class="product-badge sale">SALE</div>';
+                                        }
+                                        $badge_displayed = true;
+                                    }
+                                    // 2. Ưu tiên thứ 2: Badge hot
+                                    elseif (!$badge_displayed && (in_array('hot', $badges) || $product->is_hot)) {
+                                        echo '<div class="product-badge hot">Hot</div>';
+                                        $badge_displayed = true;
+                                    }
+                                    // 3. Ưu tiên thứ 3: Badge new
+                                    elseif (!$badge_displayed && (in_array('new', $badges) || $product->is_new)) {
+                                        echo '<div class="product-badge new">Mới</div>';
+                                        $badge_displayed = true;
+                                    }
+                                    // 4. Ưu tiên thấp nhất: Badge bestseller
+                                    elseif (!$badge_displayed && (in_array('bestseller', $badges) || $product->is_best)) {
+                                        echo '<div class="product-badge best">Best</div>';
+                                        $badge_displayed = true;
+                                    }
+                                ?>
                                     
                                     <button type="button" class="product-wishlist-btn" data-product-id="<?php echo $product->id; ?>">
                                         <i class="bi bi-heart"></i>
