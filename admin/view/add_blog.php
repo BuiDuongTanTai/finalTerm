@@ -9,7 +9,6 @@
     <script src="https://cdn.tiny.cloud/1/ztadj9i62e8dgox15pu4w8vv1s1jgr8mcbg7w7pro5o9y0j1/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
-    <?php include 'header.php'; ?>
     
     <div class="container-fluid">
         <div class="row">
@@ -130,7 +129,6 @@
         </div>
     </div>
 
-    <?php include 'footer.php'; ?>
 
     <script>
         tinymce.init({
