@@ -835,7 +835,7 @@ switch ($action) {
         $categories = $blogModel->getAllCategories();
         $tags = $blogModel->getAllTags();
         
-        include 'view/add_blog.php';
+        // include 'view/add_blog.php';
         break;
 
     case "update_blog":
@@ -1054,6 +1054,16 @@ switch ($action) {
         $categories = $blogModel->getAllCategories();
         
         include 'view/blog_manage.php';
+        break;
+
+    case "add_blog":
+        require_once 'model/blog.php';
+        $blogModel = new Blog();
+
+        $categories = $blogModel->getAllCategories();
+        $tags = $blogModel->getAllTags();
+
+        include 'view/add_blog.php';
         break;
 
     case "edit_blog":
