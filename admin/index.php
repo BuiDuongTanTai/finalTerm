@@ -246,6 +246,9 @@ switch ($action) {
                     header("Location: index.php?act=product&error=" . urlencode("Lỗi khi tải lên hình ảnh"));
                     exit;
                 }
+                
+                // Lưu đường dẫn bắt đầu từ View/
+                $image_url = "View/assets/images/products/" . $image_url;
             }
             
             $stmt = $DBH->prepare("INSERT INTO products (name, slug, short_description, description, price, old_price, stock, image_url, category_id, brand_id, badges, is_featured, is_new, is_bestseller, is_discount, is_promotion, promotion_url, status) 
@@ -367,6 +370,9 @@ switch ($action) {
                     if ($old_image && file_exists($target_dir . $old_image)) {
                         unlink($target_dir . $old_image);
                     }
+                    
+                    // Lưu đường dẫn bắt đầu từ View/
+                    $image_url = "View/assets/images/products/" . $image_url;
                     
                     $image_sql = ", image_url = :image_url";
                 } else {
