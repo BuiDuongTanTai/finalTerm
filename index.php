@@ -135,6 +135,12 @@ switch ($page) {
         $cartController->orderSuccess();
         break;
         
+    case 'cancel_order':
+        require_once CONTROLLER_PATH . '/CartController.php';
+        $cartController = new CartController();
+        $cartController->cancelOrder();
+        break;
+        
     case 'ajax_cart':
         require_once CONTROLLER_PATH . '/CartController.php';
         $cartController = new CartController();

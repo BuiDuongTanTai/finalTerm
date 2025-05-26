@@ -3,10 +3,12 @@
 
 require_once 'Model/CartModel.php';
 require_once 'Model/ProductModel.php';
+require_once 'Helper/EmailHelper.php';
 
 class CartController {
     private $cartModel;
     private $productModel;
+    private $emailHelper;
     
     public function __construct() {
         $this->cartModel = new CartModel();
@@ -16,6 +18,8 @@ class CartController {
         if (!isset($_SESSION['user_id']) && !isset($_SESSION['cart_id'])) {
             $_SESSION['cart_id'] = bin2hex(random_bytes(16));
         }
+
+        $this->emailHelper = new EmailHelper();
     }
     
     // Xử lý xem giỏ hàng
@@ -45,13 +49,42 @@ class CartController {
     // Xử lý thêm sản phẩm vào giỏ hàng
     public function addToCart() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            error_log('Invalid request method: ' . $_SERVER['REQUEST_METHOD']);
             header('Location: index.php');
             exit;
         }
         
-        $product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
+        // Validate product_id
+        if (!isset($_POST['product_id']) || !is_numeric($_POST['product_id'])) {
+            error_log('Invalid product_id: ' . (isset($_POST['product_id']) ? $_POST['product_id'] : 'not set'));
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'ID sản phẩm không hợp lệ.']);
+                exit;
+            } else {
+                $_SESSION['error'] = 'ID sản phẩm không hợp lệ.';
+                header('Location: index.php');
+                exit;
+            }
+        }
+        
+        $product_id = (int)$_POST['product_id'];
         $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
         $buy_now = isset($_POST['buy_now']) ? (bool)$_POST['buy_now'] : false;
+        
+        // Validate quantity
+        if ($quantity <= 0) {
+            error_log('Invalid quantity: ' . $quantity);
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Số lượng sản phẩm không hợp lệ.']);
+                exit;
+            } else {
+                $_SESSION['error'] = 'Số lượng sản phẩm không hợp lệ.';
+                header('Location: index.php?page=product_detail&id=' . $product_id);
+                exit;
+            }
+        }
+        
+        error_log('Adding to cart - Product ID: ' . $product_id . ', Quantity: ' . $quantity);
         
         // Các tùy chọn như màu sắc, kích thước, v.v.
         $options = [];
@@ -62,48 +95,23 @@ class CartController {
             $options['variation'] = $_POST['variation'];
         }
         
-        // Kiểm tra đăng nhập nếu bắt buộc
-        $requires_login = true; // Có thể cấu hình từ admin panel
-
-        if ($requires_login && !isset($_SESSION['user_id'])) {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.']);
-                exit;
-            } else {
-                $_SESSION['error'] = 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.';
-                $_SESSION['redirect_after_login'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php';
-                header('Location: index.php?page=login');
-                exit;
-            }
-        }
-        
-        if ($product_id <= 0 || $quantity <= 0) {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Thông tin sản phẩm không hợp lệ.']);
-                exit;
-            } else {
-                $_SESSION['error'] = 'Thông tin sản phẩm không hợp lệ.';
-                header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=all_products'));
-                exit;
-            }
-        }
-        
-        // Kiểm tra sản phẩm có tồn tại không
+        // Kiểm tra sản phẩm tồn tại
         $product = $this->productModel->getProductById($product_id);
-        
         if (!$product) {
+            error_log('Product not found: ' . $product_id);
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Sản phẩm không tồn tại.']);
+                echo json_encode(['success' => false, 'message' => 'Không tìm thấy sản phẩm.']);
                 exit;
             } else {
-                $_SESSION['error'] = 'Sản phẩm không tồn tại.';
-                header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=all_products'));
+                $_SESSION['error'] = 'Không tìm thấy sản phẩm.';
+                header('Location: index.php');
                 exit;
             }
         }
         
-        // Kiểm tra số lượng sản phẩm
-        if ($quantity > $product->stock) {
+        // Kiểm tra số lượng tồn kho
+        if ($product->stock < $quantity) {
+            error_log('Insufficient stock for product ' . $product_id . ': requested ' . $quantity . ', available ' . $product->stock);
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 echo json_encode(['success' => false, 'message' => 'Số lượng sản phẩm trong kho không đủ.']);
                 exit;
@@ -114,44 +122,39 @@ class CartController {
             }
         }
         
-        // Trước khi thêm sản phẩm "Mua ngay", hãy xóa giỏ hàng hiện tại
-        if ($buy_now && isset($_SESSION['user_id'])) {
-            $this->cartModel->clearCart($_SESSION['user_id']);
-        } elseif ($buy_now && isset($_SESSION['cart_id'])) {
-            $this->cartModel->clearCart(null, $_SESSION['cart_id']);
-        }
-        
         // Thêm vào giỏ hàng
-        $success = false;
-        if (isset($_SESSION['user_id'])) {
-            $success = $this->cartModel->addToCart($product_id, $quantity, $options, $_SESSION['user_id']);
-        } elseif (isset($_SESSION['cart_id'])) {
-            $success = $this->cartModel->addToCart($product_id, $quantity, $options, null, $_SESSION['cart_id']);
+        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+        $session_id = isset($_SESSION['cart_id']) ? $_SESSION['cart_id'] : null;
+        
+        if (!$user_id && !$session_id) {
+            error_log('No user_id or session_id available');
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Phiên làm việc đã hết hạn. Vui lòng thử lại.']);
+                exit;
+            } else {
+                $_SESSION['error'] = 'Phiên làm việc đã hết hạn. Vui lòng thử lại.';
+                header('Location: index.php?page=product_detail&id=' . $product_id);
+                exit;
+            }
         }
         
-        if ($success) {
-            // Đếm số lượng sản phẩm trong giỏ hàng
-            $cart_count = isset($_SESSION['user_id']) ? 
-                $this->cartModel->countCartItems($_SESSION['user_id']) : 
-                (isset($_SESSION['cart_id']) ? $this->cartModel->countCartItems(null, $_SESSION['cart_id']) : 0);
-            
+        $result = $this->cartModel->addToCart($product_id, $quantity, $options, $user_id, $session_id);
+        
+        if ($result) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode([
-                    'success' => true, 
-                    'message' => 'Đã thêm sản phẩm vào giỏ hàng.',
-                    'cart_count' => $cart_count
-                ]);
+                echo json_encode(['success' => true, 'message' => 'Đã thêm sản phẩm vào giỏ hàng.']);
                 exit;
             } else {
                 $_SESSION['success'] = 'Đã thêm sản phẩm vào giỏ hàng.';
                 if ($buy_now) {
                     header('Location: index.php?page=checkout');
                 } else {
-                    header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=cart'));
+                    header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=product_detail&id=' . $product_id));
                 }
                 exit;
             }
         } else {
+            error_log('Failed to add product to cart: ' . $product_id);
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra. Vui lòng thử lại sau.']);
                 exit;
@@ -511,6 +514,16 @@ public function updateCart() {
         if ($order_id) {
             // Thêm các sản phẩm vào đơn hàng
             $this->cartModel->addOrderItems($order_id, $cart_items);
+
+            // Lấy thông tin đơn hàng vừa tạo
+            $order = $this->cartModel->getOrderById($order_id);
+            
+            // Gửi email xác nhận đơn hàng
+            $user = (object)[
+                'name' => $name,
+                'email' => $email
+            ];
+            $this->emailHelper->sendOrderConfirmation($order, $user);
             
             // Xóa giỏ hàng
             if ($user_id) {
@@ -565,6 +578,64 @@ public function updateCart() {
         include VIEW_PATH . '/includes/navbar.php';
         include VIEW_PATH . '/page/order_success.php';
         include VIEW_PATH . '/includes/footer.php';
+    }
+
+    public function cancelOrder() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php');
+            exit;
+        }
+        
+        $order_id = isset($_POST['order_id']) ? (int)$_POST['order_id'] : 0;
+        $cancel_reason = isset($_POST['cancel_reason']) ? trim($_POST['cancel_reason']) : '';
+        $other_reason = isset($_POST['other_reason']) ? trim($_POST['other_reason']) : '';
+        
+        if ($order_id <= 0 || empty($cancel_reason)) {
+            $_SESSION['error'] = 'Dữ liệu không hợp lệ.';
+            header('Location: index.php?page=profile#orders');
+            exit;
+        }
+        
+        // Kiểm tra quyền hủy đơn hàng
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['error'] = 'Vui lòng đăng nhập để thực hiện thao tác này.';
+            header('Location: index.php?page=login');
+            exit;
+        }
+        
+        // Lấy thông tin đơn hàng
+        $order = $this->cartModel->getOrderById($order_id);
+        
+        if (!$order || $order->user_id != $_SESSION['user_id']) {
+            $_SESSION['error'] = 'Không tìm thấy đơn hàng hoặc bạn không có quyền hủy đơn hàng này.';
+            header('Location: index.php?page=profile#orders');
+            exit;
+        }
+        
+        if ($order->status !== 'pending') {
+            $_SESSION['error'] = 'Không thể hủy đơn hàng này.';
+            header('Location: index.php?page=profile#orders');
+            exit;
+        }
+        
+        // Hủy đơn hàng
+        $result = $this->cartModel->cancelOrder($order_id, $cancel_reason, $other_reason);
+        
+        if ($result) {
+            // Gửi email xác nhận hủy đơn hàng
+            $user = (object)[
+                'name' => $order->name,
+                'email' => $order->email
+            ];
+            $this->emailHelper->sendOrderCancellation($order, $user);
+            
+            $_SESSION['success'] = 'Đơn hàng đã được hủy thành công.';
+        } else {
+            $_SESSION['error'] = 'Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại.';
+        }
+        
+        header('Location: index.php?page=profile#orders');
+        exit;
     }
     
     // Endpoint API để lấy thông tin giỏ hàng cho AJAX

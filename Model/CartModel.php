@@ -29,49 +29,79 @@ class CartModel {
 
     // Thêm sản phẩm vào giỏ hàng
     public function addToCart($product_id, $quantity, $options = null, $user_id = null, $session_id = null) {
-        // Kiểm tra sản phẩm còn hàng không
-        $product_query = "SELECT stock FROM products WHERE id = ?";
-        $product = $this->db->fetchOne($product_query, [$product_id]);
+        error_log('CartModel::addToCart - Product ID: ' . $product_id . ', Quantity: ' . $quantity . ', User ID: ' . $user_id . ', Session ID: ' . $session_id);
         
-        if (!$product || $product->stock < $quantity) {
-            return false; // Sản phẩm không tồn tại hoặc không đủ hàng
+        // Validate input parameters
+        if (!$product_id || $quantity <= 0) {
+            error_log('CartModel::addToCart - Invalid input parameters');
+            return false;
         }
         
-        // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
-        if ($user_id) {
-            $check_query = "SELECT * FROM carts WHERE user_id = ? AND product_id = ?";
-            $cart_item = $this->db->fetchOne($check_query, [$user_id, $product_id]);
-        } else {
-            $check_query = "SELECT * FROM carts WHERE session_id = ? AND product_id = ?";
-            $cart_item = $this->db->fetchOne($check_query, [$session_id, $product_id]);
+        if (!$user_id && !$session_id) {
+            error_log('CartModel::addToCart - No user_id or session_id provided');
+            return false;
         }
         
-        $options_json = $options ? json_encode($options) : null;
-        
-        if ($cart_item) {
-            // Cập nhật số lượng nếu sản phẩm đã có trong giỏ hàng
-            $new_quantity = $cart_item->quantity + $quantity;
+        try {
+            // Kiểm tra sản phẩm còn hàng không
+            $product_query = "SELECT stock FROM products WHERE id = ?";
+            $product = $this->db->fetchOne($product_query, [$product_id]);
             
-            if ($new_quantity > $product->stock) {
-                $new_quantity = $product->stock; // Giới hạn số lượng theo tồn kho
+            if (!$product) {
+                error_log('CartModel::addToCart - Product not found: ' . $product_id);
+                return false;
             }
             
-            if ($user_id) {
-                $update_query = "UPDATE carts SET quantity = ?, options = ?, updated_at = NOW() WHERE user_id = ? AND product_id = ?";
-                return $this->db->execute($update_query, [$new_quantity, $options_json, $user_id, $product_id]);
-            } else {
-                $update_query = "UPDATE carts SET quantity = ?, options = ?, updated_at = NOW() WHERE session_id = ? AND product_id = ?";
-                return $this->db->execute($update_query, [$new_quantity, $options_json, $session_id, $product_id]);
+            if ($product->stock < $quantity) {
+                error_log('CartModel::addToCart - Insufficient stock for product ' . $product_id . ': requested ' . $quantity . ', available ' . $product->stock);
+                return false;
             }
-        } else {
-            // Thêm sản phẩm mới vào giỏ hàng
+            
+            // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
             if ($user_id) {
-                $insert_query = "INSERT INTO carts (user_id, product_id, quantity, options) VALUES (?, ?, ?, ?)";
-                return $this->db->execute($insert_query, [$user_id, $product_id, $quantity, $options_json]);
+                $check_query = "SELECT * FROM carts WHERE user_id = ? AND product_id = ?";
+                $cart_item = $this->db->fetchOne($check_query, [$user_id, $product_id]);
             } else {
-                $insert_query = "INSERT INTO carts (session_id, product_id, quantity, options) VALUES (?, ?, ?, ?)";
-                return $this->db->execute($insert_query, [$session_id, $product_id, $quantity, $options_json]);
+                $check_query = "SELECT * FROM carts WHERE session_id = ? AND product_id = ?";
+                $cart_item = $this->db->fetchOne($check_query, [$session_id, $product_id]);
             }
+            
+            $options_json = $options ? json_encode($options) : null;
+            
+            if ($cart_item) {
+                error_log('CartModel::addToCart - Updating existing cart item');
+                // Cập nhật số lượng nếu sản phẩm đã có trong giỏ hàng
+                $new_quantity = $cart_item->quantity + $quantity;
+                
+                if ($new_quantity > $product->stock) {
+                    $new_quantity = $product->stock; // Giới hạn số lượng theo tồn kho
+                }
+                
+                if ($user_id) {
+                    $update_query = "UPDATE carts SET quantity = ?, options = ?, updated_at = NOW() WHERE user_id = ? AND product_id = ?";
+                    $result = $this->db->execute($update_query, [$new_quantity, $options_json, $user_id, $product_id]);
+                } else {
+                    $update_query = "UPDATE carts SET quantity = ?, options = ?, updated_at = NOW() WHERE session_id = ? AND product_id = ?";
+                    $result = $this->db->execute($update_query, [$new_quantity, $options_json, $session_id, $product_id]);
+                }
+                error_log('CartModel::addToCart - Update result: ' . ($result ? 'success' : 'failed'));
+                return $result;
+            } else {
+                error_log('CartModel::addToCart - Adding new cart item');
+                // Thêm sản phẩm mới vào giỏ hàng
+                if ($user_id) {
+                    $insert_query = "INSERT INTO carts (user_id, product_id, quantity, options) VALUES (?, ?, ?, ?)";
+                    $result = $this->db->execute($insert_query, [$user_id, $product_id, $quantity, $options_json]);
+                } else {
+                    $insert_query = "INSERT INTO carts (session_id, product_id, quantity, options) VALUES (?, ?, ?, ?)";
+                    $result = $this->db->execute($insert_query, [$session_id, $product_id, $quantity, $options_json]);
+                }
+                error_log('CartModel::addToCart - Insert result: ' . ($result ? 'success' : 'failed'));
+                return $result;
+            }
+        } catch (Exception $e) {
+            error_log('CartModel::addToCart - Exception: ' . $e->getMessage());
+            return false;
         }
     }
 
@@ -240,5 +270,34 @@ class CartModel {
     public function updateCartQuantity($cart_id, $quantity) {
         $query = "UPDATE carts SET quantity = ?, updated_at = NOW() WHERE id = ?";
         return $this->db->execute($query, [$quantity, $cart_id]);
+    }
+
+    // Hủy đơn hàng
+    public function cancelOrder($order_id, $cancel_reason, $other_reason = null) {
+        // Cập nhật trạng thái đơn hàng
+        $query = "UPDATE orders SET status = 'cancelled', notes = CONCAT(notes, '\nLý do hủy: ', ?) WHERE id = ?";
+        $reason = $cancel_reason === 'other' ? $other_reason : $cancel_reason;
+        $this->db->execute($query, [$reason, $order_id]);
+        
+        // Hoàn trả số lượng sản phẩm vào kho
+        $items_query = "SELECT product_id, quantity FROM order_items WHERE order_id = ?";
+        $items = $this->db->fetchAll($items_query, [$order_id]);
+        
+        foreach ($items as $item) {
+            $update_query = "UPDATE products SET 
+                            sold_count = sold_count - ?, 
+                            stock = stock + ? 
+                            WHERE id = ?";
+            
+            $this->db->execute($update_query, [$item->quantity, $item->quantity, $item->product_id]);
+        }
+        
+        return true;
+    }
+
+    // Lấy thông tin đơn hàng theo ID
+    public function getOrderById($order_id) {
+        $query = "SELECT * FROM orders WHERE id = ?";
+        return $this->db->fetchOne($query, [$order_id]);
     }
 }
