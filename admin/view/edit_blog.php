@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.tiny.cloud/1/ztadj9i62e8dgox15pu4w8vv1s1jgr8mcbg7w7pro5o9y0j1/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
-<body> -->
+<body>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -105,16 +105,10 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <small class="text-muted d-block">Ngày tạo: <?= date('d/m/Y H:i', strtotime($blog['created_at'])) ?></small>
-                                                <div class="mb-2">
-                                                    <label class="form-label">Lượt xem:</label>
-                                                    <input type="number" class="form-control form-control-sm" name="views" value="<?= $blog['views'] ?>">
-                                                </div>
+                                                <small class="text-muted d-block">Lượt xem: <?= number_format($blog['views']) ?></small>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="mb-2">
-                                                    <label class="form-label">Tác giả:</label>
-                                                    <input type="text" class="form-control form-control-sm" name="author_name" value="<?= $blog['author_name'] ?>">
-                                                </div>
+                                                <small class="text-muted d-block">Tác giả: <?= $blog['author_name'] ?></small>
                                                 <?php if ($blog['updated_at']): ?>
                                                     <small class="text-muted d-block">Cập nhật lần cuối: <?= date('d/m/Y H:i', strtotime($blog['updated_at'])) ?></small>
                                                 <?php endif; ?>

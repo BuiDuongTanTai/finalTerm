@@ -800,7 +800,6 @@ switch ($action) {
                 'author_name' => $_SESSION['admin']['name'] ?? 'Admin',
                 'status' => $_POST['status'],
                 'published_at' => $_POST['status'] == 'published' ? date('Y-m-d H:i:s') : null,
-                'featured' => isset($_POST['featured']) ? 1 : 0,
                 'image' => ''
             ];
             
@@ -835,7 +834,7 @@ switch ($action) {
         $categories = $blogModel->getAllCategories();
         $tags = $blogModel->getAllTags();
         
-        // include 'view/add_blog.php';
+        include 'view/add_blog.php';
         break;
 
     case "update_blog":
@@ -849,8 +848,7 @@ switch ($action) {
                 'summary' => $_POST['summary'],
                 'content' => $_POST['content'],
                 'category_id' => $_POST['category_id'],
-                'status' => $_POST['status'],
-                'featured' => isset($_POST['featured']) ? 1 : 0
+                'status' => $_POST['status']
             ];
             
             // Xử lý upload ảnh mới
@@ -880,10 +878,13 @@ switch ($action) {
                 $blogModel->addTagsToBlog($id, $tags);
                 
                 header('Location: index.php?act=blog_manage&success=' . urlencode('Cập nhật bài viết thành công'));
-                exit;
+            } else {
+                header('Location: index.php?act=blog_manage&error=' . urlencode('Có lỗi xảy ra khi cập nhật bài viết'));
             }
+            exit;
         }
-        break;
+        header('Location: index.php?act=blog_manage');
+        exit;
 
     case "delete_blog":
         $id = $_GET['id'] ?? 0;
@@ -1054,16 +1055,6 @@ switch ($action) {
         $categories = $blogModel->getAllCategories();
         
         include 'view/blog_manage.php';
-        break;
-
-    case "add_blog":
-        require_once 'model/blog.php';
-        $blogModel = new Blog();
-
-        $categories = $blogModel->getAllCategories();
-        $tags = $blogModel->getAllTags();
-
-        include 'view/add_blog.php';
         break;
 
     case "edit_blog":
