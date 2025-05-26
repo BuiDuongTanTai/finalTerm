@@ -60,6 +60,7 @@
                             <th>Danh mục</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
+                            <th>Badge</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
@@ -134,6 +135,37 @@
                             echo "<td>{$row['category_name']}</td>";
                             echo "<td>" . number_format($row['price']) . " VND</td>";
                             echo "<td>{$row['stock']}</td>";
+                            echo "<td>";
+                            if (!empty($row['badges'])) {
+                                $badges = json_decode($row['badges'], true);
+                                if (is_array($badges)) {
+                                    foreach ($badges as $badge) {
+                                        switch ($badge) {
+                                            case 'hot':
+                                                echo '<span class="badge bg-danger me-1">HOT</span>';
+                                                break;
+                                            case 'new':
+                                                echo '<span class="badge bg-info me-1">NEW</span>';
+                                                break;
+                                            case 'bestseller':
+                                                echo '<span class="badge bg-success me-1">BESTSELLER</span>';
+                                                break;
+                                            case 'discount':
+                                                // Tính phần trăm giảm giá
+                                                if (!empty($row['old_price']) && $row['old_price'] > $row['price']) {
+                                                    $discount = round(100 - ($row['price'] / $row['old_price'] * 100));
+                                                    echo '<span class="badge bg-warning me-1">-' . $discount . '%</span>';
+                                                } else {
+                                                    echo '<span class="badge bg-warning me-1">DISCOUNT</span>';
+                                                }
+                                                break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                echo '<span class="badge bg-secondary">Bình thường</span>';
+                            }
+                            echo "</td>";
                             echo "<td>" . ($row['status'] == 1 ? '<span class="badge bg-success">Hiện</span>' : '<span class="badge bg-secondary">Ẩn</span>') . "</td>";
                             echo "<td>";
                             echo "<div class='btn-group'>";
@@ -248,18 +280,36 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label class="form-label">Trạng thái</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="status" id="status1" value="1" checked>
-                                        <label class="form-check-label" for="status1">Hiện</label>
+                                <label class="form-label">Badge</label>
+                                <div class="badge-checkboxes">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="badges[]" value="hot" id="badge_hot">
+                                        <label class="form-check-label" for="badge_hot">
+                                            <span class="badge bg-danger">HOT</span> - Sản phẩm nổi bật
+                                        </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="status" id="status0" value="0">
-                                        <label class="form-check-label" for="status0">Ẩn</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="badges[]" value="new" id="badge_new">
+                                        <label class="form-check-label" for="badge_new">
+                                            <span class="badge bg-info">NEW</span> - Sản phẩm mới
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="badges[]" value="bestseller" id="badge_bestseller">
+                                        <label class="form-check-label" for="badge_bestseller">
+                                            <span class="badge bg-success">BESTSELLER</span> - Bán chạy
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="badges[]" value="discount" id="badge_discount">
+                                        <label class="form-check-label" for="badge_discount">
+                                            <span class="badge bg-warning">DISCOUNT</span> - Giảm giá
+                                        </label>
                                     </div>
                                 </div>
+                                <small class="text-muted">Có thể chọn nhiều badge cho một sản phẩm</small>
                             </div>
+                            
                         </div>
                     </div>
                     

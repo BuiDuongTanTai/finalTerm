@@ -66,17 +66,47 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Trạng thái</label>
-                            <div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="status1" value="1" <?php echo $product['status'] == 1 ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="status1">Hiện</label>
+                            <label class="form-label">Badge</label>
+                            <div class="badge-checkboxes">
+                                <?php 
+                                $current_badges = [];
+                                if (!empty($product['badges'])) {
+                                    $current_badges = json_decode($product['badges'], true);
+                                    if (!is_array($current_badges)) {
+                                        $current_badges = [];
+                                    }
+                                }
+                                ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="badges[]" value="hot" id="badge_hot" 
+                                           <?php echo in_array('hot', $current_badges) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="badge_hot">
+                                        <span class="badge bg-danger">HOT</span> - Sản phẩm nổi bật
+                                    </label>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="status0" value="0" <?php echo $product['status'] == 0 ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="status0">Ẩn</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="badges[]" value="new" id="badge_new"
+                                           <?php echo in_array('new', $current_badges) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="badge_new">
+                                        <span class="badge bg-info">NEW</span> - Sản phẩm mới
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="badges[]" value="bestseller" id="badge_bestseller"
+                                           <?php echo in_array('bestseller', $current_badges) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="badge_bestseller">
+                                        <span class="badge bg-success">BESTSELLER</span> - Bán chạy
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="badges[]" value="discount" id="badge_discount"
+                                           <?php echo in_array('discount', $current_badges) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="badge_discount">
+                                        <span class="badge bg-warning">DISCOUNT</span> - Giảm giá
+                                    </label>
                                 </div>
                             </div>
+                            <small class="text-muted">Có thể chọn nhiều badge cho một sản phẩm</small>
                         </div>
                     </div>
                 </div>

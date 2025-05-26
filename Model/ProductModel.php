@@ -66,7 +66,12 @@ class ProductModel {
                 $query .= "ORDER BY p.rating DESC ";
                 break;
             case 'discount':
-                $query .= "ORDER BY ((p.old_price - p.price) / p.old_price) DESC ";
+                $query .= "ORDER BY 
+                    CASE 
+                        WHEN p.old_price > 0 AND p.old_price > p.price THEN (p.old_price - p.price) / p.old_price 
+                        WHEN JSON_CONTAINS(p.badges, '\"discount\"') THEN 0.5
+                        ELSE 0 
+                    END DESC ";
                 break;
             default: // popular
                 $query .= "ORDER BY p.sold_count DESC ";
@@ -370,5 +375,83 @@ class ProductModel {
         }
         
         return count($_SESSION['recently_viewed']);
+    }
+
+    // Lấy sản phẩm theo badge
+    public function getProductsByBadge($badge, $limit = 6) {
+        $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
+                  JOIN categories c ON p.category_id = c.id 
+                  JOIN brands b ON p.brand_id = b.id 
+                  WHERE p.status = 1 AND JSON_CONTAINS(p.badges, ?) 
+                  ORDER BY p.sold_count DESC 
+                  LIMIT ?";
+        return $this->db->fetchAll($query, ['"' . $badge . '"', $limit]);
+    }
+
+    // Lấy sản phẩm HOT
+    public function getHotProducts($limit = 6) {
+        return $this->getProductsByBadge('hot', $limit);
+    }
+
+    // Lấy sản phẩm NEW với điều kiện badges hoặc is_new = 1
+    public function getNewProductsWithBadge($limit = 6) {
+        $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
+                  JOIN categories c ON p.category_id = c.id 
+                  JOIN brands b ON p.brand_id = b.id 
+                  WHERE p.status = 1 AND (JSON_CONTAINS(p.badges, '\"new\"') OR p.is_new = 1)
+                  ORDER BY p.created_at DESC 
+                  LIMIT ?";
+        return $this->db->fetchAll($query, [$limit]);
+    }
+
+    // Lấy sản phẩm BESTSELLER
+    public function getBestsellerProducts($limit = 6) {
+        return $this->getProductsByBadge('bestseller', $limit);
+    }
+
+    // Lấy sản phẩm DISCOUNT
+    public function getDiscountProductsWithBadge($limit = 6) {
+        $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
+                  JOIN categories c ON p.category_id = c.id 
+                  JOIN brands b ON p.brand_id = b.id 
+                  WHERE p.status = 1 AND (
+                      JSON_CONTAINS(p.badges, '\"discount\"') OR 
+                      (p.old_price > 0 AND p.old_price > p.price)
+                  )
+                  ORDER BY (p.old_price - p.price) / p.old_price DESC 
+                  LIMIT ?";
+        return $this->db->fetchAll($query, [$limit]);
+    }
+
+    // Lấy sản phẩm nổi bật với badges
+    public function getFeaturedProductsWithBadge($limit = 6) {
+        $query = "SELECT p.*, c.name as category_name, b.name as brand_name FROM products p 
+                  JOIN categories c ON p.category_id = c.id 
+                  JOIN brands b ON p.brand_id = b.id 
+                  WHERE p.status = 1 AND (
+                      p.is_featured = 1 OR 
+                      JSON_CONTAINS(p.badges, '\"hot\"') OR 
+                      JSON_CONTAINS(p.badges, '\"bestseller\"')
+                  )
+                  ORDER BY p.sold_count DESC 
+                  LIMIT ?";
+        return $this->db->fetchAll($query, [$limit]);
+    }
+
+    // Helper method để parse badges
+    public function parseBadges($badgesJson) {
+        if (empty($badgesJson)) {
+            return [];
+        }
+        $badges = json_decode($badgesJson, true);
+        return is_array($badges) ? $badges : [];
+    }
+
+    // Helper method để tính phần trăm giảm giá
+    public function calculateDiscountPercent($price, $oldPrice) {
+        if (empty($oldPrice) || $oldPrice <= $price) {
+            return 0;
+        }
+        return round(100 - ($price / $oldPrice * 100));
     }
 }

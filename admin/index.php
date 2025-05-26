@@ -52,6 +52,9 @@ switch ($action) {
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
             $status = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+            // Xử lý badges
+            $badges = isset($_POST['badges']) ? $_POST['badges'] : [];
+            $badges_json = !empty($badges) ? json_encode($badges) : null;
             
             if (empty($name)) {
                 header("Location: index.php?act=cate&error=" . urlencode("Vui lòng nhập tên danh mục"));
@@ -214,8 +217,8 @@ switch ($action) {
                 }
             }
             
-            $stmt = $DBH->prepare("INSERT INTO products (name, slug, short_description, description, price, stock, image_url, category_id, brand_id, status) 
-                                  VALUES (:name, :slug, :short_description, :description, :price, :stock, :image_url, :category_id, :brand_id, :status)");
+            $stmt = $DBH->prepare("INSERT INTO products (name, slug, short_description, description, price, stock, image_url, category_id, brand_id, badges, status) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':slug', $slug);
             $stmt->bindParam(':short_description', $description);
