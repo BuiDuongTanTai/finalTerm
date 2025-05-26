@@ -67,4 +67,14 @@ class PageController {
         include VIEW_PATH . '/page/termsofuse.php';
         include VIEW_PATH . '/includes/footer.php';
     }
+
+    public function about() {
+        $title = "Về chúng tôi";
+        
+        // Load view
+        include VIEW_PATH . '/includes/header.php';
+        include VIEW_PATH . '/includes/navbar.php';
+        include VIEW_PATH . '/page/about.php';
+        include VIEW_PATH . '/includes/footer.php';
+    }
 }
