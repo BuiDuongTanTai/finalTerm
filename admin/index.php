@@ -790,7 +790,7 @@ switch ($action) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             require_once 'model/blog.php';
             $blogModel = new Blog();
-            
+
             $data = [
                 'title' => $_POST['title'],
                 'summary' => $_POST['summary'],
@@ -802,39 +802,39 @@ switch ($action) {
                 'published_at' => $_POST['status'] == 'published' ? date('Y-m-d H:i:s') : null,
                 'image' => ''
             ];
-            
+
             // Xử lý upload ảnh
             if (!empty($_FILES['image']['name'])) {
                 $uploadDir = '../uploads/blog/';
                 if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
-                
+
                 $fileName = time() . '_' . basename($_FILES['image']['name']);
                 $uploadPath = $uploadDir . $fileName;
-                
+
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
                     $data['image'] = 'uploads/blog/' . $fileName;
                 }
             }
-            
+
             $blogId = $blogModel->createBlog($data);
-            
+
             if ($blogId && !empty($_POST['tags'])) {
                 $blogModel->addTagsToBlog($blogId, $_POST['tags']);
             }
-            
+
             header('Location: index.php?act=blog_manage&success=' . urlencode('Thêm bài viết thành công'));
             exit;
         }
-        
+
         require_once 'model/blog.php';
         $blogModel = new Blog();
-        
+
         $categories = $blogModel->getAllCategories();
         $tags = $blogModel->getAllTags();
-        
-        include 'view/add_blog.php';
+
+        // include 'view/add_blog.php';
         break;
 
     case "update_blog":
@@ -1074,6 +1074,16 @@ switch ($action) {
         $tags = $blogModel->getAllTags();
         
         include 'view/edit_blog.php';
+        break;
+
+    case "add_blog":
+        require_once 'model/blog.php';
+        $blogModel = new Blog();
+
+        $categories = $blogModel->getAllCategories();
+        $tags = $blogModel->getAllTags();
+
+        include 'view/add_blog.php';
         break;
 
     default:
