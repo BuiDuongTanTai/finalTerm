@@ -244,7 +244,7 @@
                                     <div class="countdown-label">Giây</div>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-cta mt-4">Mua ngay</a>
+                            <a href="index.php?page=product_detail&id=1" class="btn btn-cta mt-4">Mua ngay</a>
                         </div>
                     </div>
                     <!-- <div class="col-lg-4 position-relative promo-image-container"> -->

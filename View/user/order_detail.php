@@ -269,7 +269,7 @@
             </div>
             <div class="modal-body">
                 <p>Bạn có chắc chắn muốn hủy đơn hàng này không? Hành động này không thể hoàn tác.</p>
-                <form id="cancelOrderForm" action="index.php?page=cancel_order" method="post">
+                <form id="cancelOrderForm" action="index.php?page=profile#orders" method="post">
                     <input type="hidden" name="order_id" value="<?php echo $order->id; ?>">
                     <div class="mb-3">
                         <label for="cancel_reason" class="form-label">Lý do hủy đơn</label>
