@@ -93,9 +93,7 @@ class Blog {
                   content = :content,
                   category_id = :category_id,
                   status = :status,
-                  views = :views,
-                  author_name = :author_name,
-                  updated_at = :updated_at";
+                  updated_at = NOW()";
         
         if (isset($data['image']) && $data['image']) {
             $query .= ", image = :image";
@@ -114,9 +112,6 @@ class Blog {
         $stmt->bindParam(':content', $data['content']);
         $stmt->bindParam(':category_id', $data['category_id']);
         $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':views', $data['views']);
-        $stmt->bindParam(':author_name', $data['author_name']);
-        $stmt->bindParam(':updated_at', $data['updated_at']);
         
         if (isset($data['image']) && $data['image']) {
             $stmt->bindParam(':image', $data['image']);
@@ -146,11 +141,10 @@ class Blog {
     
     // Lấy tất cả danh mục
     public function getAllCategories() {
-        $query = "SELECT c.*, 
-                  (SELECT COUNT(*) FROM blogs b 
-                   WHERE b.category_id = c.id 
-                   AND b.status = 'published') as post_count 
+        $query = "SELECT c.*, COUNT(b.id) as post_count 
                   FROM blog_categories c 
+                  LEFT JOIN blogs b ON c.id = b.category_id 
+                  GROUP BY c.id 
                   ORDER BY c.name";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -194,10 +188,7 @@ class Blog {
     
     // Lấy bài viết phổ biến
     public function getPopularPosts($limit = 5) {
-        $query = "SELECT b.*, c.name as category_name,
-                  (SELECT GROUP_CONCAT(t.name) FROM tags t 
-                   INNER JOIN blog_tags bt ON t.id = bt.tag_id 
-                   WHERE bt.blog_id = b.id) as tags
+        $query = "SELECT b.*, c.name as category_name 
                   FROM blogs b 
                   LEFT JOIN blog_categories c ON b.category_id = c.id 
                   WHERE b.status = 'published' 

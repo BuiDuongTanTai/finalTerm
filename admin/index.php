@@ -848,10 +848,7 @@ switch ($action) {
                 'summary' => $_POST['summary'],
                 'content' => $_POST['content'],
                 'category_id' => $_POST['category_id'],
-                'status' => $_POST['status'],
-                'views' => $_POST['views'] ?? 0,
-                'author_name' => $_POST['author_name'],
-                'updated_at' => date('Y-m-d H:i:s')
+                'status' => $_POST['status']
             ];
             
             // Xử lý upload ảnh mới
