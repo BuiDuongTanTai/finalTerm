@@ -95,23 +95,48 @@ class CartController {
             $options['variation'] = $_POST['variation'];
         }
         
-        // Kiểm tra sản phẩm tồn tại
-        $product = $this->productModel->getProductById($product_id);
-        if (!$product) {
-            error_log('Product not found: ' . $product_id);
+        // Kiểm tra đăng nhập nếu bắt buộc
+        $requires_login = true; // Có thể cấu hình từ admin panel
+
+        if ($requires_login && !isset($_SESSION['user_id'])) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Không tìm thấy sản phẩm.']);
+                echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.']);
                 exit;
             } else {
-                $_SESSION['error'] = 'Không tìm thấy sản phẩm.';
-                header('Location: index.php');
+                $_SESSION['error'] = 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.';
+                $_SESSION['redirect_after_login'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php';
+                header('Location: index.php?page=login');
                 exit;
             }
         }
         
-        // Kiểm tra số lượng tồn kho
-        if ($product->stock < $quantity) {
-            error_log('Insufficient stock for product ' . $product_id . ': requested ' . $quantity . ', available ' . $product->stock);
+        if ($product_id <= 0 || $quantity <= 0) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Thông tin sản phẩm không hợp lệ.']);
+                exit;
+            } else {
+                $_SESSION['error'] = 'Thông tin sản phẩm không hợp lệ.';
+                header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=all_products'));
+                exit;
+            }
+        }
+        
+        // Kiểm tra sản phẩm có tồn tại không
+        $product = $this->productModel->getProductById($product_id);
+        
+        if (!$product) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Sản phẩm không tồn tại.']);
+                exit;
+            } else {
+                $_SESSION['error'] = 'Sản phẩm không tồn tại.';
+                header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=all_products'));
+                exit;
+            }
+        }
+        
+        // Kiểm tra số lượng sản phẩm
+        if ($quantity > $product->stock) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 echo json_encode(['success' => false, 'message' => 'Số lượng sản phẩm trong kho không đủ.']);
                 exit;
@@ -122,39 +147,44 @@ class CartController {
             }
         }
         
-        // Thêm vào giỏ hàng
-        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-        $session_id = isset($_SESSION['cart_id']) ? $_SESSION['cart_id'] : null;
-        
-        if (!$user_id && !$session_id) {
-            error_log('No user_id or session_id available');
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => false, 'message' => 'Phiên làm việc đã hết hạn. Vui lòng thử lại.']);
-                exit;
-            } else {
-                $_SESSION['error'] = 'Phiên làm việc đã hết hạn. Vui lòng thử lại.';
-                header('Location: index.php?page=product_detail&id=' . $product_id);
-                exit;
-            }
+        // Trước khi thêm sản phẩm "Mua ngay", hãy xóa giỏ hàng hiện tại
+        if ($buy_now && isset($_SESSION['user_id'])) {
+            $this->cartModel->clearCart($_SESSION['user_id']);
+        } elseif ($buy_now && isset($_SESSION['cart_id'])) {
+            $this->cartModel->clearCart(null, $_SESSION['cart_id']);
         }
         
-        $result = $this->cartModel->addToCart($product_id, $quantity, $options, $user_id, $session_id);
+        // Thêm vào giỏ hàng
+        $success = false;
+        if (isset($_SESSION['user_id'])) {
+            $success = $this->cartModel->addToCart($product_id, $quantity, $options, $_SESSION['user_id']);
+        } elseif (isset($_SESSION['cart_id'])) {
+            $success = $this->cartModel->addToCart($product_id, $quantity, $options, null, $_SESSION['cart_id']);
+        }
         
-        if ($result) {
+        if ($success) {
+            // Đếm số lượng sản phẩm trong giỏ hàng
+            $cart_count = isset($_SESSION['user_id']) ? 
+                $this->cartModel->countCartItems($_SESSION['user_id']) : 
+                (isset($_SESSION['cart_id']) ? $this->cartModel->countCartItems(null, $_SESSION['cart_id']) : 0);
+            
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                echo json_encode(['success' => true, 'message' => 'Đã thêm sản phẩm vào giỏ hàng.']);
+                echo json_encode([
+                    'success' => true, 
+                    'message' => 'Đã thêm sản phẩm vào giỏ hàng.',
+                    'cart_count' => $cart_count
+                ]);
                 exit;
             } else {
                 $_SESSION['success'] = 'Đã thêm sản phẩm vào giỏ hàng.';
                 if ($buy_now) {
                     header('Location: index.php?page=checkout');
                 } else {
-                    header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=product_detail&id=' . $product_id));
+                    header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=cart'));
                 }
                 exit;
             }
         } else {
-            error_log('Failed to add product to cart: ' . $product_id);
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra. Vui lòng thử lại sau.']);
                 exit;
