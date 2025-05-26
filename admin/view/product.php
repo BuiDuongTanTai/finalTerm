@@ -126,7 +126,8 @@
                             echo "<td>{$row['id']}</td>";
                             echo "<td>";
                             if (!empty($row['image_url'])) {
-                                echo "<img src='{$row['image_url']}' alt='{$row['name']}' class='img-thumbnail' style='max-height: 50px;'>";
+                                // Thêm dấu / và tên thư mục project nếu cần
+                                echo "<img src='/finalTerm/" . $row['image_url'] . "' alt='{$row['name']}' class='img-thumbnail' style='max-height: 50px;'>";
                             } else {
                                 echo "<div class='bg-secondary text-white d-flex align-items-center justify-content-center' style='width: 50px; height: 50px;'>No img</div>";
                             }

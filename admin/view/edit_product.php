@@ -66,7 +66,7 @@
                             <label for="image" class="form-label">Hình ảnh</label>
                             <?php if (!empty($product['image_url'])): ?>
                                 <div class="mb-2">
-                                    <img src="<?php echo $product['image_url']; ?>" class="img-thumbnail" style="max-height: 200px;">
+                                    <img src="/finalTerm/<?php echo $product['image_url']; ?>" class="img-thumbnail" style="max-height: 200px;">
                                 </div>
                             <?php endif; ?>
                             <input type="file" class="form-control" id="image" name="image">
