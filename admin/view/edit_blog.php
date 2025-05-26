@@ -105,10 +105,16 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <small class="text-muted d-block">Ngày tạo: <?= date('d/m/Y H:i', strtotime($blog['created_at'])) ?></small>
-                                                <small class="text-muted d-block">Lượt xem: <?= number_format($blog['views']) ?></small>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Lượt xem:</label>
+                                                    <input type="number" class="form-control form-control-sm" name="views" value="<?= $blog['views'] ?>">
+                                                </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <small class="text-muted d-block">Tác giả: <?= $blog['author_name'] ?></small>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Tác giả:</label>
+                                                    <input type="text" class="form-control form-control-sm" name="author_name" value="<?= $blog['author_name'] ?>">
+                                                </div>
                                                 <?php if ($blog['updated_at']): ?>
                                                     <small class="text-muted d-block">Cập nhật lần cuối: <?= date('d/m/Y H:i', strtotime($blog['updated_at'])) ?></small>
                                                 <?php endif; ?>

@@ -85,6 +85,36 @@
                                         <input type="file" class="form-control" name="image" accept="image/*">
                                         <small class="text-muted">Kích thước đề xuất: 800x400px</small>
                                     </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="featured" value="1" id="featured">
+                                            <label class="form-check-label" for="featured">
+                                                Bài viết phổ biến
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Bài viết này sẽ hiển thị trong phần bài viết phổ biến</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Thông tin thêm</label>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Ngày tạo: <?= date('d/m/Y H:i') ?></small>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Lượt xem:</label>
+                                                    <input type="number" class="form-control form-control-sm" name="views" value="0">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-2">
+                                                    <label class="form-label">Tác giả:</label>
+                                                    <input type="text" class="form-control form-control-sm" name="author_name" value="<?= $_SESSION['admin']['name'] ?? 'Admin' ?>">
+                                                </div>
+                                                <small class="text-muted d-block">Cập nhật lần cuối: <?= date('d/m/Y H:i') ?></small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

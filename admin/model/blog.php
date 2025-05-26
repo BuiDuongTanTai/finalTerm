@@ -59,8 +59,8 @@ class Blog {
     
     // Thêm blog mới
     public function createBlog($data) {
-        $query = "INSERT INTO blogs (title, slug, summary, content, image, category_id, author_id, author_name, status, published_at) 
-                  VALUES (:title, :slug, :summary, :content, :image, :category_id, :author_id, :author_name, :status, :published_at)";
+        $query = "INSERT INTO blogs (title, slug, summary, content, image, category_id, author_id, author_name, status, published_at, featured) 
+                  VALUES (:title, :slug, :summary, :content, :image, :category_id, :author_id, :author_name, :status, :published_at, :featured)";
         
         $stmt = $this->conn->prepare($query);
         
@@ -77,6 +77,7 @@ class Blog {
         $stmt->bindParam(':author_name', $data['author_name']);
         $stmt->bindParam(':status', $data['status']);
         $stmt->bindParam(':published_at', $data['published_at']);
+        $stmt->bindParam(':featured', $data['featured']);
         
         if ($stmt->execute()) {
             return $this->conn->lastInsertId();
@@ -93,6 +94,10 @@ class Blog {
                   content = :content,
                   category_id = :category_id,
                   status = :status,
+                  featured = :featured,
+                  author_id = :author_id,
+                  author_name = :author_name,
+                  views = :views,
                   updated_at = NOW()";
         
         if (isset($data['image']) && $data['image']) {
@@ -112,6 +117,10 @@ class Blog {
         $stmt->bindParam(':content', $data['content']);
         $stmt->bindParam(':category_id', $data['category_id']);
         $stmt->bindParam(':status', $data['status']);
+        $stmt->bindParam(':featured', $data['featured']);
+        $stmt->bindParam(':author_id', $data['author_id']);
+        $stmt->bindParam(':author_name', $data['author_name']);
+        $stmt->bindParam(':views', $data['views']);
         
         if (isset($data['image']) && $data['image']) {
             $stmt->bindParam(':image', $data['image']);
@@ -221,6 +230,19 @@ class Blog {
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':category_id', $category_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getFeaturedPosts($limit = 5) {
+        $query = "SELECT b.*, c.name as category_name 
+                  FROM blogs b 
+                  LEFT JOIN blog_categories c ON b.category_id = c.id 
+                  WHERE b.status = 'published' AND b.featured = 1
+                  ORDER BY b.views DESC 
+                  LIMIT :limit";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

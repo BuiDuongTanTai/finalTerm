@@ -796,10 +796,12 @@ switch ($action) {
                 'summary' => $_POST['summary'],
                 'content' => $_POST['content'],
                 'category_id' => $_POST['category_id'],
-                'author_id' => $_SESSION['admin']['id'] ?? 1,
-                'author_name' => $_SESSION['admin']['name'] ?? 'Admin',
+                'author_id' => $_SESSION['admin']['id'],
+                'author_name' => $_SESSION['admin']['name'],
                 'status' => $_POST['status'],
                 'published_at' => $_POST['status'] == 'published' ? date('Y-m-d H:i:s') : null,
+                'featured' => isset($_POST['featured']) ? 1 : 0,
+                'views' => 0, // Khởi tạo lượt xem = 0
                 'image' => ''
             ];
             
@@ -820,12 +822,18 @@ switch ($action) {
             
             $blogId = $blogModel->createBlog($data);
             
-            if ($blogId && !empty($_POST['tags'])) {
-                $blogModel->addTagsToBlog($blogId, $_POST['tags']);
+            if ($blogId) {
+                // Thêm tags nếu có
+                if (!empty($_POST['tags'])) {
+                    $blogModel->addTagsToBlog($blogId, $_POST['tags']);
+                }
+                
+                header('Location: index.php?act=blog_manage&success=' . urlencode('Thêm bài viết thành công'));
+                exit;
+            } else {
+                header('Location: index.php?act=add_blog&error=' . urlencode('Lỗi khi thêm bài viết'));
+                exit;
             }
-            
-            header('Location: index.php?act=blog_manage&success=' . urlencode('Thêm bài viết thành công'));
-            exit;
         }
         
         require_once 'model/blog.php';
@@ -843,12 +851,24 @@ switch ($action) {
             $blogModel = new Blog();
             
             $id = $_POST['id'] ?? 0;
+            
+            // Lấy thông tin bài viết hiện tại
+            $currentBlog = $blogModel->getBlogById($id);
+            if (!$currentBlog) {
+                header('Location: index.php?act=blog_manage&error=' . urlencode('Không tìm thấy bài viết'));
+                exit;
+            }
+            
             $data = [
                 'title' => $_POST['title'],
                 'summary' => $_POST['summary'],
                 'content' => $_POST['content'],
                 'category_id' => $_POST['category_id'],
-                'status' => $_POST['status']
+                'status' => $_POST['status'],
+                'featured' => isset($_POST['featured']) ? 1 : 0,
+                'author_id' => $currentBlog['author_id'], // Giữ nguyên tác giả
+                'author_name' => $_POST['author_name'], // Cập nhật tên tác giả
+                'views' => $_POST['views'] // Cập nhật lượt xem
             ];
             
             // Xử lý upload ảnh mới
@@ -865,9 +885,8 @@ switch ($action) {
                     $data['image'] = 'uploads/blog/' . $fileName;
                     
                     // Xóa ảnh cũ nếu có
-                    $blog = $blogModel->getBlogById($id);
-                    if ($blog && $blog['image'] && file_exists('../' . $blog['image'])) {
-                        unlink('../' . $blog['image']);
+                    if ($currentBlog['image'] && file_exists('../' . $currentBlog['image'])) {
+                        unlink('../' . $currentBlog['image']);
                     }
                 }
             }
@@ -878,13 +897,10 @@ switch ($action) {
                 $blogModel->addTagsToBlog($id, $tags);
                 
                 header('Location: index.php?act=blog_manage&success=' . urlencode('Cập nhật bài viết thành công'));
-            } else {
-                header('Location: index.php?act=blog_manage&error=' . urlencode('Có lỗi xảy ra khi cập nhật bài viết'));
+                exit;
             }
-            exit;
         }
-        header('Location: index.php?act=blog_manage');
-        exit;
+        break;
 
     case "delete_blog":
         $id = $_GET['id'] ?? 0;

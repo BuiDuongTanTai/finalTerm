@@ -144,7 +144,7 @@
                                 <li><i class="bi bi-envelope"></i> hcm@cameravn.com</li>
                                 <li><i class="bi bi-clock"></i> 8:00 - 20:00 (Thứ 2 - Chủ Nhật)</li>
                             </ul>
-                            <a href="https://goo.gl/maps/1B6JqDfZA6ZSGJE97" class="btn btn-outline-primary" target="_blank">Xem bản đồ</a>
+                            <a href="https://www.google.com/maps/place/%C4%90%E1%BA%A1i+h%E1%BB%8Dc+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng/@10.7306267,106.6960189,16.39z/data=!4m6!3m5!1s0x317528b2747a81a3:0x33c1813055acb613!8m2!3d10.7319314!4d106.6993418!16s%2Fm%2F02q2bz4?hl=vi&entry=ttu&g_ep=EgoyMDI1MDUyMS4wIKXMDSoASAFQAw%3D%3D" class="btn btn-outline-primary" target="_blank">Xem bản đồ</a>
                         </div>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                                 <li><i class="bi bi-envelope"></i> hanoi@cameravn.com</li>
                                 <li><i class="bi bi-clock"></i> 8:00 - 20:00 (Thứ 2 - Chủ Nhật)</li>
                             </ul>
-                            <a href="https://goo.gl/maps/1B6JqDfZA6ZSGJE97" class="btn btn-outline-primary" target="_blank">Xem bản đồ</a>
+                            <a href="https://www.google.com/maps/place/%C4%90%E1%BA%A1i+h%E1%BB%8Dc+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng/@10.7306267,106.6960189,16.39z/data=!4m6!3m5!1s0x317528b2747a81a3:0x33c1813055acb613!8m2!3d10.7319314!4d106.6993418!16s%2Fm%2F02q2bz4?hl=vi&entry=ttu&g_ep=EgoyMDI1MDUyMS4wIKXMDSoASAFQAw%3D%3D" class="btn btn-outline-primary" target="_blank">Xem bản đồ</a>
                         </div>
                     </div>
                 </div>
@@ -174,7 +174,7 @@
                                 <li><i class="bi bi-envelope"></i> danang@cameravn.com</li>
                                 <li><i class="bi bi-clock"></i> 8:00 - 20:00 (Thứ 2 - Chủ Nhật)</li>
                             </ul>
-                            <a href="https://goo.gl/maps/1B6JqDfZA6ZSGJE97" class="btn btn-outline-primary" target="_blank">Xem bản đồ</a>
+                            <a href="https://www.google.com/maps/place/%C4%90%E1%BA%A1i+h%E1%BB%8Dc+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng/@10.7306267,106.6960189,16.39z/data=!4m6!3m5!1s0x317528b2747a81a3:0x33c1813055acb613!8m2!3d10.7319314!4d106.6993418!16s%2Fm%2F02q2bz4?hl=vi&entry=ttu&g_ep=EgoyMDI1MDUyMS4wIKXMDSoASAFQAw%3D%3D" class="btn btn-outline-primary" target="_blank">Xem bản đồ</a>
                         </div>
                     </div>
                 </div>
