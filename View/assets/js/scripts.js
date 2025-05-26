@@ -1039,6 +1039,10 @@ function setupAddToCartButtons() {
                                 let value = parseInt(quantityInput.value);
                                 if (value > 1) {
                                     quantityInput.value = value - 1;
+                                    // Hiện lại nút tăng nếu đang ẩn
+                                    if (increaseQuantityBtn.classList.contains('d-none')) {
+                                        increaseQuantityBtn.classList.remove('d-none');
+                                    }
                                 }
                             });
                         }
@@ -1046,9 +1050,12 @@ function setupAddToCartButtons() {
                         if (increaseQuantityBtn && quantityInput) {
                             increaseQuantityBtn.addEventListener('click', function() {
                                 let value = parseInt(quantityInput.value);
-                                quantityInput.value = value + 1;
-                                if (value >= product.stock) {
-                                    increaseQuantityBtn.classList.add('d-none');
+                                if (value < product.stock) {
+                                    quantityInput.value = value + 1;
+                                    // Ẩn nút tăng khi đạt max
+                                    if (value + 1 >= product.stock) {
+                                        increaseQuantityBtn.classList.add('d-none');
+                                    }
                                 }
                             });
                         }
