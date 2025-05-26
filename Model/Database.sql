@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 26, 2025 lúc 09:53 AM
+-- Thời gian đã tạo: Th5 26, 2025 lúc 12:44 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -280,7 +280,9 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `address`, `city`, `district`, `ward`, `total_amount`, `shipping_fee`, `discount_amount`, `tax_amount`, `status`, `payment_method`, `payment_status`, `shipping_method`, `tracking_number`, `notes`, `created_at`, `updated_at`) VALUES
 (1, 7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '0945727010', 'cac', 'TP.HCM', 'Quận 1', 'Phường 2', 2012637000.00, 0.00, 0.00, 99999999.99, 'processing', 'cod', 'pending', 'standard', '', 'acac', '2025-05-25 15:03:38', '2025-05-25 22:14:26'),
-(2, 7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '0945727010', 'asd', 'Hà Nội', 'Quận 1', 'Phường 2', 47289000.00, 0.00, 0.00, 4299000.00, 'cancelled', 'cod', 'pending', 'standard', '', 'asd', '2025-05-25 15:07:57', '2025-05-25 22:12:46');
+(2, 7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '0945727010', 'asd', 'Hà Nội', 'Quận 1', 'Phường 2', 47289000.00, 0.00, 0.00, 4299000.00, 'cancelled', 'cod', 'pending', 'standard', '', 'asd', '2025-05-25 15:07:57', '2025-05-25 22:12:46'),
+(3, 7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '0945727010', 'phiền', 'TP.HCM', 'Quận 1', 'Phường 1', 62689000.00, 0.00, 0.00, 5699000.00, 'cancelled', 'cod', 'pending', 'standard', '', '', '2025-05-26 08:25:58', '2025-05-26 08:26:35'),
+(4, 7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '0945727010', 'phien', 'TP.HCM', 'Quận 1', 'Phường 1', 47289000.00, 0.00, 0.00, 4299000.00, 'pending', 'cod', 'pending', 'standard', NULL, '', '2025-05-26 08:28:15', '2025-05-26 08:28:15');
 
 -- --------------------------------------------------------
 
@@ -306,7 +308,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `name`, `price`, `qua
 (1, 1, 2, 'Sony Alpha A7 IV', 52490000.00, 10, NULL),
 (2, 1, 1, 'Canon EOS R6 Mark II', 62990000.00, 15, NULL),
 (3, 1, 3, 'Nikon Z6 II', 44990000.00, 8, NULL),
-(4, 2, 4, 'Fujifilm X-T5', 42990000.00, 1, NULL);
+(4, 2, 4, 'Fujifilm X-T5', 42990000.00, 1, NULL),
+(5, 3, 5, 'Canon RF 24-70mm f/2.8L IS USM', 56990000.00, 1, NULL),
+(6, 4, 4, 'Fujifilm X-T5', 42990000.00, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -335,8 +339,8 @@ CREATE TABLE `products` (
   `specifications` text DEFAULT NULL,
   `colors` text DEFAULT NULL,
   `variations` text DEFAULT NULL,
-  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
-  `is_new` tinyint(1) NOT NULL DEFAULT 0,
+  `is_featured` tinyint(1) DEFAULT 0 COMMENT 'Sản phẩm nổi bật',
+  `is_new` tinyint(1) DEFAULT 0 COMMENT 'Sản phẩm mới',
   `is_hot` tinyint(1) NOT NULL DEFAULT 0,
   `is_best` tinyint(1) NOT NULL DEFAULT 0,
   `rating` decimal(3,1) NOT NULL DEFAULT 0.0,
@@ -344,20 +348,24 @@ CREATE TABLE `products` (
   `status` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `badges` text DEFAULT NULL COMMENT 'JSON array chứa các badge: hot, new, bestseller, discount'
+  `badges` text DEFAULT NULL COMMENT 'JSON array chứa các badge: hot, new, bestseller, discount',
+  `is_bestseller` tinyint(1) DEFAULT 0 COMMENT 'Sản phẩm bán chạy',
+  `is_discount` tinyint(1) DEFAULT 0 COMMENT 'Sản phẩm giảm giá',
+  `is_promotion` tinyint(1) DEFAULT 0 COMMENT 'Sản phẩm khuyến mãi',
+  `promotion_url` varchar(500) DEFAULT NULL COMMENT 'Link custom cho nút mua ngay'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `slug`, `sku`, `short_description`, `description`, `price`, `old_price`, `cost`, `stock`, `sold_count`, `image_url`, `images`, `category_id`, `brand_id`, `weight`, `dimensions`, `specifications`, `colors`, `variations`, `is_featured`, `is_new`, `is_hot`, `is_best`, `rating`, `reviews_count`, `status`, `created_at`, `updated_at`, `badges`) VALUES
-(1, 'Canon EOS R6 Mark 00000', 'canon-eos-r6-mark-00000', 'CAM-CAN-R6MK2', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.\r\n\r\n', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.\r\n\r\n', 50000000.00, 64990000.00, NULL, 0, 40, 'View/assets/images/products/canon-eos-r6-mark-ii.jpg', NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 0, 4.8, 12, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"hot\", \"bestseller\"]'),
-(2, 'Sony Alpha A7 IV', 'sony-alpha-a7-iv', 'CAM-SON-A7IV', 'Máy ảnh mirrorless full-frame đa dụng với cảm biến mới, lý tưởng cho cả nhiếp ảnh và video', 'Sony Alpha A7 IV là máy ảnh mirrorless full-frame thế hệ thứ 4 với cảm biến back-illuminated 33MP mới, bộ xử lý BIONZ XR, quay video 4K60p 10-bit 4:2:2 và khả năng kết nối trực tiếp. Máy còn được trang bị màn hình cảm ứng lật xoay và hệ thống AF tiên tiến.', 52490000.00, 54990000.00, NULL, 0, 40, 'View/assets/images/products/sony-alpha-a7-iv.jpg', NULL, 2, 2, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 28, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"bestseller\"]'),
-(3, 'Nikon Z6 II', 'nikon-z6-ii', 'CAM-NIK-Z6II', 'Máy ảnh mirrorless full-frame đa dụng với hiệu suất cao và khả năng quay video chuyên nghiệp', 'Nikon Z6 II là máy ảnh mirrorless full-frame với cảm biến BSI CMOS 24.5MP, bộ xử lý kép EXPEED 6, chụp liên tiếp 14fps, quay video 4K60p và hệ thống AF 273 điểm. Máy còn được trang bị 2 khe cắm thẻ nhớ và khả năng kết nối không dây.', 44990000.00, 47990000.00, NULL, 4, 26, 'View/assets/images/products/nikon-z6-ii.jpg', NULL, 2, 3, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 0, 4.7, 15, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"discount\"]'),
-(4, 'Fujifilm X-T5', 'fujifilm-x-t5', 'CAM-FUJ-XT5', 'Máy ảnh mirrorless APS-C với cảm biến 40MP, lý tưởng cho nhiếp ảnh phong cảnh và đường phố', 'Fujifilm X-T5 là máy ảnh mirrorless cao cấp với cảm biến X-Trans CMOS 5 HR 40.2MP, bộ xử lý X-Processor 5, chụp liên tiếp 15fps, quay video 6.2K và ổn định hình ảnh trong thân máy 7 stop. Thiết kế nhỏ gọn với nút điều khiển vật lý đặc trưng của Fujifilm.', 42990000.00, 0.00, NULL, 7, 13, 'View/assets/images/products/fujifilm-x-t5.jpg', NULL, 2, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 4.8, 9, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"new\"]'),
-(5, 'Canon RF 24-70mm f/2.8L IS USM', 'canon-rf-24-70mm-f28l-is-usm', 'LENS-CAN-RF2470F28L', 'Ống kính zoom tiêu chuẩn chuyên nghiệp cho máy ảnh Canon mirrorless', 'Canon RF 24-70mm f/2.8L IS USM là ống kính zoom tiêu chuẩn dòng L cho máy ảnh Canon mirrorless mount RF với khẩu độ f/2.8 ổn định, hệ thống ổn định hình ảnh 5 stop, motor lấy nét USM siêu âm nhanh và chính xác. Thiết kế chống bụi và nước với chất lượng hình ảnh vượt trội.', 56990000.00, 59990000.00, NULL, 5, 15, 'View/assets/images/products/canon-rf-24-70mm-f28l.jpg', NULL, 4, 1, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 18, 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50', NULL),
-(6, 'Sony FE 50mm f/1.4 GM', 'sony-fe-50mm-f-1-4-gm', 'LENS-SON-FE50F14GM', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 48990000.00, 0.00, NULL, 14, 8, 'View/assets/images/products/sony-fe-50mm-f14-gm.jpg', NULL, 4, 2, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 5.0, 6, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"hot\"]');
+INSERT INTO `products` (`id`, `name`, `slug`, `sku`, `short_description`, `description`, `price`, `old_price`, `cost`, `stock`, `sold_count`, `image_url`, `images`, `category_id`, `brand_id`, `weight`, `dimensions`, `specifications`, `colors`, `variations`, `is_featured`, `is_new`, `is_hot`, `is_best`, `rating`, `reviews_count`, `status`, `created_at`, `updated_at`, `badges`, `is_bestseller`, `is_discount`, `is_promotion`, `promotion_url`) VALUES
+(1, 'Canon EOS R6 Mark 00000', 'canon-eos-r6-mark-00000', 'CAM-CAN-R6MK2', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.\r\n\r\n', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.\r\n\r\n', 50000000.00, 64990000.00, NULL, 0, 40, 'View/assets/images/products/canon-eos-r6-mark-ii.jpg', NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 0, 4.8, 12, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"hot\", \"bestseller\"]', 0, 0, 0, NULL),
+(2, 'Sony Alpha A7 IV', 'sony-alpha-a7-iv', 'CAM-SON-A7IV', 'Máy ảnh mirrorless full-frame đa dụng với cảm biến mới, lý tưởng cho cả nhiếp ảnh và video', 'Sony Alpha A7 IV là máy ảnh mirrorless full-frame thế hệ thứ 4 với cảm biến back-illuminated 33MP mới, bộ xử lý BIONZ XR, quay video 4K60p 10-bit 4:2:2 và khả năng kết nối trực tiếp. Máy còn được trang bị màn hình cảm ứng lật xoay và hệ thống AF tiên tiến.', 52490000.00, 54990000.00, NULL, 0, 40, 'View/assets/images/products/sony-alpha-a7-iv.jpg', NULL, 2, 2, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 28, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"bestseller\"]', 0, 0, 0, NULL),
+(3, 'Nikon Z6 II', 'nikon-z6-ii', 'CAM-NIK-Z6II', 'Máy ảnh mirrorless full-frame đa dụng với hiệu suất cao và khả năng quay video chuyên nghiệp', 'Nikon Z6 II là máy ảnh mirrorless full-frame với cảm biến BSI CMOS 24.5MP, bộ xử lý kép EXPEED 6, chụp liên tiếp 14fps, quay video 4K60p và hệ thống AF 273 điểm. Máy còn được trang bị 2 khe cắm thẻ nhớ và khả năng kết nối không dây.', 44990000.00, 47990000.00, NULL, 4, 26, 'View/assets/images/products/nikon-z6-ii.jpg', NULL, 2, 3, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 0, 4.7, 15, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"discount\"]', 0, 0, 0, NULL),
+(4, 'Fujifilm X-T5', 'fujifilm-x-t5', 'CAM-FUJ-XT5', 'Máy ảnh mirrorless APS-C với cảm biến 40MP, lý tưởng cho nhiếp ảnh phong cảnh và đường phố', 'Fujifilm X-T5 là máy ảnh mirrorless cao cấp với cảm biến X-Trans CMOS 5 HR 40.2MP, bộ xử lý X-Processor 5, chụp liên tiếp 15fps, quay video 6.2K và ổn định hình ảnh trong thân máy 7 stop. Thiết kế nhỏ gọn với nút điều khiển vật lý đặc trưng của Fujifilm.', 42990000.00, 0.00, NULL, 6, 14, 'View/assets/images/products/fujifilm-x-t5.jpg', NULL, 2, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 4.8, 9, 1, '2025-05-23 09:16:50', '2025-05-26 08:28:15', '[\"new\"]', 0, 0, 0, NULL),
+(5, 'Canon RF 24-70mm f/2.8L IS USM', 'canon-rf-24-70mm-f28l-is-usm', 'LENS-CAN-RF2470F28L', 'Ống kính zoom tiêu chuẩn chuyên nghiệp cho máy ảnh Canon mirrorless', 'Canon RF 24-70mm f/2.8L IS USM là ống kính zoom tiêu chuẩn dòng L cho máy ảnh Canon mirrorless mount RF với khẩu độ f/2.8 ổn định, hệ thống ổn định hình ảnh 5 stop, motor lấy nét USM siêu âm nhanh và chính xác. Thiết kế chống bụi và nước với chất lượng hình ảnh vượt trội.', 56990000.00, 59990000.00, NULL, 4, 16, 'View/assets/images/products/canon-rf-24-70mm-f28l.jpg', NULL, 4, 1, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 18, 1, '2025-05-23 09:16:50', '2025-05-26 08:25:58', NULL, 0, 0, 0, NULL),
+(6, 'Sony FE 50mm f/1.4 GM', 'sony-fe-50mm-f-1-4-gm', 'LENS-SON-FE50F14GM', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 48990000.00, 0.00, NULL, 14, 8, 'View/assets/images/products/sony-fe-50mm-f14-gm.jpg', NULL, 4, 2, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 5.0, 6, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"hot\"]', 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -736,7 +744,7 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT cho bảng `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
@@ -754,13 +762,13 @@ ALTER TABLE `districts`
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `products`
