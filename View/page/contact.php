@@ -135,7 +135,7 @@
             <div class="row g-4">
                 <div class="col-lg-4" data-aos="fade-up">
                     <div class="store-card h-100">
-                        <div class="store-image" style="background-image: url('View/assets/images/stores/store1.jpg');"></div>
+                        <div class="store-image" style="background-image: url('View/assets/images/hero.jpg');"></div>
                         <div class="store-details">
                             <h4>CameraVN - TP. Hồ Chí Minh</h4>
                             <ul class="store-info-list">
@@ -150,7 +150,7 @@
                 </div>
                 <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="store-card h-100">
-                        <div class="store-image" style="background-image: url('View/assets/images/stores/store2.jpg');"></div>
+                        <div class="store-image" style="background-image: url('View/assets/images/hero.jpg');"></div>
                         <div class="store-details">
                             <h4>CameraVN - Hà Nội</h4>
                             <ul class="store-info-list">
@@ -165,7 +165,7 @@
                 </div>
                 <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="store-card h-100">
-                        <div class="store-image" style="background-image: url('View/assets/images/stores/store3.jpg');"></div>
+                        <div class="store-image" style="background-image: url('View/assets/images/hero.jpg');"></div>
                         <div class="store-details">
                             <h4>CameraVN - Đà Nẵng</h4>
                             <ul class="store-info-list">

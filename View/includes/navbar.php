@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand logo" href="index.php"><i class="bi bi-camera-fill me-2"></i>CameraVN</a>
+        <a class="navbar-brand logo" href="index.php"><i class="bi bi-camera-fill me-2"></i>CameraVNconcaK</a>
         
         <!-- Mobile Menu Toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">

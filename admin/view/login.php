@@ -20,7 +20,6 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <img src="View/assets/images/logo.png" alt="CameraVN Logo" class="login-logo">
             <h1>CameraVN Admin</h1>
         </div>
         <div class="login-form-container">
