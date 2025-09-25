@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 26, 2025 lúc 12:44 PM
+-- Thời gian đã tạo: Th9 25, 2025 lúc 02:29 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -51,7 +51,11 @@ CREATE TABLE `blogs` (
 
 INSERT INTO `blogs` (`id`, `title`, `slug`, `summary`, `content`, `image`, `category_id`, `author_id`, `author_name`, `views`, `status`, `featured`, `created_at`, `updated_at`, `published_at`) VALUES
 (1, '10 kỹ thuật chụp ảnh phong cảnh đẹp mê hoặc', '10-ky-thuat-chup-anh-phong-canh', 'Khám phá những kỹ thuật chụp ảnh phong cảnh từ các nhiếp ảnh gia chuyên nghiệp. Bài viết tổng hợp 10 kỹ thuật giúp bạn nâng tầm bức ảnh phong cảnh của mình.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog1.jpg', 1, NULL, 'Nguyễn Văn A', 1250, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-15 00:00:00'),
-(2, 'Tìm hiểu về khẩu độ trong nhiếp ảnh: Từ F/1.4 đến F/22', 'tim-hieu-ve-khau-do-trong-nhiep-anh', 'Khẩu độ là một trong những yếu tố quan trọng nhất trong nhiếp ảnh. Bài viết giải thích chi tiết về khẩu độ và cách sử dụng hiệu quả.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog2.jpg', 2, NULL, 'Trần Thị B', 986, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-10 00:00:00');
+(2, 'Tìm hiểu về khẩu độ trong nhiếp ảnh: Từ F/1.4 đến F/22', 'tim-hieu-ve-khau-do-trong-nhiep-anh', 'Khẩu độ là một trong những yếu tố quan trọng nhất trong nhiếp ảnh. Bài viết giải thích chi tiết về khẩu độ và cách sử dụng hiệu quả.', 'Nội dung chi tiết bài viết...', 'View/assets/images/blog2.jpg', 2, NULL, 'Trần Thị B', 986, 'published', 0, '2025-05-24 09:33:24', '2025-05-24 09:33:24', '2023-05-10 00:00:00'),
+(3, 'Phạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài Thương', 'ph-m-ho-i-th-ngph-m-ho-i-th-ngph-m-ho-i-th-ng', 'Phạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài Thương', '<p>Phạm Ho&agrave;i ThươngPhạm Ho&agrave;i ThươngPhạm Ho&agrave;i ThươngPhạm Ho&agrave;i ThươngPhạm Ho&agrave;i Thương</p>', 'uploads/blog/1748233381_hero.jpg', 4, 5, 'Phạm Hoài Thương', 0, 'published', 0, '2025-05-26 04:23:01', '2025-05-26 04:27:02', NULL),
+(24, '10 Mẹo Chụp Ảnh Đẹp Bằng Điện Thoại', '10-meo-chup-anh-dep-bang-dien-thoai', 'Nâng tầm ảnh điện thoại của bạn với những mẹo đơn giản nhưng hiệu quả.', '<p>Chi tiết 10 mẹo...</p>', 'View/assets/images/blog/phone-photography.jpg', 8, 4, 'Bùi Dương Tấn Tài', 500, 'published', 0, '2025-07-12 06:11:02', '2025-07-12 06:11:02', '2025-07-12 13:11:02'),
+(25, 'Top Phụ Kiện Nhiếp Ảnh Không Thể Thiếu Khi Du Lịch', 'top-phu-kien-nhiep-anh-khi-du-lich', 'Những phụ kiện nhỏ gọn nhưng hữu ích cho chuyến đi của bạn.', '<p>Danh sách phụ kiện...</p>', 'View/assets/images/blog/travel-accessories.jpg', 8, 5, 'Phạm Hoài Thương', 650, 'published', 1, '2025-07-12 06:11:02', '2025-07-12 06:11:02', '2025-07-12 13:11:02'),
+(26, 'Đánh Giá Ống Kính Sony FE 35mm f/1.8', 'danh-gia-ong-kinh-sony-fe-35mm-f1-8', 'Đánh giá chi tiết về hiệu năng và chất lượng của ống kính Sony 35mm f/1.8.', '<p>Bài đánh giá...</p>', 'View/assets/images/blog/sony-35mm-review.jpg', 9, 7, 'Đặng Triệu Vỹ', 400, 'published', 0, '2025-07-12 06:11:02', '2025-07-12 06:11:02', '2025-07-12 13:11:02');
 
 -- --------------------------------------------------------
 
@@ -77,7 +81,9 @@ INSERT INTO `blog_categories` (`id`, `name`, `slug`, `description`, `created_at`
 (2, 'Kiến thức', 'kien-thuc', 'Kiến thức cơ bản và nâng cao về nhiếp ảnh', '2025-05-24 09:33:23', '2025-05-24 09:33:23'),
 (3, 'Thủ thuật', 'thu-thuat', 'Các thủ thuật chụp ảnh hữu ích', '2025-05-24 09:33:23', '2025-05-24 09:33:23'),
 (4, 'Hậu kỳ', 'hau-ky', 'Hướng dẫn chỉnh sửa và xử lý ảnh', '2025-05-24 09:33:23', '2025-05-24 09:33:23'),
-(5, 'Thiết bị', 'thiet-bi', 'Review và giới thiệu các thiết bị nhiếp ảnh', '2025-05-24 09:33:23', '2025-05-24 09:33:23');
+(5, 'Thiết bị', 'thiet-bi', 'Review và giới thiệu các thiết bị nhiếp ảnh', '2025-05-24 09:33:23', '2025-05-24 09:33:23'),
+(8, 'Bài viết', 'bai-viet', 'Các bài viết chung về nhiếp ảnh', '2025-07-12 06:11:02', '2025-07-12 06:11:02'),
+(9, 'Sự kiện', 'su-kien', 'Thông tin các sự kiện nhiếp ảnh', '2025-07-12 06:11:02', '2025-07-12 06:11:02');
 
 -- --------------------------------------------------------
 
@@ -89,6 +95,19 @@ CREATE TABLE `blog_tags` (
   `blog_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `blog_tags`
+--
+
+INSERT INTO `blog_tags` (`blog_id`, `tag_id`) VALUES
+(3, 12),
+(24, 1),
+(24, 14),
+(25, 1),
+(25, 15),
+(26, 2),
+(26, 16);
 
 -- --------------------------------------------------------
 
@@ -282,7 +301,11 @@ INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `address`, `cit
 (1, 7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '0945727010', 'cac', 'TP.HCM', 'Quận 1', 'Phường 2', 2012637000.00, 0.00, 0.00, 99999999.99, 'processing', 'cod', 'pending', 'standard', '', 'acac', '2025-05-25 15:03:38', '2025-05-25 22:14:26'),
 (2, 7, 'Đặng Triệu Vỹ', '52300274@tdtu.edu.vn', '0945727010', 'asd', 'Hà Nội', 'Quận 1', 'Phường 2', 47289000.00, 0.00, 0.00, 4299000.00, 'cancelled', 'cod', 'pending', 'standard', '', 'asd', '2025-05-25 15:07:57', '2025-05-25 22:12:46'),
 (3, 7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '0945727010', 'phiền', 'TP.HCM', 'Quận 1', 'Phường 1', 62689000.00, 0.00, 0.00, 5699000.00, 'cancelled', 'cod', 'pending', 'standard', '', '', '2025-05-26 08:25:58', '2025-05-26 08:26:35'),
-(4, 7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '0945727010', 'phien', 'TP.HCM', 'Quận 1', 'Phường 1', 47289000.00, 0.00, 0.00, 4299000.00, 'pending', 'cod', 'pending', 'standard', NULL, '', '2025-05-26 08:28:15', '2025-05-26 08:28:15');
+(4, 7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '0945727010', 'phien', 'TP.HCM', 'Quận 1', 'Phường 1', 47289000.00, 0.00, 0.00, 4299000.00, 'pending', 'cod', 'pending', 'standard', NULL, '', '2025-05-26 08:28:15', '2025-05-26 08:28:15'),
+(5, 8, 'Phạm Hoài Thương', 'phucoccho0147@gmail.com', '0708624193', 'asd', 'TP.HCM', 'Quận 2', 'Phường 1', 53889000.00, 0.00, 0.00, 4899000.00, 'pending', 'cod', 'pending', 'standard', NULL, '', '2025-05-26 03:40:04', '2025-05-26 03:40:04'),
+(6, 9, 'Phạm Hoài Thương', 'terrybin50@gmail.com', '0708624193', 'asdadasd', 'Hà Nội', 'Quận 3', 'Phường 2', 250806000.00, 50000.00, 0.00, 22796000.00, 'shipped', 'cod', 'pending', 'express', '', 'asd', '2025-05-26 04:15:15', '2025-05-26 04:21:54'),
+(7, 9, 'Phạm Hoài Thương', 'terrybin50@gmail.com', '0708624193', 'asdsadsadsadsad', 'Đà Nẵng', 'Quận 2', 'Phường 3', 1149488998.90, 0.00, 0.00, 99999999.99, 'pending', 'cod', 'pending', 'standard', NULL, 'asdasd', '2025-05-26 04:28:52', '2025-05-26 04:28:52'),
+(8, 9, 'Phạm Hoài Thương', 'terrybin50@gmail.com', '0708624193', 'asdsadsadsadsa', 'Hà Nội', 'Quận 2', 'Phường 2', 141867000.00, 0.00, 0.00, 12897000.00, 'pending', 'cod', 'pending', 'standard', NULL, 'asdasdsadasd', '2025-05-26 20:01:27', '2025-05-26 20:01:27');
 
 -- --------------------------------------------------------
 
@@ -306,11 +329,15 @@ CREATE TABLE `order_items` (
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `name`, `price`, `quantity`, `options`) VALUES
 (1, 1, 2, 'Sony Alpha A7 IV', 52490000.00, 10, NULL),
-(2, 1, 1, 'Canon EOS R6 Mark II', 62990000.00, 15, NULL),
 (3, 1, 3, 'Nikon Z6 II', 44990000.00, 8, NULL),
 (4, 2, 4, 'Fujifilm X-T5', 42990000.00, 1, NULL),
 (5, 3, 5, 'Canon RF 24-70mm f/2.8L IS USM', 56990000.00, 1, NULL),
-(6, 4, 4, 'Fujifilm X-T5', 42990000.00, 1, NULL);
+(6, 4, 4, 'Fujifilm X-T5', 42990000.00, 1, NULL),
+(7, 5, 6, 'Sony FE 50mm f/1.4 GM', 48990000.00, 1, NULL),
+(8, 6, 5, 'Canon RF 24-70mm f/2.8L IS USM', 56990000.00, 4, NULL),
+(9, 7, 3, 'Nikon Z6 II', 44990000.00, 1, NULL),
+(10, 7, 18, 'Phạm Hoài Thương', 999999999.00, 1, NULL),
+(11, 8, 4, 'Fujifilm X-T5', 42990000.00, 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -360,12 +387,12 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `slug`, `sku`, `short_description`, `description`, `price`, `old_price`, `cost`, `stock`, `sold_count`, `image_url`, `images`, `category_id`, `brand_id`, `weight`, `dimensions`, `specifications`, `colors`, `variations`, `is_featured`, `is_new`, `is_hot`, `is_best`, `rating`, `reviews_count`, `status`, `created_at`, `updated_at`, `badges`, `is_bestseller`, `is_discount`, `is_promotion`, `promotion_url`) VALUES
-(1, 'Canon EOS R6 Mark 00000', 'canon-eos-r6-mark-00000', 'CAM-CAN-R6MK2', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.\r\n\r\n', 'Canon EOS R6 Mark II là phiên bản nâng cấp của dòng máy ảnh mirrorless full-frame R6 với cảm biến CMOS 24.2MP, khả năng chụp liên tiếp 40fps, quay video 4K60p và ổn định hình ảnh 7.5 stop. Máy còn có tính năng Eye AF cải tiến và kết nối không dây tiện lợi.\r\n\r\n', 50000000.00, 64990000.00, NULL, 0, 40, 'View/assets/images/products/canon-eos-r6-mark-ii.jpg', NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 0, 4.8, 12, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"hot\", \"bestseller\"]', 0, 0, 0, NULL),
 (2, 'Sony Alpha A7 IV', 'sony-alpha-a7-iv', 'CAM-SON-A7IV', 'Máy ảnh mirrorless full-frame đa dụng với cảm biến mới, lý tưởng cho cả nhiếp ảnh và video', 'Sony Alpha A7 IV là máy ảnh mirrorless full-frame thế hệ thứ 4 với cảm biến back-illuminated 33MP mới, bộ xử lý BIONZ XR, quay video 4K60p 10-bit 4:2:2 và khả năng kết nối trực tiếp. Máy còn được trang bị màn hình cảm ứng lật xoay và hệ thống AF tiên tiến.', 52490000.00, 54990000.00, NULL, 0, 40, 'View/assets/images/products/sony-alpha-a7-iv.jpg', NULL, 2, 2, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 28, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"bestseller\"]', 0, 0, 0, NULL),
-(3, 'Nikon Z6 II', 'nikon-z6-ii', 'CAM-NIK-Z6II', 'Máy ảnh mirrorless full-frame đa dụng với hiệu suất cao và khả năng quay video chuyên nghiệp', 'Nikon Z6 II là máy ảnh mirrorless full-frame với cảm biến BSI CMOS 24.5MP, bộ xử lý kép EXPEED 6, chụp liên tiếp 14fps, quay video 4K60p và hệ thống AF 273 điểm. Máy còn được trang bị 2 khe cắm thẻ nhớ và khả năng kết nối không dây.', 44990000.00, 47990000.00, NULL, 4, 26, 'View/assets/images/products/nikon-z6-ii.jpg', NULL, 2, 3, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 0, 4.7, 15, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"discount\"]', 0, 0, 0, NULL),
-(4, 'Fujifilm X-T5', 'fujifilm-x-t5', 'CAM-FUJ-XT5', 'Máy ảnh mirrorless APS-C với cảm biến 40MP, lý tưởng cho nhiếp ảnh phong cảnh và đường phố', 'Fujifilm X-T5 là máy ảnh mirrorless cao cấp với cảm biến X-Trans CMOS 5 HR 40.2MP, bộ xử lý X-Processor 5, chụp liên tiếp 15fps, quay video 6.2K và ổn định hình ảnh trong thân máy 7 stop. Thiết kế nhỏ gọn với nút điều khiển vật lý đặc trưng của Fujifilm.', 42990000.00, 0.00, NULL, 6, 14, 'View/assets/images/products/fujifilm-x-t5.jpg', NULL, 2, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 4.8, 9, 1, '2025-05-23 09:16:50', '2025-05-26 08:28:15', '[\"new\"]', 0, 0, 0, NULL),
-(5, 'Canon RF 24-70mm f/2.8L IS USM', 'canon-rf-24-70mm-f28l-is-usm', 'LENS-CAN-RF2470F28L', 'Ống kính zoom tiêu chuẩn chuyên nghiệp cho máy ảnh Canon mirrorless', 'Canon RF 24-70mm f/2.8L IS USM là ống kính zoom tiêu chuẩn dòng L cho máy ảnh Canon mirrorless mount RF với khẩu độ f/2.8 ổn định, hệ thống ổn định hình ảnh 5 stop, motor lấy nét USM siêu âm nhanh và chính xác. Thiết kế chống bụi và nước với chất lượng hình ảnh vượt trội.', 56990000.00, 59990000.00, NULL, 4, 16, 'View/assets/images/products/canon-rf-24-70mm-f28l.jpg', NULL, 4, 1, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 18, 1, '2025-05-23 09:16:50', '2025-05-26 08:25:58', NULL, 0, 0, 0, NULL),
-(6, 'Sony FE 50mm f/1.4 GM', 'sony-fe-50mm-f-1-4-gm', 'LENS-SON-FE50F14GM', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 48990000.00, 0.00, NULL, 14, 8, 'View/assets/images/products/sony-fe-50mm-f14-gm.jpg', NULL, 4, 2, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 5.0, 6, 1, '2025-05-23 09:16:50', '2025-05-26 07:41:50', '[\"hot\"]', 0, 0, 0, NULL);
+(3, 'Nikon Z6 II', 'nikon-z6-ii', 'CAM-NIK-Z6II', 'Máy ảnh mirrorless full-frame đa dụng với hiệu suất cao và khả năng quay video chuyên nghiệp', 'Nikon Z6 II là máy ảnh mirrorless full-frame với cảm biến BSI CMOS 24.5MP, bộ xử lý kép EXPEED 6, chụp liên tiếp 14fps, quay video 4K60p và hệ thống AF 273 điểm. Máy còn được trang bị 2 khe cắm thẻ nhớ và khả năng kết nối không dây.', 44990000.00, 47990000.00, NULL, 3, 27, 'View/assets/images/products/nikon-z6-ii.jpg', NULL, 2, 3, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 0, 4.7, 15, 1, '2025-05-23 09:16:50', '2025-05-26 04:28:52', '[\"discount\"]', 0, 0, 0, NULL),
+(4, 'Fujifilm X-T5', 'fujifilm-x-t5', 'CAM-FUJ-XT5', 'Máy ảnh mirrorless APS-C với cảm biến 40MP, lý tưởng cho nhiếp ảnh phong cảnh và đường phố', 'Fujifilm X-T5 là máy ảnh mirrorless cao cấp với cảm biến X-Trans CMOS 5 HR 40.2MP, bộ xử lý X-Processor 5, chụp liên tiếp 15fps, quay video 6.2K và ổn định hình ảnh trong thân máy 7 stop. Thiết kế nhỏ gọn với nút điều khiển vật lý đặc trưng của Fujifilm.', 42990000.00, 0.00, NULL, 3, 17, 'View/assets/images/products/fujifilm-x-t5.jpg', NULL, 2, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 4.8, 9, 1, '2025-05-23 09:16:50', '2025-05-26 20:01:27', '[\"new\"]', 0, 0, 0, NULL),
+(5, 'Canon RF 24-70mm f/2.8L IS USM', 'canon-rf-24-70mm-f28l-is-usm', 'LENS-CAN-RF2470F28L', 'Ống kính zoom tiêu chuẩn chuyên nghiệp cho máy ảnh Canon mirrorless', 'Canon RF 24-70mm f/2.8L IS USM là ống kính zoom tiêu chuẩn dòng L cho máy ảnh Canon mirrorless mount RF với khẩu độ f/2.8 ổn định, hệ thống ổn định hình ảnh 5 stop, motor lấy nét USM siêu âm nhanh và chính xác. Thiết kế chống bụi và nước với chất lượng hình ảnh vượt trội.', 56990000.00, 59990000.00, NULL, 0, 20, 'View/assets/images/products/canon-rf-24-70mm-f28l.jpg', NULL, 4, 1, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 0, 4.9, 18, 1, '2025-05-23 09:16:50', '2025-05-26 04:15:15', NULL, 0, 0, 0, NULL),
+(6, 'Sony FE 50mm f/1.4 GM', 'sony-fe-50mm-f-1-4-gm', 'LENS-SON-FE50F14GM', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 'Sony FE 50mm f/1.4 GM là ống kính prime dòng G Master cao cấp với khẩu độ lớn f/1.4, thiết kế nhỏ gọn, motor XD Linear cho lấy nét nhanh và êm, hiệu ứng bokeh đẹp mắt. Được thiết kế cho máy ảnh mirrorless full-frame Sony với khả năng chống bụi và ẩm.', 48990000.00, 0.00, NULL, 13, 9, 'View/assets/images/products/sony-fe-50mm-f14-gm.jpg', NULL, 4, 2, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, 5.0, 6, 1, '2025-05-23 09:16:50', '2025-05-26 03:40:04', '[\"hot\"]', 0, 0, 0, NULL),
+(18, 'Phạm Hoài Thương', 'pham-hoai-thuong', NULL, 'Phạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài Thương', 'Phạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài ThươngPhạm Hoài Thương', 999999999.00, 1111111111.00, NULL, 49, 1, 'View/assets/images/products/6833ebadcc5b5_hero - Copy.jpg', NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0.0, 0, 1, '2025-05-26 04:18:53', '2025-05-26 04:28:52', '[\"hot\"]', 0, 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -499,7 +526,10 @@ INSERT INTO `tags` (`id`, `name`, `slug`, `created_at`) VALUES
 (10, 'Lightroom', 'lightroom', '2025-05-24 09:33:24'),
 (11, 'Photoshop', 'photoshop', '2025-05-24 09:33:24'),
 (12, 'DSLR', 'dslr', '2025-05-24 09:33:24'),
-(13, 'Mirrorless', 'mirrorless', '2025-05-24 09:33:24');
+(13, 'Mirrorless', 'mirrorless', '2025-05-24 09:33:24'),
+(14, 'Mẹo', 'meo', '2025-07-12 06:11:02'),
+(15, 'Phụ kiện', 'phu-kien', '2025-07-12 06:11:02'),
+(16, 'Đánh giá', 'danh-gia', '2025-07-12 06:11:02');
 
 -- --------------------------------------------------------
 
@@ -533,9 +563,11 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `birthday`, `gender`, `address`, `city`, `district`, `ward`, `avatar`, `role`, `status`, `created_at`, `updated_at`) VALUES
 (2, 'Nhân viên', 'staff@cameravn.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0987654321', NULL, NULL, 'Đại học Tôn Đức Thắng', 'TP.HCM', 'Quận 7', 'Phường Tân Phú', NULL, 'staff', 1, '2025-05-23 09:16:50', '2025-05-23 09:16:50'),
 (4, 'Bùi Dương Tấn Tài', '52300154@student.tdtu.edu.vn', '$2y$10$ZIlbFSCaKAfMupItJsg0j.UH1hHRq4rzOd5sc6g/31T3zevUBg3PG', '0868212407', NULL, NULL, '', '', '', '', 'View/assets/images/uploads/users/683123efce74f_IMG_4423.jpeg', 'admin', 1, '2025-05-23 16:42:12', '2025-05-25 16:31:33'),
-(5, 'Phạm Hoài Thương', '52300262@student.tdtu.edu.vn', '$2y$10$v8pKe.YFjSAvyWFieZGGfeA657s8/sIYQRclmwfFeJpypNCFesSz2', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', 1, '2025-05-24 06:59:29', '2025-05-24 06:59:29'),
+(5, 'Phạm Hoài Thương', '52300262@student.tdtu.edu.vn', '$2y$10$v8pKe.YFjSAvyWFieZGGfeA657s8/sIYQRclmwfFeJpypNCFesSz2', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, '../View/assets/images/uploads/users/6833edbfc1f43_blog3.jpg', 'admin', 1, '2025-05-24 06:59:29', '2025-05-26 04:27:43'),
 (6, 'Phạm Hoài Thương', 'binmin81@gmail.com', '$2y$10$7CrnacSQoNfEeQAWWxO2.u8tA57hr8hNfLhmBqfPxi/p6xqnsp1d.', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-24 07:13:52', '2025-05-24 07:13:52'),
-(7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '$2y$10$BtZSvDrK93ynw3953ImhPOcSWqCwknsu7ZP9uI4.VOBaDDokCvBo.', '0945727010', NULL, NULL, '', 'TP.HCM', '', '', NULL, 'admin', 1, '2025-05-24 12:17:25', '2025-05-26 07:32:42');
+(7, 'Đặng Triệu Vỹ', '52300274@student.tdtu.edu.vn', '$2y$10$BtZSvDrK93ynw3953ImhPOcSWqCwknsu7ZP9uI4.VOBaDDokCvBo.', '0945727010', NULL, NULL, '', 'TP.HCM', '', '', NULL, 'admin', 1, '2025-05-24 12:17:25', '2025-05-26 07:32:42'),
+(8, 'Phạm Hoài Thương', 'phucoccho0147@gmail.com', '$2y$10$xJZQZvGYtUEbVXopaEuRy.xLmAnBMwUlWFx5IUS5a/6FrtmM79Cxm', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-26 03:30:04', '2025-05-26 03:30:04'),
+(9, 'Phạm Hoài Thương', 'terrybin50@gmail.com', '$2y$10$i/jtlyIunUV5LsrwWvPyMOBBBeRcQ0dmTya5phQzndVX8Ij/5TusC', '0708624193', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'customer', 1, '2025-05-26 04:08:42', '2025-05-26 04:08:42');
 
 -- --------------------------------------------------------
 
@@ -726,13 +758,13 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT cho bảng `blogs`
 --
 ALTER TABLE `blogs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT cho bảng `blog_categories`
 --
 ALTER TABLE `blog_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT cho bảng `brands`
@@ -744,7 +776,7 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT cho bảng `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
@@ -762,19 +794,19 @@ ALTER TABLE `districts`
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `provinces`
@@ -792,13 +824,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT cho bảng `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT cho bảng `wards`
@@ -810,7 +842,7 @@ ALTER TABLE `wards`
 -- AUTO_INCREMENT cho bảng `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
